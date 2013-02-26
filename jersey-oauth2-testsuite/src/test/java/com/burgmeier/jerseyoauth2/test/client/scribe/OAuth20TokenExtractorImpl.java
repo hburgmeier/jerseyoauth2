@@ -16,10 +16,16 @@ public class OAuth20TokenExtractorImpl implements AccessTokenExtractor {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Map tokenMap = mapper.readValue(response, Map.class);
-System.err.println(response);			
-			return new Token((String)tokenMap.get("access_token"), "", response);
+			if (!tokenMap.containsKey("access_token"))
+				throw new TokenExtractorException(response);
+			
+			String accessToken = (String)tokenMap.get("access_token");
+			String refreshToken = (String)tokenMap.get("refresh_token");
+			String expiration = ((Integer)tokenMap.get("expires_in")).toString();
+			
+			return new OAuth2Token(accessToken, refreshToken, expiration, response);
 		} catch (IOException e) {
-			throw new IllegalArgumentException(response);
+			throw new TokenExtractorException(response);
 		}
 	}
 

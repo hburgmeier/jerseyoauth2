@@ -1,35 +1,26 @@
 package com.burgmeier.jerseyoauth2.test.client.scribe;
 
-import java.text.MessageFormat;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-
-public class LocalTestAPI extends DefaultApi20 {
-
-	private AccessTokenExtractor tokenExtractor = new OAuth20TokenExtractorImpl();
+public class LocalTestAPI extends BaseOAuth2Api {
 
 	@Override
-	public String getAccessTokenEndpoint() {
-		return "http://localhost:9998/testsuite/oauth2/accessToken?grant_type=authorization_code";
+	protected String getGrantType() {
+		return "authorization_code";
 	}
 
 	@Override
-	public String getAuthorizationUrl(OAuthConfig config) {
-		return MessageFormat.format("http://localhost:9998/testsuite/oauth2/auth?response_type=code&client_id={0}",
-				config.getApiKey());
+	protected String getResponseType() {
+		return "code";
 	}
 
 	@Override
-	public Verb getAccessTokenVerb() {
-		return Verb.POST;
+	protected String getAccessTokenEndpointBase() {
+		return "http://localhost:9998/testsuite/oauth2/accessToken";
 	}
 
 	@Override
-	public AccessTokenExtractor getAccessTokenExtractor() {
-		return tokenExtractor ;
+	protected String getAuthorizationUrlBase() {
+		return "http://localhost:9998/testsuite/oauth2/auth";
 	}
 
 }
