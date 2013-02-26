@@ -33,7 +33,7 @@ public class OAuthTest {
 	@Test
 	public void testAuthUrl()
 	{
-		String code = authClient.authorizeClient(clientEntity).getCode();
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
@@ -48,7 +48,7 @@ public class OAuthTest {
 	@Test
 	public void testOAuth() throws ClientException
 	{
-		String code = authClient.authorizeClient(clientEntity).getCode();
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
@@ -70,5 +70,24 @@ public class OAuthTest {
 		} catch (ClientException e) {
 		}
 	}
+	
+	@Test
+	public void testInvalidScopes()
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 invalidScope").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		TestClient client = new TestClient(clientEntity);
+		Token tok = client.getAccessToken(code);
+		Assert.assertNotNull(tok);
+		Assert.assertNotNull(tok.getToken());
+		
+		try {
+			client.retrieveEntity(tok);
+			Assert.fail();
+		} catch (ClientException cex) {
+		}
+	}	
 	
 }

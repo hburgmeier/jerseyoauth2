@@ -103,7 +103,7 @@
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
-					<contextPath>example1</contextPath>
+					<contextPath>testsuite</contextPath>
 					<userRealms>
 						<userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
 							<name>testsuite</name>

@@ -47,7 +47,7 @@ public class TestClient {
 		OAuthService service = getOAuthService();
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
-				"http://localhost:9998/example1/rest/sample/1");
+				"http://localhost:9998/testsuite/rest/sample/1");
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		if (response.getCode()!=200)

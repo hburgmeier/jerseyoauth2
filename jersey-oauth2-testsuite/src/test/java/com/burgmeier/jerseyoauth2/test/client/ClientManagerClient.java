@@ -19,20 +19,20 @@ public class ClientManagerClient {
 	
 	public ClientEntity createClient()
 	{
-		WebResource webResource = client.resource("http://localhost:9998/example1/rest/clients");
+		WebResource webResource = client.resource("http://localhost:9998/testsuite/rest/clients");
 		ClientEntity clientEntity = webResource.queryParam("appname", "UnitTest").
 				queryParam("callbackUrl","http://localhost:9998/example1").
 				accept(MediaType.APPLICATION_JSON_TYPE).post(ClientEntity.class);
 		return clientEntity;
 	}
 	
-	public ClientAuthEntity authorizeClient(ClientEntity clientEntity)
+	public ClientAuthEntity authorizeClient(ClientEntity clientEntity, String scope)
 	{
 		client.addFilter(new HTTPBasicAuthFilter("manager", "test".getBytes()));
-		WebResource webResource = client.resource("http://localhost:9998/example1/rest/clientAuth");
+		WebResource webResource = client.resource("http://localhost:9998/testsuite/rest/clientAuth");
 		ClientAuthEntity clientAuthEntity = webResource.
 				queryParam("client_id", clientEntity.getClientId()).
-				queryParam("scope","test1 test2").
+				queryParam("scope", scope).
 				post(ClientAuthEntity.class);
 		return clientAuthEntity;
 	}

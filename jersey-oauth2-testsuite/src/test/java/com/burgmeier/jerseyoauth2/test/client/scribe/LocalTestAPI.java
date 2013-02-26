@@ -13,12 +13,12 @@ public class LocalTestAPI extends DefaultApi20 {
 
 	@Override
 	public String getAccessTokenEndpoint() {
-		return "http://localhost:9998/example1/oauth2/accessToken?grant_type=authorization_code";
+		return "http://localhost:9998/testsuite/oauth2/accessToken?grant_type=authorization_code";
 	}
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		return MessageFormat.format("http://localhost:9998/example1/oauth2/auth?response_type=code&client_id={0}",
+		return MessageFormat.format("http://localhost:9998/testsuite/oauth2/auth?response_type=code&client_id={0}",
 				config.getApiKey());
 	}
 
