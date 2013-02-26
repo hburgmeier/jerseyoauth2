@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.test.client.scribe;
+package com.burgmeier.jerseyoauth2.client.scribe;
 
 import org.scribe.model.Token;
 

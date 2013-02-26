@@ -1,5 +1,7 @@
 package com.burgmeier.jerseyoauth2.test.client.scribe;
 
+import com.burgmeier.jerseyoauth2.client.scribe.BaseOAuth2Api;
+
 
 public class LocalTestAPI extends BaseOAuth2Api {
 
