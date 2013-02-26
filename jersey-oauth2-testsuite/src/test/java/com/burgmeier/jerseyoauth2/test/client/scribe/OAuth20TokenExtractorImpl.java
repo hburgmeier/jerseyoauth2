@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.test.client;
+package com.burgmeier.jerseyoauth2.test.client.scribe;
 
 import java.io.IOException;
 import java.util.Map;

@@ -8,11 +8,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
-public class AuthClient {
+public class ClientManagerClient {
 
 	private Client client;
 
-	public AuthClient(Client client) {
+	public ClientManagerClient(Client client) {
 		super();
 		this.client = client;
 	}

@@ -5,7 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scribe.model.Token;
 
-import com.burgmeier.jerseyoauth2.test.client.AuthClient;
+import com.burgmeier.jerseyoauth2.test.client.ClientManagerClient;
+import com.burgmeier.jerseyoauth2.test.client.ClientException;
 import com.burgmeier.jerseyoauth2.test.client.TestClient;
 import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 import com.sun.jersey.api.client.Client;
@@ -17,7 +18,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 public class OAuthTest {
 
 	private Client restClient;
-	private AuthClient authClient;
+	private ClientManagerClient authClient;
 	private ClientEntity clientEntity;
 	
 	@Before
@@ -25,7 +26,7 @@ public class OAuthTest {
 	{
 		ClientConfig cc = new DefaultClientConfig();
 		restClient = Client.create(cc);
-		authClient = new AuthClient(restClient);
+		authClient = new ClientManagerClient(restClient);
 		clientEntity = authClient.createClient();
 	}
 	
@@ -45,7 +46,7 @@ public class OAuthTest {
 	}		
 	
 	@Test
-	public void testOAuth()
+	public void testOAuth() throws ClientException
 	{
 		String code = authClient.authorizeClient(clientEntity).getCode();
 		Assert.assertNotNull(code);
@@ -66,7 +67,7 @@ public class OAuthTest {
 		try {
 			client.retrieveEntity(new Token("Invalid",""));
 			Assert.fail();
-		} catch (RuntimeException e) {
+		} catch (ClientException e) {
 		}
 	}
 	

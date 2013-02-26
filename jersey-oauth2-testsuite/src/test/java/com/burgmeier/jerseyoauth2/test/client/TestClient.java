@@ -8,6 +8,7 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.burgmeier.jerseyoauth2.test.client.scribe.LocalTestAPI;
 import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 
 public class TestClient {
@@ -41,7 +42,7 @@ public class TestClient {
 		return service.getAccessToken(null, new Verifier(code));
 	}	
 	
-	public String retrieveEntity(Token accessToken)
+	public String retrieveEntity(Token accessToken) throws ClientException
 	{
 		OAuthService service = getOAuthService();
 		
@@ -50,7 +51,7 @@ public class TestClient {
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		if (response.getCode()!=200)
-			throw new IllegalArgumentException(response.getBody());
+			throw new ClientException(response.getBody());
 		return response.getBody();
 	}
 
