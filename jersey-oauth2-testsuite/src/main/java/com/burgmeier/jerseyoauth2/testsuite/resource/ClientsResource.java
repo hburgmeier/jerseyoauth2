@@ -24,9 +24,9 @@ public class ClientsResource {
 
 	@POST
 	@Produces({MediaType.APPLICATION_JSON})
-	public ClientEntity createClient(@QueryParam("appName") String appName) throws ClientServiceException
+	public ClientEntity createClient(@QueryParam("appName") String appName, @QueryParam("callbackUrl") String callbackUrl) throws ClientServiceException
 	{
-		IRegisteredClientApp regClient = clientService.registerClient(appName);
+		IRegisteredClientApp regClient = clientService.registerClient(appName, callbackUrl);
 		return new ClientEntity(regClient);
 	}
 	

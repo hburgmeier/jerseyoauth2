@@ -20,7 +20,9 @@ public class AuthClient {
 	public ClientEntity createClient()
 	{
 		WebResource webResource = client.resource("http://localhost:9998/example1/rest/clients");
-		ClientEntity clientEntity = webResource.queryParam("appname", "UnitTest").accept(MediaType.APPLICATION_JSON_TYPE).post(ClientEntity.class);
+		ClientEntity clientEntity = webResource.queryParam("appname", "UnitTest").
+				queryParam("callbackUrl","http://localhost:9998/example1").
+				accept(MediaType.APPLICATION_JSON_TYPE).post(ClientEntity.class);
 		return clientEntity;
 	}
 	

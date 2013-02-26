@@ -28,7 +28,7 @@ public class TestClientService implements IClientService {
 	@Inject
 	public TestClientService()
 	{
-		registeredClients.put("AA", new SimpleRegisteredClient("AA", "BB", "CC"));
+		registeredClients.put("AA", new SimpleRegisteredClient("AA", "BB", "CC", null));
 	}
 	
 	@Override
@@ -67,11 +67,11 @@ public class TestClientService implements IClientService {
 	}
 
 	@Override
-	public IRegisteredClientApp registerClient(String appName) throws ClientServiceException {
+	public IRegisteredClientApp registerClient(String appName, String callbackUrl) throws ClientServiceException {
 		try {
 			String clientId = md5Gen.generateValue();
 			String clientSecret = md5Gen.generateValue();
-			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName);
+			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl);
 			registeredClients.put(clientId, client);
 			return client;
 		} catch (OAuthSystemException e) {
@@ -89,8 +89,7 @@ public class TestClientService implements IClientService {
 			IAuthorizedClientApp clientApp) {
 		try {
 			String code = md5Gen.generateValue();
-			String redirectUrl = "";
-			IClientAuthorization clientAuth = new SimpleClientAuthorization(code, redirectUrl, clientApp);
+			IClientAuthorization clientAuth = new SimpleClientAuthorization(code, clientApp);
 			String authKey = clientApp.getClientId()+"#"+code;
 			pendingAuth.put(authKey, clientAuth);
 			return clientAuth;

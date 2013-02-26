@@ -4,8 +4,6 @@ public interface IClientAuthorization {
 
 	String getCode();
 
-	String getRedirectUrl();
-	
 	IAuthorizedClientApp getAuthorizedClient();
 
 }

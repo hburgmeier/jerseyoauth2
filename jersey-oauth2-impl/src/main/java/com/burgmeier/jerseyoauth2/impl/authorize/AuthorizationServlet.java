@@ -13,6 +13,7 @@ import org.apache.amber.oauth2.as.response.OAuthASResponse;
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
+import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
 
 import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
@@ -71,7 +72,7 @@ public class AuthorizationServlet extends HttpServlet {
 					OAuthResponse resp = OAuthASResponse
 				        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
 				        .setCode(clientAuth.getCode())                    
-				        .location(clientAuth.getRedirectUrl())
+				        .location(clientApp.getCallbackUrl())
 				        .buildQueryMessage();
 
 					response.sendRedirect(resp.getLocationUri());
@@ -82,7 +83,7 @@ public class AuthorizationServlet extends HttpServlet {
 				throw new ServletException();
 			} catch (OAuthProblemException e) {
 				try {
-					sendErrorResponse(e, response, "testurl");
+					sendErrorResponse(e, response, clientApp==null?null:clientApp.getCallbackUrl());
 				} catch (OAuthSystemException e1) {
 					throw new ServletException(e1);
 				}
@@ -98,11 +99,12 @@ public class AuthorizationServlet extends HttpServlet {
 
 	private void sendErrorResponse(OAuthProblemException ex,
 			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
-        final OAuthResponse resp = OAuthASResponse
-                .errorResponse(HttpServletResponse.SC_FOUND)
-                .error(ex)
-                .location(redirectUri)
-                .buildQueryMessage();
+        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
+				        .errorResponse(HttpServletResponse.SC_FOUND)
+				        .error(ex);
+        if (redirectUri!=null)
+        	responseBuilder = responseBuilder.location(redirectUri);
+		final OAuthResponse resp = responseBuilder.buildQueryMessage();
                    
         response.sendRedirect(resp.getLocationUri());
 	}

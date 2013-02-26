@@ -7,4 +7,6 @@ public interface IRegisteredClientApp {
 	String getClientSecret();
 	
 	String getApplicationName();
+
+	String getCallbackUrl();
 }

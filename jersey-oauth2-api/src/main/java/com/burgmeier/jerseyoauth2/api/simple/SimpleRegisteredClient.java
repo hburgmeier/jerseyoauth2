@@ -14,17 +14,19 @@ public class SimpleRegisteredClient implements IRegisteredClientApp, Serializabl
 	private String clientId;
 	private String clientSecret;
 	private String appName;
+	private String callbackUrl;
 	
 	public SimpleRegisteredClient()
 	{
 		
 	}
 	
-	public SimpleRegisteredClient(String clientId, String clientSecret, String appName) {
+	public SimpleRegisteredClient(String clientId, String clientSecret, String appName, String callbackUrl) {
 		super();
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.appName = appName;
+		this.callbackUrl = callbackUrl;
 	}
 
 	@Override
@@ -52,6 +54,11 @@ public class SimpleRegisteredClient implements IRegisteredClientApp, Serializabl
 	
 	public void setApplicationName(String appName) {
 		this.appName = appName;
+	}
+
+	@Override
+	public String getCallbackUrl() {
+		return callbackUrl;
 	}
 
 	
