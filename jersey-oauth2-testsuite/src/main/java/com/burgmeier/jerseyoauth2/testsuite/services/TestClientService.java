@@ -37,8 +37,13 @@ public class TestClientService implements IClientService {
 		String authKey = clientId+"#"+code;
 		if (pendingAuth.containsKey(authKey))
 		{
-			IClientAuthorization clientAuthorization = pendingAuth.remove(authKey);
-			return clientAuthorization.getAuthorizedClient();
+			IClientAuthorization clientAuthorization = pendingAuth.get(authKey);
+			if (!clientAuthorization.getAuthorizedClient().isClientSecretValid(clientSecret))
+				return null;
+			else {
+				pendingAuth.remove(authKey);
+				return clientAuthorization.getAuthorizedClient();
+			}
 		} else
 			return null;
 		

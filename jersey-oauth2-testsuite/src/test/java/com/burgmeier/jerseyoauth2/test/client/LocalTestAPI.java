@@ -1,13 +1,12 @@
-package com.burgmeier.jerseyoauth2.test.client.scribe;
+package com.burgmeier.jerseyoauth2.test.client;
 
 import com.burgmeier.jerseyoauth2.client.scribe.BaseOAuth2Api;
 
 
 public class LocalTestAPI extends BaseOAuth2Api {
-
-	@Override
-	protected String getGrantType() {
-		return "authorization_code";
+	
+	public LocalTestAPI(String grantType) {
+		super(grantType);
 	}
 
 	@Override

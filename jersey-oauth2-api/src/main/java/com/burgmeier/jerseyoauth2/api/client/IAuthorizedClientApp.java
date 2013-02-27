@@ -12,4 +12,5 @@ public interface IAuthorizedClientApp {
 	
 	Set<String> getAuthorizedScopes();
 	
+	boolean isClientSecretValid(String clientSecret);
 }

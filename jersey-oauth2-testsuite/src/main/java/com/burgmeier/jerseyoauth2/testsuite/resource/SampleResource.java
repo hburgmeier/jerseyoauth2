@@ -4,8 +4,11 @@ import javax.jws.WebParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
+import com.burgmeier.jerseyoauth2.api.IOAuthPrincipal;
 import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
 
@@ -17,9 +20,10 @@ public class SampleResource {
 	@Produces({ MediaType.APPLICATION_JSON })
 	@OAuth20
 	@AllowedScopes(scopes={"test1", "test2"})
-	public SampleEntity getEntity(@WebParam(name="id") String id)
+	public SampleEntity getEntity(@WebParam(name="id") String id, @Context SecurityContext securityContext)
 	{
-		return new SampleEntity(id, "Test");
+		IOAuthPrincipal principal = (IOAuthPrincipal)securityContext.getUserPrincipal();
+		return new SampleEntity(id, principal.getUser().getName(), principal.getClientApp().getClientId());
 	}
 	
 }

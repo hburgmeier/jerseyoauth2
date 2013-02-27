@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;

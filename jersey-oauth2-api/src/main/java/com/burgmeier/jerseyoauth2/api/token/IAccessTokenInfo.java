@@ -14,5 +14,11 @@ public interface IAccessTokenInfo {
 	Set<String> getAuthorizedScopes();
 
 	String getExpiresIn();
+
+	String getRefreshToken();
+
+	String getAccessToken();
+
+	void updateTokens(String newAccessToken, String newRefreshToken);
 	
 }

@@ -66,6 +66,12 @@ public class AuthorizationServlet extends HttpServlet {
 				if (clientApp==null)
 					throw new ClientNotFoundException(oauthRequest.getClientId());
 				
+				if (oauthRequest.getClientSecret()!=null)
+				{
+					if (!clientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
+						throw new ClientNotFoundException(oauthRequest.getClientId());
+				}
+				
 				IClientAuthorization clientAuth = clientService.isAuthorized(user, clientApp.getClientId(), oauthRequest.getScopes());
 				if (clientAuth!=null)
 				{

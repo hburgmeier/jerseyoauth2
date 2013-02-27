@@ -6,10 +6,18 @@ import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
 
 public abstract class BaseOAuth2Api extends DefaultApi20 {
 	
 	private final AccessTokenExtractor tokenExtractor = new OAuth20TokenExtractorImpl();
+	private String grantType;
+	
+	public BaseOAuth2Api(String grantType)
+	{
+		this.grantType = grantType;
+		
+	}
 	
 	@Override
 	public final AccessTokenExtractor getAccessTokenExtractor() {
@@ -24,20 +32,23 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 	@Override
 	public final String getAccessTokenEndpoint() {
 		return MessageFormat.format("{1}?grant_type={0}",
-				getGrantType(),
+				grantType,
 				getAccessTokenEndpointBase());
 	}
 
 	@Override
 	public final String getAuthorizationUrl(OAuthConfig config) {
-		return MessageFormat.format("{2}?response_type={1}&client_id={0}",
-				config.getApiKey(), 
-				getResponseType(),
-				getAuthorizationUrlBase());
+		return MessageFormat.format("{0}?response_type={2}&client_id={1}",
+				getAuthorizationUrlBase(),
+				config.getApiKey(),
+				getResponseType());
 	}	
 	
-	protected abstract String getGrantType();
-	
+	@Override
+	public OAuthService createService(OAuthConfig config) {
+		return new OAuth2ServiceWrapper(super.createService(config), this, config);
+	}
+
 	protected abstract String getResponseType();
 	
 	protected abstract String getAccessTokenEndpointBase();

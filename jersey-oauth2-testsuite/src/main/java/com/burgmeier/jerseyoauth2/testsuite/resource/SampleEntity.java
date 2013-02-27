@@ -6,17 +6,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SampleEntity {
 
 	private String id;
-	private String text;
+	private String username;
+	private String clientApp;
 	
 	public SampleEntity()
 	{
 		
 	}
 	
-	public SampleEntity(String id, String text) {
+	public SampleEntity(String id, String username, String clientApp) {
 		super();
 		this.id = id;
-		this.text = text;
+		this.username = username;
+		this.clientApp = clientApp;
 	}
 	public String getId() {
 		return id;
@@ -24,12 +26,23 @@ public class SampleEntity {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getText() {
-		return text;
+
+	public String getUsername() {
+		return username;
 	}
-	public void setText(String text) {
-		this.text = text;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
+
+	public String getClientApp() {
+		return clientApp;
+	}
+
+	public void setClientApp(String clientApp) {
+		this.clientApp = clientApp;
+	}
+
 	
 	
 	

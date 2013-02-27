@@ -10,9 +10,14 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	
 	private IAuthorizedClientApp clientApp;
 	private String expiresIn;
+	
+	private String accessToken;
+	private String refreshToken;
 
-	public SimpleAccessTokenInfo(IAuthorizedClientApp clientApp, String expiresIn) {
+	public SimpleAccessTokenInfo(String accessToken, String refreshToken, IAuthorizedClientApp clientApp, String expiresIn) {
 		super();
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
 		this.expiresIn = expiresIn;
 	}
@@ -35,6 +40,22 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	@Override
 	public String getExpiresIn() {
 		return expiresIn;
+	}
+
+	@Override
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	@Override
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	@Override
+	public void updateTokens(String newAccessToken, String newRefreshToken) {
+		this.accessToken = newAccessToken;
+		this.refreshToken = newRefreshToken;
 	}
 
 }

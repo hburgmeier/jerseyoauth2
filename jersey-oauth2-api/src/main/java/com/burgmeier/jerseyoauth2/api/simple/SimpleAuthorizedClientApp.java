@@ -34,4 +34,9 @@ public class SimpleAuthorizedClientApp implements IAuthorizedClientApp {
 		return registeredClient.getClientId();
 	}
 
+	@Override
+	public boolean isClientSecretValid(String clientSecret) {
+		return registeredClient.getClientSecret().equals(clientSecret);
+	}
+
 }

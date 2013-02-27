@@ -6,6 +6,10 @@ public interface IAccessTokenService {
 
 	IAccessTokenInfo getAccessTokenInfo(String accessToken) throws InvalidTokenException;
 
-	IAccessTokenInfo issueToken(String accessToken, IAuthorizedClientApp clientApp);
+	IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp);
+	
+	IAccessTokenInfo getTokenInfoByRefreshToken(String refreshToken) throws InvalidTokenException;
+	
+	IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken);
 	
 }
