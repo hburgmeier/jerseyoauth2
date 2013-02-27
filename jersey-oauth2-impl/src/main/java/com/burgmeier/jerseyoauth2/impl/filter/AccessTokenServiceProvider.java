@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.testsuite.resource;
+package com.burgmeier.jerseyoauth2.impl.filter;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

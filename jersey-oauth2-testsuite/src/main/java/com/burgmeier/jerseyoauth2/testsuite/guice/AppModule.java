@@ -10,8 +10,8 @@ import com.burgmeier.jerseyoauth2.api.ui.IAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.api.user.IUserService;
 import com.burgmeier.jerseyoauth2.impl.authorize.AuthorizationServlet;
 import com.burgmeier.jerseyoauth2.impl.authorize.IssueAccessTokenServlet;
+import com.burgmeier.jerseyoauth2.impl.filter.AccessTokenServiceProvider;
 import com.burgmeier.jerseyoauth2.impl.filter.OAuth20FilterFactory;
-import com.burgmeier.jerseyoauth2.testsuite.resource.AccessTokenServiceProvider;
 import com.burgmeier.jerseyoauth2.testsuite.services.Configuration;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestAccessTokenService;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestAuthorizationFlow;
@@ -27,8 +27,6 @@ public class AppModule  extends JerseyServletModule {
 	
     @Override
     protected void configureServlets() {
-    	bind(AccessTokenServiceProvider.class);
-    	
     	bind(IAccessTokenService.class).to(TestAccessTokenService.class);
     	bind(IClientService.class).to(TestClientService.class);
     	bind(IUserService.class).to(TestUserService.class);
