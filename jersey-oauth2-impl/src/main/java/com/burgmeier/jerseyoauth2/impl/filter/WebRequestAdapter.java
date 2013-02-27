@@ -40,7 +40,7 @@ public class WebRequestAdapter implements HttpServletRequest {
 	}
 
 	@Override
-	public Enumeration getAttributeNames() {
+	public Enumeration<?> getAttributeNames() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -88,7 +88,7 @@ public class WebRequestAdapter implements HttpServletRequest {
 	}
 
 	@Override
-	public Enumeration getLocales() {
+	public Enumeration<?> getLocales() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -98,12 +98,12 @@ public class WebRequestAdapter implements HttpServletRequest {
 	}
 
 	@Override
-	public Map getParameterMap() {
+	public Map<?,?> getParameterMap() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Enumeration getParameterNames() {
+	public Enumeration<?> getParameterNames() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -209,12 +209,12 @@ public class WebRequestAdapter implements HttpServletRequest {
 	}
 
 	@Override
-	public Enumeration getHeaderNames() {
+	public Enumeration<?> getHeaderNames() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Enumeration getHeaders(String arg0) {
+	public Enumeration<?> getHeaders(String arg0) {
 		throw new UnsupportedOperationException();
 	}
 
