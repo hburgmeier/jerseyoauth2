@@ -41,12 +41,19 @@ public class OAuthTest {
 		restClient.setFollowRedirects(false);
 		
 		TestClient client = new TestClient(clientEntity);
-		String authUrl = client.getAuthUrl();
+		String authUrl = client.getAuthUrl(null);
 		
 		WebResource webResource = restClient.resource(authUrl);
 		ClientResponse clientResponse = webResource.get(ClientResponse.class);
 		Assert.assertEquals(302, clientResponse.getStatus());
 		Assert.assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/example1?code="));
+		
+		authUrl = client.getAuthUrl("stateTest");
+		
+		webResource = restClient.resource(authUrl);
+		clientResponse = webResource.get(ClientResponse.class);
+		Assert.assertEquals(302, clientResponse.getStatus());
+		Assert.assertTrue(clientResponse.getLocation().toString().contains("state=stateTest"));		
 	}		
 	
 	@Test

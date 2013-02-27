@@ -2,6 +2,7 @@ package com.burgmeier.jerseyoauth2.api.simple;
 
 import java.io.Serializable;
 
+import com.burgmeier.jerseyoauth2.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
 
 public class SimpleRegisteredClient implements IRegisteredClientApp, Serializable {
@@ -15,18 +16,28 @@ public class SimpleRegisteredClient implements IRegisteredClientApp, Serializabl
 	private String clientSecret;
 	private String appName;
 	private String callbackUrl;
+	private ClientType clientType;
 	
 	public SimpleRegisteredClient()
 	{
 		
 	}
 	
-	public SimpleRegisteredClient(String clientId, String clientSecret, String appName, String callbackUrl) {
+	public SimpleRegisteredClient(String clientId, String clientSecret, String appName, String callbackUrl, ClientType clientType) {
 		super();
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.appName = appName;
 		this.callbackUrl = callbackUrl;
+		this.clientType = clientType;
+	}
+
+	public ClientType getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(ClientType clientType) {
+		this.clientType = clientType;
 	}
 
 	@Override

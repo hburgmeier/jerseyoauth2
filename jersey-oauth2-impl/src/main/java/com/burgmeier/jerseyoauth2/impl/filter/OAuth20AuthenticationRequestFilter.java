@@ -13,6 +13,7 @@ import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.types.ParameterStyle;
 import org.apache.amber.oauth2.rs.request.OAuthAccessResourceRequest;
 
+import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
@@ -24,10 +25,12 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 public class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 
 	private Set<String> requiredScopes;
-	private IAccessTokenService accessTokenService;
+	private final IAccessTokenService accessTokenService;
+	private final IConfiguration configuration;
 	
-	public OAuth20AuthenticationRequestFilter(IAccessTokenService accessTokenService) {
+	public OAuth20AuthenticationRequestFilter(final IAccessTokenService accessTokenService, final IConfiguration configuration) {
 		this.accessTokenService = accessTokenService;
+		this.configuration = configuration;
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class OAuth20AuthenticationRequestFilter implements ContainerRequestFilte
 	
 		try {
 			OAuthAccessResourceRequest oauthRequest = new 
-			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), ParameterStyle.QUERY);
+			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), ParameterStyle.QUERY, ParameterStyle.HEADER);
 			
 			String accessToken = oauthRequest.getAccessToken();
 			IAccessTokenInfo accessTokenInfo = accessTokenService.getAccessTokenInfo(accessToken);

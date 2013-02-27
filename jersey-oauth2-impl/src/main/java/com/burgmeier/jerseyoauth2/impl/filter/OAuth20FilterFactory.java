@@ -7,6 +7,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Providers;
 
+import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
@@ -22,6 +23,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	
 	@Override
 	public List<ResourceFilter> create(AbstractMethod am) {
+System.err.println(am.getClass().toString());		
 		if (am instanceof AbstractResourceMethod)
 		{
 			OAuth20 oauth20 = am.getAnnotation(OAuth20.class);
@@ -40,7 +42,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	protected List<ResourceFilter> getFilters(AllowedScopes scopes)
 	{
 		List<ResourceFilter> securityFilters = new LinkedList<ResourceFilter>();
-		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenService());
+		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenService(), getConfiguration());
 		if (scopes!=null && scopes.scopes().length>0)
 		{
 			oAuth20AuthenticationFilter.setRequiredScopes(scopes.scopes());
@@ -53,5 +55,10 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	{
 		return providers.getContextResolver(IAccessTokenService.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenService.class);
 	}
+	
+	protected IConfiguration getConfiguration()
+	{
+		return providers.getContextResolver(IConfiguration.class, MediaType.WILDCARD_TYPE).getContext(IConfiguration.class);
+	}	
 	
 }

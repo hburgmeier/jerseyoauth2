@@ -9,4 +9,6 @@ public interface IRegisteredClientApp {
 	String getApplicationName();
 
 	String getCallbackUrl();
+	
+	ClientType getClientType();
 }

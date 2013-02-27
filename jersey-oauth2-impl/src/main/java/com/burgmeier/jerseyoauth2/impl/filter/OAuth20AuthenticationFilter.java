@@ -1,5 +1,6 @@
 package com.burgmeier.jerseyoauth2.impl.filter;
 
+import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
@@ -9,9 +10,9 @@ public class OAuth20AuthenticationFilter implements ResourceFilter {
 
 	private final OAuth20AuthenticationRequestFilter requestFilter;
 	
-	public OAuth20AuthenticationFilter(final IAccessTokenService accessTokenService)
+	public OAuth20AuthenticationFilter(final IAccessTokenService accessTokenService, final IConfiguration configuration)
 	{
-		requestFilter = new OAuth20AuthenticationRequestFilter(accessTokenService);
+		requestFilter = new OAuth20AuthenticationRequestFilter(accessTokenService, configuration);
 	}
 	
 	@Override

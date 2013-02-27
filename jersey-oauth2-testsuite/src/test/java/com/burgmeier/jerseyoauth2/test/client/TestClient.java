@@ -35,10 +35,10 @@ public class TestClient {
 		this.clientSecret = clientSecret;
 	}
 
-	protected OAuthService getOAuthService(GrantType grantType)
+	protected OAuthService getOAuthService(GrantType grantType, String state)
 	{
 		OAuthService service = new ServiceBuilder()
-		.provider(new LocalTestAPI(grantType.toString()))
+		.provider(new LocalTestAPI(grantType.toString(), state))
 		.apiKey(clientId)
 		.apiSecret(clientSecret)
 	    .scope("test1 test2")
@@ -46,25 +46,25 @@ public class TestClient {
 		return service;
 	}
 	
-	public String getAuthUrl()
+	public String getAuthUrl(String state)
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, state);
 		return service.getAuthorizationUrl(null);
 	}
 
 	public Token getAccessToken(String code) {
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
 		return service.getAccessToken(null, new Verifier(code));
 	}
 	
 	public Token refreshToken(OAuth2Token token) {
-		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN);
+		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, null);
 		return ((IOAuth2Service)service).refreshToken(token);
 	}		
 	
 	public String sendTestRequest(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -77,7 +77,7 @@ public class TestClient {
 	
 	public SampleEntity retrieveEntity(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");

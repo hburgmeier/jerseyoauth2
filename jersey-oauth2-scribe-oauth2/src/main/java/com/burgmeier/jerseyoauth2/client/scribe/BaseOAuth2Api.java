@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.ParameterList;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
@@ -12,10 +13,12 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 	
 	private final AccessTokenExtractor tokenExtractor = new OAuth20TokenExtractorImpl();
 	private String grantType;
+	private String state;
 	
-	public BaseOAuth2Api(String grantType)
+	public BaseOAuth2Api(String grantType, String state)
 	{
 		this.grantType = grantType;
+		this.state = state;
 		
 	}
 	
@@ -38,10 +41,17 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 
 	@Override
 	public final String getAuthorizationUrl(OAuthConfig config) {
-		return MessageFormat.format("{0}?response_type={2}&client_id={1}",
-				getAuthorizationUrlBase(),
-				config.getApiKey(),
-				getResponseType());
+		ParameterList paramList = new ParameterList();
+		if (state!=null)
+			paramList.add("state", state);
+		paramList.add("response_type", getResponseType());
+		paramList.add("client_id", config.getApiKey());
+		return paramList.appendTo(getAuthorizationUrlBase());
+		
+//		return MessageFormat.format("{0}?response_type={2}&client_id={1}",
+//				getAuthorizationUrlBase(),
+//				config.getApiKey(),
+//				getResponseType());
 	}	
 	
 	@Override

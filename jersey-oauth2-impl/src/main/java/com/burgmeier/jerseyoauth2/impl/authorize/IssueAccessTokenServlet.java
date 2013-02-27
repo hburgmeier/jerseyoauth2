@@ -22,6 +22,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
+import com.burgmeier.jerseyoauth2.api.token.ITokenGenerator;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -35,12 +36,13 @@ public class IssueAccessTokenServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final IAccessTokenService accessTokenService;
 	private final IClientService clientService;
-	private OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
+	private final ITokenGenerator tokenGenerator;
 	
 	@Inject
-	public IssueAccessTokenServlet(final IAccessTokenService accessTokenService, final IClientService clientService) {
+	public IssueAccessTokenServlet(final IAccessTokenService accessTokenService, final IClientService clientService, final ITokenGenerator tokenGenerator) {
 		this.accessTokenService = accessTokenService;
 		this.clientService = clientService;
+		this.tokenGenerator = tokenGenerator;
 	}
 
 	@Override
@@ -63,8 +65,8 @@ public class IssueAccessTokenServlet extends HttpServlet {
 					try {
 						IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);
 
-						String newAccessToken = oauthIssuerImpl.accessToken();
-						String newRefreshToken = oauthIssuerImpl.refreshToken();
+						String newAccessToken = tokenGenerator.createAccessToken();
+						String newRefreshToken = tokenGenerator.createRefreshToken();
 						
 						IAccessTokenInfo accessTokenInfo = accessTokenService.refreshToken(oldTokenInfo.getAccessToken(), newAccessToken, newRefreshToken);
 						
@@ -81,8 +83,8 @@ public class IssueAccessTokenServlet extends HttpServlet {
 						throw OAuthProblemException.error("client_not_auth", "client not authorized");
 					}
 					
-					String accessToken = oauthIssuerImpl.accessToken();
-					String refreshToken = oauthIssuerImpl.refreshToken();
+					String accessToken = tokenGenerator.createAccessToken();
+					String refreshToken = tokenGenerator.createRefreshToken();
 
 					IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken, clientApp);
 

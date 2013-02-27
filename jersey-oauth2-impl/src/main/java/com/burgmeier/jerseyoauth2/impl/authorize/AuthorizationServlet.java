@@ -1,6 +1,7 @@
 package com.burgmeier.jerseyoauth2.impl.authorize;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
 
+import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
@@ -36,17 +38,19 @@ public class AuthorizationServlet extends HttpServlet {
 	private final IClientService clientService;
 	private final IUserService userService;
 	private final IAuthorizationFlow authFlow;
+	private final IConfiguration configuration;
 	
 	private ServletContext servletContext;
 	
 	
 	@Inject
 	public AuthorizationServlet(final IClientService clientService, final IUserService userService,
-			final IAuthorizationFlow authFlow, ServletContext servletContext)
+			final IAuthorizationFlow authFlow, final IConfiguration configuration, ServletContext servletContext)
 	{
 		this.clientService = clientService;
 		this.userService = userService;
 		this.authFlow = authFlow;
+		this.configuration = configuration;
 		this.servletContext = servletContext;
 	}
 
@@ -72,7 +76,10 @@ public class AuthorizationServlet extends HttpServlet {
 						throw new ClientNotFoundException(oauthRequest.getClientId());
 				}
 				
-				IClientAuthorization clientAuth = clientService.isAuthorized(user, clientApp.getClientId(), oauthRequest.getScopes());
+				Set<String> scopes = oauthRequest.getScopes();
+				scopes = scopes.isEmpty()?configuration.getDefaultScopes():scopes;
+				
+				IClientAuthorization clientAuth = clientService.isAuthorized(user, clientApp.getClientId(), scopes);
 				if (clientAuth!=null)
 				{
 					OAuthResponse resp = OAuthASResponse
@@ -83,7 +90,7 @@ public class AuthorizationServlet extends HttpServlet {
 
 					response.sendRedirect(resp.getLocationUri());
 				} else {
-					authFlow.startAuthorizationFlow(user, clientApp, oauthRequest.getScopes(), request, response, servletContext);
+					authFlow.startAuthorizationFlow(user, clientApp, scopes, request, response, servletContext);
 				}
 			} catch (OAuthSystemException e) {
 				throw new ServletException();

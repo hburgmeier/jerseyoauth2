@@ -5,8 +5,8 @@ import com.burgmeier.jerseyoauth2.client.scribe.BaseOAuth2Api;
 
 public class LocalTestAPI extends BaseOAuth2Api {
 	
-	public LocalTestAPI(String grantType) {
-		super(grantType);
+	public LocalTestAPI(String grantType, String state) {
+		super(grantType, state);
 	}
 
 	@Override

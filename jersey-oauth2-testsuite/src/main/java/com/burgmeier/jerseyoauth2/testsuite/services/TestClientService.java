@@ -8,6 +8,7 @@ import org.apache.amber.oauth2.as.issuer.MD5Generator;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
 import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
@@ -28,7 +29,7 @@ public class TestClientService implements IClientService {
 	@Inject
 	public TestClientService()
 	{
-		registeredClients.put("AA", new SimpleRegisteredClient("AA", "BB", "CC", null));
+		registeredClients.put("AA", new SimpleRegisteredClient("AA", "BB", "CC", "/example1", ClientType.CONFIDENTIAL));
 	}
 	
 	@Override
@@ -76,7 +77,7 @@ public class TestClientService implements IClientService {
 		try {
 			String clientId = md5Gen.generateValue();
 			String clientSecret = md5Gen.generateValue();
-			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl);
+			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl, ClientType.CONFIDENTIAL);
 			registeredClients.put(clientId, client);
 			return client;
 		} catch (OAuthSystemException e) {
