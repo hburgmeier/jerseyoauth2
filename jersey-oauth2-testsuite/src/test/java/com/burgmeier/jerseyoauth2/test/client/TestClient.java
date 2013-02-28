@@ -35,36 +35,37 @@ public class TestClient {
 		this.clientSecret = clientSecret;
 	}
 
-	protected OAuthService getOAuthService(GrantType grantType, String state)
+	protected OAuthService getOAuthService(GrantType grantType, String scope, String state)
 	{
-		OAuthService service = new ServiceBuilder()
+		ServiceBuilder serviceBuilder = new ServiceBuilder()
 		.provider(new LocalTestAPI(grantType.toString(), state))
 		.apiKey(clientId)
-		.apiSecret(clientSecret)
-	    .scope("test1 test2")
-		.build();
+		.apiSecret(clientSecret);
+		if (scope!=null)
+			serviceBuilder = serviceBuilder.scope(scope);
+		OAuthService service = serviceBuilder.build();
 		return service;
 	}
 	
 	public String getAuthUrl(String state)
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, state);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", state);
 		return service.getAuthorizationUrl(null);
 	}
 
 	public Token getAccessToken(String code) {
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
 		return service.getAccessToken(null, new Verifier(code));
 	}
 	
 	public Token refreshToken(OAuth2Token token) {
-		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, null);
+		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, "test1 test2", null);
 		return ((IOAuth2Service)service).refreshToken(token);
 	}		
 	
-	public String sendTestRequest(Token accessToken) throws ClientException
+	public String sendTestRequestSample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -75,9 +76,9 @@ public class TestClient {
 		return response.getBody();
 	}
 	
-	public SampleEntity retrieveEntity(Token accessToken) throws ClientException
+	public SampleEntity retrieveEntitySample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -94,6 +95,19 @@ public class TestClient {
 			throw new ClientException(response.getBody());
 		}
 	}	
+	
+	public String sendTestRequestSample2(Token accessToken) throws ClientException
+	{
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null, null);
+		
+		OAuthRequest request = new OAuthRequest(Verb.GET,
+				"http://localhost:9998/testsuite/rest/sample2/1");
+		service.signRequest(accessToken, request);
+		Response response = request.send();
+		if (response.getCode()!=200)
+			throw new ClientException(response.getBody());
+		return response.getBody();
+	}
 
 
 	

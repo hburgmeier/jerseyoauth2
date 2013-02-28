@@ -2,6 +2,7 @@ package com.burgmeier.jerseyoauth2.testsuite.resource;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -11,6 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
@@ -25,12 +29,14 @@ public class ClientAuthResource {
 
 	private final IClientService clientService;
 	private final IUserService userService;
+	private final IConfiguration configuration;
 	
 	@Inject
-	public ClientAuthResource(IClientService clientService, final IUserService userService) {
+	public ClientAuthResource(IClientService clientService, final IUserService userService, final IConfiguration configuration) {
 		super();
 		this.clientService = clientService;
 		this.userService = userService;
+		this.configuration = configuration;
 	}
 
 	@POST
@@ -43,8 +49,14 @@ public class ClientAuthResource {
 		IUser user = userService.getCurrentUser(request);
 		
 		IRegisteredClientApp clientApp = clientService.getRegisteredClient(clientId);
-		String[] scopes = scope.split(" ");
-		IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, new HashSet<String>(Arrays.asList(scopes)));
+		Set<String> authScopes = configuration.getDefaultScopes();
+		if (scope!=null)
+		{
+			String[] scopes = scope.split(" ");
+			if (!(scopes.length==1 && StringUtils.isEmpty(scopes[0])))
+				authScopes = new HashSet<String>(Arrays.asList(scopes));
+		}
+		IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, authScopes);
 		IClientAuthorization clientAuthorization = clientService.createClientAuthorization(authorizedClient);
 		return new ClientAuthEntity(clientAuthorization);
 	}

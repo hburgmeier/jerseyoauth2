@@ -45,6 +45,8 @@ public class OAuth20AuthenticationRequestFilter implements ContainerRequestFilte
 			
 			if (requiredScopes!=null)
 			{
+System.err.println(requiredScopes);
+System.err.println(accessTokenInfo.getAuthorizedScopes());
 				if (!matchScopes(requiredScopes, accessTokenInfo.getAuthorizedScopes()))
 				{
 					throw new WebApplicationException(buildScopeProblem());

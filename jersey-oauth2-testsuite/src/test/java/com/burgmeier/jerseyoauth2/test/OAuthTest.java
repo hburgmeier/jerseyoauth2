@@ -68,9 +68,9 @@ public class OAuthTest {
 		Assert.assertNotNull(tok);
 		Assert.assertNotNull(tok.getToken());
 		
-		client.sendTestRequest(tok);
+		client.sendTestRequestSample1(tok);
 		
-		SampleEntity entity = client.retrieveEntity(tok);
+		SampleEntity entity = client.retrieveEntitySample1(tok);
 		Assert.assertNotNull(entity);
 		Assert.assertEquals("manager", entity.getUsername());
 		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
@@ -81,7 +81,7 @@ public class OAuthTest {
 	{
 		TestClient client = new TestClient(clientEntity);
 		try {
-			client.sendTestRequest(new Token("Invalid",""));
+			client.sendTestRequestSample1(new Token("Invalid",""));
 			Assert.fail();
 		} catch (ClientException e) {
 		}
@@ -100,7 +100,7 @@ public class OAuthTest {
 		Assert.assertNotNull(tok.getToken());
 		
 		try {
-			client.sendTestRequest(tok);
+			client.sendTestRequestSample1(tok);
 			Assert.fail();
 		} catch (ClientException cex) {
 		}
@@ -148,19 +148,34 @@ public class OAuthTest {
 		Assert.assertNotNull(oldToken);
 		Assert.assertNotNull(oldToken.getToken());
 		
-		client.sendTestRequest(oldToken);
+		client.sendTestRequestSample1(oldToken);
 		
 		Token newToken = client.refreshToken((OAuth2Token)oldToken);
 		Assert.assertNotNull(newToken);
 		
-		client.sendTestRequest(newToken);
+		client.sendTestRequestSample1(newToken);
 		try {
-			client.sendTestRequest(oldToken);
+			client.sendTestRequestSample1(oldToken);
 			Assert.fail();
 		} catch(ClientException ex) {
 			
 		}
 		
+	}
+	
+	@Test
+	public void testClassAnnotation() throws ClientException
+	{
+		String code = authClient.authorizeClient(clientEntity, "").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		TestClient client = new TestClient(clientEntity);
+		Token oldToken = client.getAccessToken(code);
+		Assert.assertNotNull(oldToken);
+		Assert.assertNotNull(oldToken.getToken());
+		
+		client.sendTestRequestSample2(oldToken);		
 	}
 	
 }

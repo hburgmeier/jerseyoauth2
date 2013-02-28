@@ -23,7 +23,6 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	
 	@Override
 	public List<ResourceFilter> create(AbstractMethod am) {
-System.err.println(am.getClass().toString());		
 		if (am instanceof AbstractResourceMethod)
 		{
 			OAuth20 oauth20 = am.getAnnotation(OAuth20.class);
@@ -33,8 +32,15 @@ System.err.println(am.getClass().toString());
 			{
 				return getFilters(scopes);
 			}
-			else
-				return null;
+			else {
+				oauth20 = am.getResource().getAnnotation(OAuth20.class);
+				scopes = am.getResource().getAnnotation(AllowedScopes.class);
+				if (oauth20!=null)
+				{
+					return getFilters(scopes);				
+				}
+				return null;	
+			}
 		} else
 			return null;
 	}
