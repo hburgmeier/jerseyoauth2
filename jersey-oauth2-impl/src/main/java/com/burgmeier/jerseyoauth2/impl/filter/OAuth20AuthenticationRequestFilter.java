@@ -26,11 +26,11 @@ public class OAuth20AuthenticationRequestFilter implements ContainerRequestFilte
 
 	private Set<String> requiredScopes;
 	private final IAccessTokenService accessTokenService;
-	private final IConfiguration configuration;
+	private ParameterStyle[] parameterStyles;
 	
 	public OAuth20AuthenticationRequestFilter(final IAccessTokenService accessTokenService, final IConfiguration configuration) {
 		this.accessTokenService = accessTokenService;
-		this.configuration = configuration;
+		this.parameterStyles = configuration.getSupportedOAuthParameterStyles();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class OAuth20AuthenticationRequestFilter implements ContainerRequestFilte
 	
 		try {
 			OAuthAccessResourceRequest oauthRequest = new 
-			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), ParameterStyle.QUERY, ParameterStyle.HEADER);
+			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
 			
 			String accessToken = oauthRequest.getAccessToken();
 			IAccessTokenInfo accessTokenInfo = accessTokenService.getAccessTokenInfo(accessToken);
