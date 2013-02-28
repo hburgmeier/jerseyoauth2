@@ -93,5 +93,6 @@
 		<module>jersey-oauth2-impl</module>
 		<module>jersey-oauth2-scribe-oauth2</module>		
 		<module>jersey-oauth2-testsuite</module>
+		<module>jersey-oauth2-sample</module>
 	</modules>
 </project>

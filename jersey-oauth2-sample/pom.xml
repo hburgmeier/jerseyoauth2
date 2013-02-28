@@ -7,9 +7,10 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-	<artifactId>jersey-oauth2-testsuite</artifactId>
+	<artifactId>jersey-oauth2-sample</artifactId>
 	<packaging>war</packaging>
-	<name>Jersey OAuth2 Provider Testsuite</name>
+	<name>Jersey OAuth2 Provider Sample Application</name>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
@@ -21,18 +22,6 @@
 			<artifactId>jersey-oauth2-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-impl</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
@@ -58,22 +47,14 @@
 			<artifactId>jersey-guice</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-servlet_2.5_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey.jersey-test-framework</groupId>
-			<artifactId>jersey-test-framework-grizzly2</artifactId>
-			<version>${jersey.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
+		
 	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -91,56 +72,12 @@
 					<contextPath>testsuite</contextPath>
 					<userRealms>
 						<userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
-							<name>testsuite</name>
+							<name>sample</name>
 							<config>${basedir}/src/test/resources/jetty-users.properties</config>
 						</userRealm>
 					</userRealms>
 				</configuration>
-				<executions>
-					<execution>
-						<id>start-jetty</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>run-war</goal>
-						</goals>
-						<configuration>
-							<daemon>true</daemon>
-							<webApp>
-								${project.build.directory}/jersey-oauth2-testsuite-${project.version}.war
-							</webApp>
-						</configuration>
-					</execution>
-					<execution>
-						<id>stop-jetty</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-						<configuration>
-							<stopPort>9998</stopPort>
-							<stopKey>test</stopKey>
-						</configuration>
-					</execution>
-				</executions>				
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>			
 		</plugins>
-	</build>
+	</build>	
 </project>
