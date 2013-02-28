@@ -1,7 +1,6 @@
 package com.burgmeier.jerseyoauth2.impl.authorize;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -9,21 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.as.request.OAuthAuthzRequest;
-import org.apache.amber.oauth2.as.response.OAuthASResponse;
-import org.apache.amber.oauth2.common.exception.OAuthProblemException;
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
-import org.apache.amber.oauth2.common.message.OAuthResponse;
-import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
-
-import com.burgmeier.jerseyoauth2.api.IConfiguration;
-import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
-import com.burgmeier.jerseyoauth2.api.client.IClientService;
-import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
-import com.burgmeier.jerseyoauth2.api.ui.AuthorizationFlowException;
-import com.burgmeier.jerseyoauth2.api.ui.IAuthorizationFlow;
-import com.burgmeier.jerseyoauth2.api.user.IUser;
-import com.burgmeier.jerseyoauth2.api.user.IUserService;
+import com.burgmeier.jerseyoauth2.api.client.IAuthorizationService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -35,91 +20,22 @@ public class AuthorizationServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private final IClientService clientService;
-	private final IUserService userService;
-	private final IAuthorizationFlow authFlow;
-	private final IConfiguration configuration;
+	private final IAuthorizationService authService;
 	
 	private ServletContext servletContext;
 	
 	
 	@Inject
-	public AuthorizationServlet(final IClientService clientService, final IUserService userService,
-			final IAuthorizationFlow authFlow, final IConfiguration configuration, ServletContext servletContext)
+	public AuthorizationServlet(final IAuthorizationService authService, ServletContext servletContext)
 	{
-		this.clientService = clientService;
-		this.userService = userService;
-		this.authFlow = authFlow;
-		this.configuration = configuration;
+		this.authService = authService;
 		this.servletContext = servletContext;
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		try {
-			IRegisteredClientApp clientApp = null;
-			try {
-				OAuthAuthzRequest oauthRequest = new OAuthAuthzRequest(request);
-				
-				IUser user = userService.getCurrentUser(request);
-				if (user==null)
-					throw new InvalidUserException();
-				
-				clientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
-				if (clientApp==null)
-					throw new ClientNotFoundException(oauthRequest.getClientId());
-				
-				if (oauthRequest.getClientSecret()!=null)
-				{
-					if (!clientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
-						throw new ClientNotFoundException(oauthRequest.getClientId());
-				}
-				
-				Set<String> scopes = oauthRequest.getScopes();
-				scopes = scopes.isEmpty()?configuration.getDefaultScopes():scopes;
-				
-				IClientAuthorization clientAuth = clientService.isAuthorized(user, clientApp.getClientId(), scopes);
-				if (clientAuth!=null)
-				{
-					OAuthResponse resp = OAuthASResponse
-				        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
-				        .setCode(clientAuth.getCode())                    
-				        .location(clientApp.getCallbackUrl())
-				        .buildQueryMessage();
-
-					response.sendRedirect(resp.getLocationUri());
-				} else {
-					authFlow.startAuthorizationFlow(user, clientApp, scopes, request, response, servletContext);
-				}
-			} catch (OAuthSystemException e) {
-				throw new ServletException();
-			} catch (OAuthProblemException e) {
-				try {
-					sendErrorResponse(e, response, clientApp==null?null:clientApp.getCallbackUrl());
-				} catch (OAuthSystemException e1) {
-					throw new ServletException(e1);
-				}
-			} catch (ClientNotFoundException e) {
-				authFlow.handleMissingClientRegistration(e.getClientId(), request, response, servletContext);
-			} catch (InvalidUserException e) {
-				authFlow.handleMissingUser(request, response, servletContext);
-			}
-		} catch (AuthorizationFlowException e) {
-			throw new ServletException(e);
-		}		
-	}
-
-	private void sendErrorResponse(OAuthProblemException ex,
-			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
-        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
-				        .errorResponse(HttpServletResponse.SC_FOUND)
-				        .error(ex);
-        if (redirectUri!=null)
-        	responseBuilder = responseBuilder.location(redirectUri);
-		final OAuthResponse resp = responseBuilder.buildQueryMessage();
-                   
-        response.sendRedirect(resp.getLocationUri());
+		authService.evaluateAuthorizationRequest(request, response, servletContext);
 	}
 
 }

@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Providers;
 import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
+import com.burgmeier.jerseyoauth2.api.token.IAccessTokenStorageService;
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.api.model.AbstractResourceMethod;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -57,9 +57,9 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 		return securityFilters;
 	}
 	
-	protected IAccessTokenService getAccessTokenService()
+	protected IAccessTokenStorageService getAccessTokenService()
 	{
-		return providers.getContextResolver(IAccessTokenService.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenService.class);
+		return providers.getContextResolver(IAccessTokenStorageService.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenStorageService.class);
 	}
 	
 	protected IConfiguration getConfiguration()

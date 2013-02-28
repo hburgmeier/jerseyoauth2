@@ -16,10 +16,6 @@ public interface IAuthorizationFlow {
 	void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 		throws AuthorizationFlowException, ServletException, IOException;
 
-	void handleMissingClientRegistration(String clientId,
-			HttpServletRequest request, HttpServletResponse response,
-			ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException;
-
 	void handleMissingUser(HttpServletRequest request,
 			HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException;
 	

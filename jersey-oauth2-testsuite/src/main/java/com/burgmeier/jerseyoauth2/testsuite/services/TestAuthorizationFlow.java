@@ -36,14 +36,6 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 	}
 
 	@Override
-	public void handleMissingClientRegistration(String clientId,
-			HttpServletRequest request, HttpServletResponse response,
-			ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException {
-		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
-		requestDispatcher.forward(request, response);
-	}
-
-	@Override
 	public void handleMissingUser(HttpServletRequest request,
 			HttpServletResponse response, ServletContext servletContext)
 			throws AuthorizationFlowException, ServletException, IOException {

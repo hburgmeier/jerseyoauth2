@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
+import com.burgmeier.jerseyoauth2.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.api.token.ITokenGenerator;
 import com.burgmeier.jerseyoauth2.api.ui.IAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.api.user.IUserService;
@@ -15,7 +15,7 @@ import com.burgmeier.jerseyoauth2.impl.filter.OAuth20FilterFactory;
 import com.burgmeier.jerseyoauth2.impl.services.DefaultPrincipalUserService;
 import com.burgmeier.jerseyoauth2.impl.services.MD5TokenGenerator;
 import com.burgmeier.jerseyoauth2.testsuite.services.Configuration;
-import com.burgmeier.jerseyoauth2.testsuite.services.TestAccessTokenService;
+import com.burgmeier.jerseyoauth2.testsuite.services.TestAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestClientService;
 import com.burgmeier.jerseyoauth2.testsuite.ui.AllowServlet;
@@ -28,7 +28,7 @@ public class AppModule  extends JerseyServletModule {
 	
     @Override
     protected void configureServlets() {
-    	bind(IAccessTokenService.class).to(TestAccessTokenService.class);
+    	bind(IAccessTokenStorageService.class).to(TestAccessTokenStorageService.class);
     	bind(IClientService.class).to(TestClientService.class);
     	bind(IConfiguration.class).to(Configuration.class);
     	bind(IAuthorizationFlow.class).to(TestAuthorizationFlow.class);

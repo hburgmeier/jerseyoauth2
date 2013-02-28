@@ -2,7 +2,7 @@ package com.burgmeier.jerseyoauth2.api.token;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 
-public interface IAccessTokenService {
+public interface IAccessTokenStorageService {
 
 	IAccessTokenInfo getAccessTokenInfo(String accessToken) throws InvalidTokenException;
 

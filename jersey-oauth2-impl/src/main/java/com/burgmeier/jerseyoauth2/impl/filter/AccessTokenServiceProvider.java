@@ -3,25 +3,25 @@ package com.burgmeier.jerseyoauth2.impl.filter;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenService;
+import com.burgmeier.jerseyoauth2.api.token.IAccessTokenStorageService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 @Provider
-public class AccessTokenServiceProvider implements ContextResolver<IAccessTokenService>{
+public class AccessTokenServiceProvider implements ContextResolver<IAccessTokenStorageService>{
 
-	private final IAccessTokenService accessTokenService;
+	private final IAccessTokenStorageService accessTokenService;
 
 	@Inject
-	public AccessTokenServiceProvider(final IAccessTokenService accessTokenService)
+	public AccessTokenServiceProvider(final IAccessTokenStorageService accessTokenService)
 	{
 		this.accessTokenService = accessTokenService;
 		
 	}
 	
 	@Override
-	public IAccessTokenService getContext(Class<?> type) {
+	public IAccessTokenStorageService getContext(Class<?> type) {
 		return this.accessTokenService;
 	}
 
