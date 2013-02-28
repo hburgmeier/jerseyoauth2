@@ -1,7 +1,6 @@
 package com.burgmeier.jerseyoauth2.testsuite.ui;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.amber.oauth2.common.exception.OAuthSystemException;
+
 import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.api.client.IAuthorizationService;
+import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
+import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
 import com.burgmeier.jerseyoauth2.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
@@ -28,12 +32,14 @@ public class AllowServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final IClientService clientService;
 	private final IUserService userService;
+	private final IAuthorizationService authorizationService;
 	
 	@Inject
-	public AllowServlet(final IClientService clientService, final IUserService userService) {
+	public AllowServlet(final IClientService clientService, final IUserService userService, final IAuthorizationService authorizationService) {
 		super();
 		this.clientService = clientService;
 		this.userService = userService;
+		this.authorizationService = authorizationService;
 	}
 
 	@Override
@@ -49,11 +55,13 @@ public class AllowServlet extends HttpServlet {
 		Set<String> allowedScopes = new HashSet<String>(Arrays.asList(scopes.split(" ")));
 		
 		try {
-			clientService.authorizeClient(user, clientApp, allowedScopes);
+			IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, allowedScopes);
 			
-			PrintWriter out = response.getWriter();
-			out.println("<html><body><h1>Authorized</h1></body></html>");
+			IClientAuthorization clientAuth = clientService.createClientAuthorization(authorizedClient);
+			authorizationService.sendAuthorizationReponse(request, response, clientAuth, clientApp);
 		} catch (ClientServiceException e) {
+			throw new ServletException(e);
+		} catch (OAuthSystemException e) {
 			throw new ServletException(e);
 		}
 	}
