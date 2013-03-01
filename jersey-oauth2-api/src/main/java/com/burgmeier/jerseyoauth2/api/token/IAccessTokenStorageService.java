@@ -4,7 +4,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 
 public interface IAccessTokenStorageService {
 
-	IAccessTokenInfo getAccessTokenInfo(String accessToken) throws InvalidTokenException;
+	IAccessTokenInfo getTokenInfoByAccessToken(String accessToken) throws InvalidTokenException;
 
 	IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp);
 	

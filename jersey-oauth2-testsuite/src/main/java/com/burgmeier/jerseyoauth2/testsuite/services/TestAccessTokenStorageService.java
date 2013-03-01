@@ -26,7 +26,7 @@ public class TestAccessTokenStorageService implements IAccessTokenStorageService
 	}
 	
 	@Override
-	public IAccessTokenInfo getAccessTokenInfo(String accessToken)
+	public IAccessTokenInfo getTokenInfoByAccessToken(String accessToken)
 			throws InvalidTokenException {
 		
 		if (accessToken==null)

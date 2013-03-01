@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Providers;
 import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenStorageService;
+import com.burgmeier.jerseyoauth2.api.token.IAccessTokenVerifier;
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.api.model.AbstractResourceMethod;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -48,7 +48,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	protected List<ResourceFilter> getFilters(AllowedScopes scopes)
 	{
 		List<ResourceFilter> securityFilters = new LinkedList<ResourceFilter>();
-		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenService(), getConfiguration());
+		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenVerifier(), getConfiguration());
 		if (scopes!=null && scopes.scopes().length>0)
 		{
 			oAuth20AuthenticationFilter.setRequiredScopes(scopes.scopes());
@@ -57,9 +57,9 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 		return securityFilters;
 	}
 	
-	protected IAccessTokenStorageService getAccessTokenService()
+	protected IAccessTokenVerifier getAccessTokenVerifier()
 	{
-		return providers.getContextResolver(IAccessTokenStorageService.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenStorageService.class);
+		return providers.getContextResolver(IAccessTokenVerifier.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenVerifier.class);
 	}
 	
 	protected IConfiguration getConfiguration()
