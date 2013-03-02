@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.apache.amber.oauth2.common.message.types.ParameterStyle;
 
-import com.burgmeier.jerseyoauth2.api.IConfiguration;
-import com.burgmeier.jerseyoauth2.api.ScopeDescription;
+import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.burgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 
 public class Configuration implements IConfiguration {
 

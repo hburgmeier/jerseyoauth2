@@ -2,7 +2,7 @@ package com.burgmeier.jerseyoauth2.testsuite.resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 
 @XmlRootElement
 public class ClientEntity {

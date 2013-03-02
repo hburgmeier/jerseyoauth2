@@ -6,9 +6,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.api.client.IClientService;
-import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.google.inject.Inject;
 
 @Path("/clients")

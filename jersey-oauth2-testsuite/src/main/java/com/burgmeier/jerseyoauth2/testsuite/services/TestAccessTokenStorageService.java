@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.burgmeier.jerseyoauth2.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.simple.SimpleAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.google.inject.Inject;
 
 public class TestAccessTokenStorageService implements IAccessTokenStorageService {

@@ -8,10 +8,11 @@ import java.util.Set;
 
 import org.apache.amber.oauth2.common.message.types.ParameterStyle;
 
-import com.burgmeier.jerseyoauth2.api.IConfiguration;
-import com.burgmeier.jerseyoauth2.api.ScopeDescription;
+import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.burgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
+import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 
-public class Configuration implements IConfiguration {
+public class Configuration implements IConfiguration, IRSConfiguration {
 
 	private Map<String, ScopeDescription> scopeDescriptions = new HashMap<String, ScopeDescription>();
 	private Set<String> defaultScope = new HashSet<>();

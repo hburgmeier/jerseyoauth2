@@ -13,21 +13,29 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-api</artifactId>
+			<artifactId>jersey-oauth2-rs-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-impl</artifactId>
+			<artifactId>jersey-oauth2-authsrv-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-impl</artifactId>
+			<artifactId>jersey-oauth2-rs-impl</artifactId>
 			<version>${project.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
+		</dependency>	
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-authsrv-impl</artifactId>
+			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-rs-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>					
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>

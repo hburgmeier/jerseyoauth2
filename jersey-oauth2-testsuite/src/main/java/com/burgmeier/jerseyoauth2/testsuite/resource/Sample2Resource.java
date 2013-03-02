@@ -8,9 +8,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
-import com.burgmeier.jerseyoauth2.api.IOAuthPrincipal;
-import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
-import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
+import com.burgmeier.jerseyoauth2.rs.api.IOAuthPrincipal;
+import com.burgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
+import com.burgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
 
 @Path("/sample2")
 @OAuth20

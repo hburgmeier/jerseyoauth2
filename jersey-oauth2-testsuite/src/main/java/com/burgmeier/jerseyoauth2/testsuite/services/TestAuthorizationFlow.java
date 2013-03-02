@@ -9,10 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
-import com.burgmeier.jerseyoauth2.api.ui.AuthorizationFlowException;
-import com.burgmeier.jerseyoauth2.api.ui.IAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
+import com.burgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 
 public class TestAuthorizationFlow implements IAuthorizationFlow {
 

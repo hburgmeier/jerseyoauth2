@@ -7,8 +7,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.burgmeier.jerseyoauth2.api.annotations.AllowedScopes;
-import com.burgmeier.jerseyoauth2.api.annotations.OAuth20;
+import com.burgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
+import com.burgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
 import com.burgmeier.jerseyoauth2.sample.services.ScopeConstants;
 
 @Path("/random")

@@ -7,16 +7,16 @@ import java.util.Set;
 import org.apache.amber.oauth2.as.issuer.MD5Generator;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
-import com.burgmeier.jerseyoauth2.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.burgmeier.jerseyoauth2.api.client.IClientAuthorization;
-import com.burgmeier.jerseyoauth2.api.client.IClientService;
-import com.burgmeier.jerseyoauth2.api.client.IRegisteredClientApp;
-import com.burgmeier.jerseyoauth2.api.simple.SimpleAuthorizedClientApp;
-import com.burgmeier.jerseyoauth2.api.simple.SimpleClientAuthorization;
-import com.burgmeier.jerseyoauth2.api.simple.SimpleRegisteredClient;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleAuthorizedClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleRegisteredClient;
 import com.google.inject.Inject;
 
 public class TestClientService implements IClientService {
