@@ -28,7 +28,6 @@
 		<dependency>
 			<groupId>org.apache.amber</groupId>
 			<artifactId>amber-oauth2-authzserver</artifactId>
-			<version>0.22-incubating</version>
 		</dependency>
 	</dependencies>
 	<name>Jersey OAuth2 Authorization Server Implementation</name>

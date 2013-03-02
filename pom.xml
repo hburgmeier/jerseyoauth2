@@ -12,6 +12,7 @@
 		<downloadSources>true</downloadSources>
 		<java.version>1.7</java.version>
 		<jersey.version>1.17</jersey.version>
+		<amber.version>0.22-incubating</amber.version>
 	</properties>
 
 	<dependencyManagement>
@@ -69,7 +70,17 @@
 			<dependency>
 				<groupId>org.apache.amber</groupId>
 				<artifactId>amber-oauth2-common</artifactId>
-				<version>0.22-incubating</version>
+				<version>${amber.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.amber</groupId>
+				<artifactId>amber-oauth2-authzserver</artifactId>
+				<version>${amber.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.amber</groupId>
+				<artifactId>amber-oauth2-resourceserver</artifactId>
+				<version>${amber.version}</version>
 			</dependency>
 		</dependencies>	
 	</dependencyManagement>

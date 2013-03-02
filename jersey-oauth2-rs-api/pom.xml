@@ -17,5 +17,9 @@
 			<artifactId>jersey-oauth2-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.amber</groupId>
+			<artifactId>amber-oauth2-common</artifactId>
+		</dependency>
 	</dependencies>
 </project>
