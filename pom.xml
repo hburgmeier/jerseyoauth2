@@ -101,13 +101,12 @@
 
 	<modules>
 		<module>jersey-oauth2-api</module>
-		<module>jersey-oauth2-impl</module>
-		<module>jersey-oauth2-scribe-oauth2</module>		
-		<module>jersey-oauth2-testsuite</module>
-		<module>jersey-oauth2-sample</module>
 		<module>jersey-oauth2-rs-api</module>
 		<module>jersey-oauth2-authsrv-api</module>
 		<module>jersey-oauth2-rs-impl</module>
 		<module>jersey-oauth2-authsrv-impl</module>
+		<module>jersey-oauth2-scribe-oauth2</module>		
+		<module>jersey-oauth2-testsuite</module>
+		<module>jersey-oauth2-sample</module>
 	</modules>
 </project>
