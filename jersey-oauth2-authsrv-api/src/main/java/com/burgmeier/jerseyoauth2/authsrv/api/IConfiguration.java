@@ -12,5 +12,7 @@ public interface IConfiguration {
 	Set<String> getDefaultScopes();
 
 	boolean getStrictSecurity();
+
+	boolean getSupportAuthorizationHeader();
 	
 }

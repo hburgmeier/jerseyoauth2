@@ -42,4 +42,9 @@ public class Configuration implements IConfiguration {
 		return false;
 	}
 
+	@Override
+	public boolean getSupportAuthorizationHeader() {
+		return true;
+	}
+
 }

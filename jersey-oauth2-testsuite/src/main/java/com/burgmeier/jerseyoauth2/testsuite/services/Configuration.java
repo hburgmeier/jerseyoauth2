@@ -48,6 +48,11 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	public boolean getStrictSecurity() {
 		return false;
 	}
+
+	@Override
+	public boolean getSupportAuthorizationHeader() {
+		return false;
+	}
 	
 	
 

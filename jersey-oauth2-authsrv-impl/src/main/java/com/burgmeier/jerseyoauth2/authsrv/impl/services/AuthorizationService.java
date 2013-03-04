@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.as.request.OAuthAuthzRequest;
 import org.apache.amber.oauth2.as.response.OAuthASResponse;
 import org.apache.amber.oauth2.common.error.OAuthError.TokenResponse;
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
@@ -25,6 +24,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.burgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserService;
+import com.burgmeier.jerseyoauth2.authsrv.impl.amber.OAuth2AuthzRequest;
 import com.burgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
 import com.google.inject.Inject;
 
@@ -50,7 +50,7 @@ public class AuthorizationService implements IAuthorizationService {
 		try {
 			IRegisteredClientApp clientApp = null;
 			try {
-				OAuthAuthzRequest oauthRequest = new OAuthAuthzRequest(request);
+				OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request, configuration.getSupportAuthorizationHeader());
 				
 				IUser user = userService.getCurrentUser(request);
 				if (user==null)
@@ -58,12 +58,12 @@ public class AuthorizationService implements IAuthorizationService {
 				
 				clientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
 				if (clientApp==null)
-					OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 				
 				if (oauthRequest.getClientSecret()!=null)
 				{
 					if (!clientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
-						OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 				}
 				
 				Set<String> scopes = oauthRequest.getScopes();
