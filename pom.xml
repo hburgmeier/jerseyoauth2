@@ -124,5 +124,6 @@
 		<module>jersey-oauth2-scribe-oauth2</module>		
 		<module>jersey-oauth2-testsuite</module>
 		<module>jersey-oauth2-sample</module>
+		<module>jersey-oauth2-authsrv-openid</module>
 	</modules>
 </project>
