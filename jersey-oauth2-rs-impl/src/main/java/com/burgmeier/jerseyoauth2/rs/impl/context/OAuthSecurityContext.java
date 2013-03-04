@@ -7,10 +7,12 @@ import javax.ws.rs.core.SecurityContext;
 public class OAuthSecurityContext implements SecurityContext {
 
 	private OAuthPrincipal principal;
+	private boolean secure;
 	
-	public OAuthSecurityContext(OAuthPrincipal principal) {
+	public OAuthSecurityContext(OAuthPrincipal principal, boolean secure) {
 		super();
 		this.principal = principal;
+		this.secure = secure;
 	}
 
 	@Override
@@ -25,14 +27,12 @@ public class OAuthSecurityContext implements SecurityContext {
 
 	@Override
 	public boolean isSecure() {
-		// TODO Auto-generated method stub
-		return false;
+		return secure;
 	}
 
 	@Override
 	public String getAuthenticationScheme() {
-		// TODO Auto-generated method stub
-		return null;
+		return null; // the token request is indeed not authorized
 	}
 
 }

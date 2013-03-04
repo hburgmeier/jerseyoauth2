@@ -1,5 +1,6 @@
 package com.burgmeier.jerseyoauth2.rs.impl.filter;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,8 +52,10 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 				}
 			}
 			
+			boolean secure = isRequestSecure(containerRequest);
+			
 			OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), accessTokenInfo.getAuthorizedScopes());
-			SecurityContext securityContext = new OAuthSecurityContext(principal);
+			SecurityContext securityContext = new OAuthSecurityContext(principal, secure);
 			containerRequest.setSecurityContext(securityContext );
 			
 			return containerRequest;
@@ -63,6 +66,15 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 		} catch (InvalidTokenException e) {
 			throw new WebApplicationException(buildAuthProblem());			
 		}
+	}
+
+	protected boolean isRequestSecure(ContainerRequest containerRequest) {
+		URI requestUri = containerRequest.getRequestUri();
+		String secureSSL = containerRequest.getHeaderValue("X-SSL-Secure");
+		if (secureSSL!=null && "true".equals(secureSSL))
+			return true;
+		String scheme = requestUri.getScheme();
+		return scheme!=null?scheme.equalsIgnoreCase("https"):false;
 	}
 	
 	void setRequiredScopes(String[] scopes) {

@@ -3,8 +3,6 @@ package com.burgmeier.jerseyoauth2.authsrv.api;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.amber.oauth2.common.message.types.ParameterStyle;
-
 public interface IConfiguration {
 
 	long getTokenExpiration();
@@ -13,6 +11,6 @@ public interface IConfiguration {
 	
 	Set<String> getDefaultScopes();
 
-	ParameterStyle[] getSupportedOAuthParameterStyles();
+	boolean getStrictSecurity();
 	
 }

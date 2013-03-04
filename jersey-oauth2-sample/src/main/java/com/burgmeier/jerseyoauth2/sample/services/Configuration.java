@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.amber.oauth2.common.message.types.ParameterStyle;
-
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 
@@ -40,8 +38,8 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public ParameterStyle[] getSupportedOAuthParameterStyles() {
-		return new ParameterStyle[]{ ParameterStyle.QUERY, ParameterStyle.HEADER };
+	public boolean getStrictSecurity() {
+		return false;
 	}
 
 }

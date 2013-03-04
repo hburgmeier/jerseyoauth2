@@ -43,6 +43,11 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	public ParameterStyle[] getSupportedOAuthParameterStyles() {
 		return new ParameterStyle[]{ ParameterStyle.QUERY, ParameterStyle.HEADER };
 	}
+
+	@Override
+	public boolean getStrictSecurity() {
+		return false;
+	}
 	
 	
 
