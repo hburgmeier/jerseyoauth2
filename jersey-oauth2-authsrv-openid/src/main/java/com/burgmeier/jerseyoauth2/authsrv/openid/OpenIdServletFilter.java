@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class OpenIdServletFilter implements Filter {
 
 	private OpenIdConsumer consumer;
@@ -19,7 +22,7 @@ public class OpenIdServletFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		consumer = new OpenIdConsumer(filterConfig.getServletContext());
+		consumer = new OpenIdConsumer();
 		openidServiceId = filterConfig.getInitParameter(OpenIdConstants.PARAM_OPENID_SERVICE);
 	}
 
@@ -28,20 +31,19 @@ public class OpenIdServletFilter implements Filter {
 			ServletException {
 		HttpServletRequest hrequest = (HttpServletRequest)request;
 		HttpSession session = hrequest.getSession();
-		
+
 		if (session.getAttribute(OpenIdConstants.OPENID_SESSION_VAR)!=null)
 		{
-			
+			chain.doFilter(request, response);			
 		} else {
 			if (session.getAttribute(OpenIdConstants.OPENID_DISC)!=null)
 			{
 				consumer.verifyResponse(hrequest);
+				chain.doFilter(request, response);
 			} else
 				consumer.authRequest(openidServiceId, getRequestUrl(hrequest), hrequest, (HttpServletResponse)response);
 		}
 		
-		
-		chain.doFilter(request, response);
 	}
 
 	@Override

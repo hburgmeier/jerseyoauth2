@@ -2,10 +2,11 @@ package com.burgmeier.jerseyoauth2.authsrv.openid;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,19 +22,12 @@ import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
 
-import com.google.inject.Inject;
-
 public class OpenIdConsumer {
 
 	private ConsumerManager manager;
-	private final ServletContext servletContext;
 
-	@Inject
-	public OpenIdConsumer(ServletContext servletContext) {
-		this.servletContext = servletContext;
-		manager = new ConsumerManager();
-	}
 //Google=https://www.google.com/accounts/o8/id Yahoo=http://yahoo.com/ 
+	@SuppressWarnings("unchecked")
 	public void authRequest(String openidServiceId, String returnToUrl, HttpServletRequest httpReq, HttpServletResponse httpResp) throws IOException, ServletException {
 		try {
 			// --- Forward proxy setup (only if needed) ---
@@ -73,13 +67,10 @@ public class OpenIdConsumer {
 			} else {
 				// Option 2: HTML FORM Redirection (Allows payloads >2048 bytes)
 
-				RequestDispatcher dispatcher = servletContext.getRequestDispatcher("formredirection.jsp");
-				httpReq.setAttribute("parameterMap", authReq.getParameterMap());
-				httpReq.setAttribute("destinationUrl", authReq.getDestinationUrl(false));
-				dispatcher.forward(httpReq, httpResp);
+				sendFormRedirect(httpResp, authReq.getDestinationUrl(false), (Map<String,String>)authReq.getParameterMap());
 			}
 		} catch (OpenIDException e) {
-			// present error to the user
+			e.printStackTrace(System.err);
 		}
 
 	}
@@ -125,6 +116,33 @@ public class OpenIdConsumer {
 		}
 
 		return null;
+	}
+	
+	protected void sendFormRedirect(HttpServletResponse httpResp, String endpoint, Map<String, String> parameterMap) throws IOException
+	{
+		ServletOutputStream out = httpResp.getOutputStream();
+        
+		httpResp.setContentType("text/html; charset=UTF-8");
+		httpResp.addHeader( "pragma", "no-cache" );
+		httpResp.addHeader( "Cache-Control", "no-cache" );
+
+        out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+		out.println("<head>");
+		out.println("    <title>OpenID HTML FORM Redirection</title>");
+		out.println("</head>");
+		out.println("<body onload=\"document.forms['openid-form-redirection'].submit();\">");
+		out.println("    <form name=\"openid-form-redirection\" action=\""+endpoint+"\" method=\"post\" accept-charset=\"utf-8\">");
+
+		for (Entry<String, String> entry : parameterMap.entrySet()) {
+			out.println("	<input type=\"hidden\" name=\""+entry.getKey()+"\" value=\""+entry.getValue()+"\"/>");
+		}
+		
+		out.println("        <button type=\"submit\">Continue...</button>");
+		out.println("    </form>");
+		out.println("</body>");
+		out.println("</html>");
+		
+		out.flush();		
 	}
 
 }
