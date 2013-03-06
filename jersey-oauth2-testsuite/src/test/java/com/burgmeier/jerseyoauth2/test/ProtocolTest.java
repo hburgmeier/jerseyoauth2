@@ -11,7 +11,7 @@ import com.burgmeier.jerseyoauth2.test.client.TestClient;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-public class OAuthTest extends BaseTest {
+public class ProtocolTest extends BaseTest {
 	
 	@Test
 	public void testAuthUrl()
