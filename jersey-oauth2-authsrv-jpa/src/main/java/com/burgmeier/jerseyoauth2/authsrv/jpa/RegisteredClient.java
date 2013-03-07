@@ -18,6 +18,18 @@ class RegisteredClient implements IRegisteredClientApp {
 	private String callbackUrl;
 	private ClientType clientType;
 
+	public RegisteredClient()
+	{
+		
+	}
+	
+	public RegisteredClient(String clientId, String clientSecret)
+	{
+		this.clientId = clientId;
+		this.clientSecret = clientSecret;
+		this.clientType = ClientType.CONFIDENTIAL;
+	}
+	
 	@Override
 	public String getClientId() {
 		return clientId;

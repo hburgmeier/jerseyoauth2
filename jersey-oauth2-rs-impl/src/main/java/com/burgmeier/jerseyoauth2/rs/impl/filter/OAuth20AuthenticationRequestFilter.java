@@ -43,6 +43,10 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 			
 			String accessToken = oauthRequest.getAccessToken();
 			IAccessTokenInfo accessTokenInfo = accessTokenVerifier.verifyAccessToken(accessToken);
+			if (accessTokenInfo==null)
+			{
+				throw new InvalidTokenException(accessToken);
+			}
 			
 			if (requiredScopes!=null)
 			{

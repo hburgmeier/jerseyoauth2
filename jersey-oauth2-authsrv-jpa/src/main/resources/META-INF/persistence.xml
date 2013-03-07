@@ -3,8 +3,11 @@
 	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
  http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-	<persistence-unit name="authsrv">
+	<persistence-unit name="authsrv" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>jdbc/authds</jta-data-source>
+		<properties>
+			 <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+		</properties>
 	</persistence-unit>
 </persistence>

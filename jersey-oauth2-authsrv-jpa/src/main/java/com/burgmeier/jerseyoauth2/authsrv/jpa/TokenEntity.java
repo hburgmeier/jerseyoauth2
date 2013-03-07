@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
@@ -21,39 +22,39 @@ class TokenEntity implements IAccessTokenInfo {
 	private String accessToken;
 	private String refreshToken;
 	
+	@Transient
+	private IAuthorizedClientApp clientApp;
+	
 	public TokenEntity()
 	{
 		
 	}
 	
-	public TokenEntity(String accessToken, String refreshToken)
+	public TokenEntity(String accessToken, String refreshToken, IAuthorizedClientApp clientApp)
 	{
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
+		this.clientApp = clientApp;
 	}
 	
 	@Override
 	public IAuthorizedClientApp getClientApp() {
-		// TODO Auto-generated method stub
-		return null;
+		return clientApp;
 	}
 
 	@Override
 	public IUser getUser() {
-		// TODO Auto-generated method stub
-		return null;
+		return clientApp.getAuthorizedUser();
 	}
 
 	@Override
 	public Set<String> getAuthorizedScopes() {
-		// TODO Auto-generated method stub
-		return null;
+		return clientApp.getAuthorizedScopes();
 	}
 
 	@Override
 	public String getExpiresIn() {
-		// TODO Auto-generated method stub
-		return null;
+		return null; //TODO
 	}
 
 	@Override
@@ -68,8 +69,16 @@ class TokenEntity implements IAccessTokenInfo {
 
 	@Override
 	public void updateTokens(String newAccessToken, String newRefreshToken) {
-		// TODO Auto-generated method stub
-		
+		setAccessToken(newAccessToken);
+		setRefreshToken(newRefreshToken);
 	}
 
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+	
 }

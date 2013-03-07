@@ -21,7 +21,9 @@ public class OAuth20TokenExtractorImpl implements AccessTokenExtractor {
 			
 			String accessToken = (String)tokenMap.get("access_token");
 			String refreshToken = (String)tokenMap.get("refresh_token");
-			String expiration = ((Integer)tokenMap.get("expires_in")).toString();
+			String expiration = null;
+			if (tokenMap.containsKey("expires_in"))
+				expiration = ((Integer)tokenMap.get("expires_in")).toString();
 			
 			return new OAuth2Token(accessToken, refreshToken, expiration, response);
 		} catch (IOException e) {
