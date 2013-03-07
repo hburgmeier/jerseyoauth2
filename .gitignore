@@ -10,4 +10,7 @@
 .classpath
 .settings*
 */target/**
+
+# Derby
 */tmp/**
+**/derby.log
