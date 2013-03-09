@@ -11,7 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 
 @Entity
 @NamedQueries({
@@ -19,7 +19,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
 			"p.clientApp.clientApp.clientId = :clientId and " +
 			"p.clientApp.clientApp.clientSecret = :clientSecret")
 })
-class PendingClientAuthorization implements IClientAuthorization {
+class PendingClientAuthorization implements IPendingClientToken {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)	

@@ -20,7 +20,7 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
@@ -75,7 +75,7 @@ public class AuthorizationService implements IAuthorizationService {
 				if (authorizedClientApp!=null)
 				{
 					try {
-						IClientAuthorization pendingClientToken = clientService.createPendingClientToken(authorizedClientApp);
+						IPendingClientToken pendingClientToken = clientService.createPendingClientToken(authorizedClientApp);
 						sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
 					} catch (ClientServiceException e) {
 						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
@@ -102,7 +102,7 @@ e.printStackTrace();
 	
 	@Override
 	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
-			IClientAuthorization clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException {
+			IPendingClientToken clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException {
 		OAuthResponse resp = OAuthASResponse
 		        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
 		        .setCode(clientAuth.getCode())                    

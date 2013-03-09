@@ -14,10 +14,9 @@ import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.apache.amber.oauth2.common.message.types.GrantType;
 
-import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
@@ -66,7 +65,7 @@ public class TokenService implements ITokenService {
 
 				} else if (oauthRequest.getGrantType().equals(GrantType.AUTHORIZATION_CODE.toString())) {
 
-					IClientAuthorization pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
+					IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
 							oauthRequest.getClientSecret(), oauthRequest.getCode());
 					if (pendingClientToken == null) {
 						throw OAuthProblemException.error("client_not_auth", "client not authorized");

@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.google.inject.Inject;
@@ -77,7 +77,7 @@ public class DatabaseClientService implements IClientService {
 	}
 
 	@Override
-	public IClientAuthorization createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException {
+	public IPendingClientToken createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
 		PendingClientAuthorization pendingClientAuth = new PendingClientAuthorization((AuthorizedClientApplication) clientApp);
@@ -86,7 +86,7 @@ public class DatabaseClientService implements IClientService {
 	}
 	
 	@Override
-	public IClientAuthorization findPendingClientToken(String clientId, String clientSecret, String code) {
+	public IPendingClientToken findPendingClientToken(String clientId, String clientSecret, String code) {
 		EntityManager entityManager = emf.createEntityManager();
 		EntityTransaction tx = entityManager.getTransaction();
 		try {

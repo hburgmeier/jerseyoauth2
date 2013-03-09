@@ -1,9 +1,9 @@
 package com.burgmeier.jerseyoauth2.authsrv.impl.simple;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 
-public class SimpleClientAuthorization implements IClientAuthorization {
+public class SimpleClientAuthorization implements IPendingClientToken {
 
 	private String code;
 	private IAuthorizedClientApp authorizedClient;

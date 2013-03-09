@@ -16,7 +16,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserService;
@@ -57,7 +57,7 @@ public class AllowServlet extends HttpServlet {
 		try {
 			IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, allowedScopes);
 			
-			IClientAuthorization clientAuth = clientService.createPendingClientToken(authorizedClient);
+			IPendingClientToken clientAuth = clientService.createPendingClientToken(authorizedClient);
 			authorizationService.sendAuthorizationReponse(request, response, clientAuth, clientApp);
 		} catch (ClientServiceException e) {
 			throw new ServletException(e);

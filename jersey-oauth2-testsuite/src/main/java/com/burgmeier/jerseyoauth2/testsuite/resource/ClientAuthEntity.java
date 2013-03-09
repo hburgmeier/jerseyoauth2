@@ -2,7 +2,7 @@ package com.burgmeier.jerseyoauth2.testsuite.resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 
 @XmlRootElement
 public class ClientAuthEntity {
@@ -13,7 +13,7 @@ public class ClientAuthEntity {
 	{
 	}
 	
-	public ClientAuthEntity(IClientAuthorization clientAuthorization) {
+	public ClientAuthEntity(IPendingClientToken clientAuthorization) {
 		super();
 		this.code = clientAuthorization.getCode();
 	}

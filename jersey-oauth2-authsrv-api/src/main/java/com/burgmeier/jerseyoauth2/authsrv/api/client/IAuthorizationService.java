@@ -17,7 +17,7 @@ public interface IAuthorizationService {
 			 throws ServletException, IOException;
 	
 	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
-			IClientAuthorization clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException;
+			IPendingClientToken clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException;
 	
 	void sendErrorResponse(OAuthProblemException ex,
 			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException;	

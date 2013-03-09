@@ -18,7 +18,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserService;
@@ -57,7 +57,7 @@ public class ClientAuthResource {
 				authScopes = new HashSet<String>(Arrays.asList(scopes));
 		}
 		IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, authScopes);
-		IClientAuthorization clientAuthorization = clientService.createPendingClientToken(authorizedClient);
+		IPendingClientToken clientAuthorization = clientService.createPendingClientToken(authorizedClient);
 		return new ClientAuthEntity(clientAuthorization);
 	}
 	

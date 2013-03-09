@@ -11,7 +11,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleAuthorizedClientApp;
@@ -23,7 +23,7 @@ public class TestClientService implements IClientService {
 
 	private static final Map<String, IRegisteredClientApp> registeredClients = new HashMap<>();
 	private static final Map<String, IAuthorizedClientApp> authorizedClients = new HashMap<>();
-	private static final Map<String, IClientAuthorization> pendingAuth = new HashMap<>();
+	private static final Map<String, IPendingClientToken> pendingAuth = new HashMap<>();
 	private final MD5Generator md5Gen = new MD5Generator();
 
 	@Inject
@@ -33,12 +33,12 @@ public class TestClientService implements IClientService {
 	}
 	
 	@Override
-	public IClientAuthorization findPendingClientToken(String clientId, String clientSecret,
+	public IPendingClientToken findPendingClientToken(String clientId, String clientSecret,
 			String code) {
 		String authKey = clientId+"#"+code;
 		if (pendingAuth.containsKey(authKey))
 		{
-			IClientAuthorization clientAuthorization = pendingAuth.get(authKey);
+			IPendingClientToken clientAuthorization = pendingAuth.get(authKey);
 			if (!clientAuthorization.getAuthorizedClient().isClientSecretValid(clientSecret))
 				return null;
 			else {
@@ -91,11 +91,11 @@ public class TestClientService implements IClientService {
 	}
 
 	@Override
-	public IClientAuthorization createPendingClientToken(
+	public IPendingClientToken createPendingClientToken(
 			IAuthorizedClientApp clientApp) {
 		try {
 			String code = md5Gen.generateValue();
-			IClientAuthorization clientAuth = new SimpleClientAuthorization(code, clientApp);
+			IPendingClientToken clientAuth = new SimpleClientAuthorization(code, clientApp);
 			String authKey = clientApp.getClientId()+"#"+code;
 			pendingAuth.put(authKey, clientAuth);
 			return clientAuth;

@@ -15,8 +15,8 @@ public interface IClientService {
 	
 	IAuthorizedClientApp isAuthorized(IUser user, String clientId, Set<String> scopes);
 	
-	IClientAuthorization createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException;
+	IPendingClientToken createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException;
 	
-	IClientAuthorization findPendingClientToken(String clientId, String clientSecret, String code);
+	IPendingClientToken findPendingClientToken(String clientId, String clientSecret, String code);
 
 }
