@@ -57,7 +57,7 @@ public class AllowServlet extends HttpServlet {
 		try {
 			IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, allowedScopes);
 			
-			IClientAuthorization clientAuth = clientService.createClientAuthorization(authorizedClient);
+			IClientAuthorization clientAuth = clientService.createPendingClientToken(authorizedClient);
 			authorizationService.sendAuthorizationReponse(request, response, clientAuth, clientApp);
 		} catch (ClientServiceException e) {
 			throw new ServletException(e);

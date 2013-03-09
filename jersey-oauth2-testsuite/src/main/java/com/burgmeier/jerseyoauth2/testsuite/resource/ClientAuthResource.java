@@ -57,7 +57,7 @@ public class ClientAuthResource {
 				authScopes = new HashSet<String>(Arrays.asList(scopes));
 		}
 		IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, authScopes);
-		IClientAuthorization clientAuthorization = clientService.createClientAuthorization(authorizedClient);
+		IClientAuthorization clientAuthorization = clientService.createPendingClientToken(authorizedClient);
 		return new ClientAuthEntity(clientAuthorization);
 	}
 	

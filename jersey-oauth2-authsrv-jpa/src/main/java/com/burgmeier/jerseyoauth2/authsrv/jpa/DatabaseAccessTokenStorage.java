@@ -3,36 +3,42 @@ package com.burgmeier.jerseyoauth2.authsrv.jpa;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
+import com.google.inject.Inject;
 
 public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 
 	private EntityManagerFactory emf;
+	private IConfiguration config;
 
-	public DatabaseAccessTokenStorage()
+	@Inject
+	public DatabaseAccessTokenStorage(final EntityManagerFactory emf, final IConfiguration config)
 	{
-		emf = Persistence.createEntityManagerFactory("authsrv");		
+		this.emf = emf;
+		this.config = config;
 	}
 	
 	@Override
 	public IAccessTokenInfo getTokenInfoByAccessToken(String accessToken) throws InvalidTokenException {
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = emf.createEntityManager();		
 		TokenEntity tokenEntity = em.find(TokenEntity.class, accessToken);
+		setUser(tokenEntity);
 		return tokenEntity;
 	}
 
 	@Override
 	public IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp) {
-		EntityManager em = emf.createEntityManager();
-		TokenEntity te = new TokenEntity(accessToken, refreshToken, clientApp);
-		saveTokenEntity(em, te);
+		assert(clientApp instanceof AuthorizedClientApplication);
+		
+		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration());
+		saveTokenEntity(te);
 		return te;
 	}
 
@@ -42,6 +48,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByRefreshToken", TokenEntity.class);
 		query.setParameter("refreshToken", refreshToken);
 		TokenEntity te = query.getSingleResult();
+		setUser(te);
 		return te;
 	}
 
@@ -49,22 +56,46 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken) {
 		EntityManager em = emf.createEntityManager();
 		TokenEntity tokenEntity = em.find(TokenEntity.class, oldAccessToken);
-		tokenEntity.updateTokens(newAccessToken, newRefreshToken);
-		saveTokenEntity(em, tokenEntity);
-		return tokenEntity;
-	}
-
-	protected void saveTokenEntity(EntityManager em, TokenEntity te) {
 		EntityTransaction tx = em.getTransaction();
 		try {
 			tx.begin();
-			em.persist(te);
+			em.remove(tokenEntity);
+			em.flush();
 			tx.commit();
 		} catch (PersistenceException ex) {
 			tx.rollback();
 			throw ex;
+		} finally {
+			em.close();
+		}
+		
+		tokenEntity.updateTokens(newAccessToken, newRefreshToken);
+		saveTokenEntity(tokenEntity);
+		return tokenEntity;
+	}
+
+	protected void saveTokenEntity(TokenEntity te) {
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.persist(te);
+			em.flush();
+			tx.commit();
+		} catch (PersistenceException ex) {
+			tx.rollback();
+			throw ex;
+		} finally {
+			em.close();
 		}
 	}
 	
+	protected void setUser(TokenEntity tokenEntity) {
+		if (tokenEntity!=null)
+		{
+			AuthorizedClientApplication clientApp = (AuthorizedClientApplication) tokenEntity.getClientApp();
+			clientApp.setAuthorizedUser(new User(clientApp.getUserName()));
+		}
+	}
 	
 }

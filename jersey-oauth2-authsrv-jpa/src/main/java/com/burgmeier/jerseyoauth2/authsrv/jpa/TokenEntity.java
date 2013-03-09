@@ -4,9 +4,9 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
@@ -14,27 +14,29 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="findTokenInfoByRefreshToken", query="select te from TokenEntity te where te.refreshToken = :refreshToken")
+	@NamedQuery(name="findTokenEntityByRefreshToken", query="select te from TokenEntity te where te.refreshToken = :refreshToken")
 })
 class TokenEntity implements IAccessTokenInfo {
 
 	@Id
 	private String accessToken;
 	private String refreshToken;
-	
-	@Transient
-	private IAuthorizedClientApp clientApp;
+	private long expiredIn;
+
+	@ManyToOne
+	private AuthorizedClientApplication clientApp;
 	
 	public TokenEntity()
 	{
 		
 	}
 	
-	public TokenEntity(String accessToken, String refreshToken, IAuthorizedClientApp clientApp)
+	public TokenEntity(String accessToken, String refreshToken, AuthorizedClientApplication clientApp, long expiredIn)
 	{
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
+		this.expiredIn = expiredIn;
 	}
 	
 	@Override
@@ -54,7 +56,7 @@ class TokenEntity implements IAccessTokenInfo {
 
 	@Override
 	public String getExpiresIn() {
-		return null; //TODO
+		return Long.toString(expiredIn);
 	}
 
 	@Override
@@ -80,5 +82,15 @@ class TokenEntity implements IAccessTokenInfo {
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
+
+	public void setExpiredIn(long expiredIn) {
+		this.expiredIn = expiredIn;
+	}
+
+	public void setClientApp(AuthorizedClientApplication clientApp) {
+		this.clientApp = clientApp;
+	}
+
+	
 	
 }

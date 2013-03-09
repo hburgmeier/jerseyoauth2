@@ -11,12 +11,12 @@ public interface IClientService {
 	
 	IRegisteredClientApp getRegisteredClient(String clientId);	
 	
-	IAuthorizedClientApp findPendingClient(String clientId, String clientSecret, String code);
-
 	IAuthorizedClientApp authorizeClient(IUser user, IRegisteredClientApp clientApp, Set<String> allowedScopes) throws ClientServiceException;
 	
-	IClientAuthorization isAuthorized(IUser user, String clientId, Set<String> scopes);
+	IAuthorizedClientApp isAuthorized(IUser user, String clientId, Set<String> scopes);
 	
-	IClientAuthorization createClientAuthorization(IAuthorizedClientApp clientApp) throws ClientServiceException;
+	IClientAuthorization createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException;
+	
+	IClientAuthorization findPendingClientToken(String clientId, String clientSecret, String code);
 
 }

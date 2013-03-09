@@ -3,6 +3,8 @@ package com.burgmeier.jerseyoauth2.testsuite.guice;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
@@ -18,9 +20,8 @@ import com.burgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.impl.filter.OAuth20FilterFactory;
 import com.burgmeier.jerseyoauth2.testsuite.services.Configuration;
-import com.burgmeier.jerseyoauth2.testsuite.services.TestAccessTokenStorageService;
+import com.burgmeier.jerseyoauth2.testsuite.services.PersistenceProvider;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestAuthorizationFlow;
-import com.burgmeier.jerseyoauth2.testsuite.services.TestClientService;
 import com.burgmeier.jerseyoauth2.testsuite.ui.AllowServlet;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
@@ -41,6 +42,8 @@ public class AppModule  extends JerseyServletModule {
     	
     	bind(IUserService.class).to(DefaultPrincipalUserService.class);
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);
+    	
+    	bind(EntityManagerFactory.class).toProvider(new PersistenceProvider());
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
     	serve("/oauth2/allow").with(AllowServlet.class);

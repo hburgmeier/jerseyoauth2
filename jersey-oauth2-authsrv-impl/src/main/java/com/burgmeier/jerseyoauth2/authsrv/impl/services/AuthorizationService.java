@@ -15,8 +15,10 @@ import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
 
+import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientAuthorization;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
@@ -48,7 +50,7 @@ public class AuthorizationService implements IAuthorizationService {
 	@Override
 	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException, IOException {
 		try {
-			IRegisteredClientApp clientApp = null;
+			IRegisteredClientApp regClientApp = null;
 			try {
 				OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request, configuration.getSupportAuthorizationHeader());
 				
@@ -56,31 +58,37 @@ public class AuthorizationService implements IAuthorizationService {
 				if (user==null)
 					throw new InvalidUserException();
 				
-				clientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
-				if (clientApp==null)
-					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+				regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
+				if (regClientApp==null)
+					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client "+oauthRequest.getClientId()+" is invalid");
 				
 				if (oauthRequest.getClientSecret()!=null)
 				{
-					if (!clientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
+					if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
 						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 				}
 				
 				Set<String> scopes = oauthRequest.getScopes();
 				scopes = scopes.isEmpty()?configuration.getDefaultScopes():scopes;
 				
-				IClientAuthorization clientAuth = clientService.isAuthorized(user, clientApp.getClientId(), scopes);
-				if (clientAuth!=null)
+				IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(), scopes);
+				if (authorizedClientApp!=null)
 				{
-					sendAuthorizationReponse(request, response, clientAuth, clientApp);
+					try {
+						IClientAuthorization pendingClientToken = clientService.createPendingClientToken(authorizedClientApp);
+						sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
+					} catch (ClientServiceException e) {
+						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+					}
 				} else {
-					authFlow.startAuthorizationFlow(user, clientApp, scopes, request, response, servletContext);
+					authFlow.startAuthorizationFlow(user, regClientApp, scopes, request, response, servletContext);
 				}
 			} catch (OAuthSystemException e) {
 				throw new ServletException();
 			} catch (OAuthProblemException e) {
+e.printStackTrace();				
 				try {
-					sendErrorResponse(e, response, clientApp==null?null:clientApp.getCallbackUrl());
+					sendErrorResponse(e, response, regClientApp==null?null:regClientApp.getCallbackUrl());
 				} catch (OAuthSystemException e1) {
 					throw new ServletException(e1);
 				}

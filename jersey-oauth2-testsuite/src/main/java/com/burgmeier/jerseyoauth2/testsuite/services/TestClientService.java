@@ -33,7 +33,7 @@ public class TestClientService implements IClientService {
 	}
 	
 	@Override
-	public IAuthorizedClientApp findPendingClient(String clientId, String clientSecret,
+	public IClientAuthorization findPendingClientToken(String clientId, String clientSecret,
 			String code) {
 		String authKey = clientId+"#"+code;
 		if (pendingAuth.containsKey(authKey))
@@ -43,7 +43,7 @@ public class TestClientService implements IClientService {
 				return null;
 			else {
 				pendingAuth.remove(authKey);
-				return clientAuthorization.getAuthorizedClient();
+				return clientAuthorization;
 			}
 		} else
 			return null;
@@ -60,14 +60,14 @@ public class TestClientService implements IClientService {
 	}	
 	
 	@Override
-	public IClientAuthorization isAuthorized(IUser user, String clientId,
+	public IAuthorizedClientApp isAuthorized(IUser user, String clientId,
 			Set<String> scopes) {
 		
 		String key = user.getName()+"#"+clientId;
 		if (authorizedClients.containsKey(key))
 		{
 			IAuthorizedClientApp clientApp = authorizedClients.get(key);
-			return createClientAuthorization(clientApp);
+			return clientApp;
 		} else
 			return null;
 	}
@@ -91,7 +91,7 @@ public class TestClientService implements IClientService {
 	}
 
 	@Override
-	public IClientAuthorization createClientAuthorization(
+	public IClientAuthorization createPendingClientToken(
 			IAuthorizedClientApp clientApp) {
 		try {
 			String code = md5Gen.generateValue();
