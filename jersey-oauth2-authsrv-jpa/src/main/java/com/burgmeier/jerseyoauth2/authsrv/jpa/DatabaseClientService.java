@@ -80,7 +80,7 @@ public class DatabaseClientService implements IClientService {
 	public IPendingClientToken createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
-		PendingClientAuthorization pendingClientAuth = new PendingClientAuthorization((AuthorizedClientApplication) clientApp);
+		PendingClientToken pendingClientAuth = new PendingClientToken((AuthorizedClientApplication) clientApp);
 		persist(pendingClientAuth);
 		return pendingClientAuth;
 	}
@@ -90,11 +90,11 @@ public class DatabaseClientService implements IClientService {
 		EntityManager entityManager = emf.createEntityManager();
 		EntityTransaction tx = entityManager.getTransaction();
 		try {
-			TypedQuery<PendingClientAuthorization> query = entityManager.createNamedQuery("findPendingByCode", PendingClientAuthorization.class);
+			TypedQuery<PendingClientToken> query = entityManager.createNamedQuery("findPendingByCode", PendingClientToken.class);
 			query.setParameter("code", code);
 			query.setParameter("clientId", clientId);
 			query.setParameter("clientSecret", clientSecret);
-			PendingClientAuthorization result = query.getSingleResult();
+			PendingClientToken result = query.getSingleResult();
 			try {
 				tx.begin();
 				entityManager.remove(result);

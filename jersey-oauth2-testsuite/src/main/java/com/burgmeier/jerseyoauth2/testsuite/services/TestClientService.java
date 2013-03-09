@@ -15,7 +15,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleAuthorizedClientApp;
-import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleClientAuthorization;
+import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimplePendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.impl.simple.SimpleRegisteredClient;
 import com.google.inject.Inject;
 
@@ -95,7 +95,7 @@ public class TestClientService implements IClientService {
 			IAuthorizedClientApp clientApp) {
 		try {
 			String code = md5Gen.generateValue();
-			IPendingClientToken clientAuth = new SimpleClientAuthorization(code, clientApp);
+			IPendingClientToken clientAuth = new SimplePendingClientToken(code, clientApp);
 			String authKey = clientApp.getClientId()+"#"+code;
 			pendingAuth.put(authKey, clientAuth);
 			return clientAuth;

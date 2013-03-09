@@ -15,11 +15,11 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="findPendingByCode", query="select p from PendingClientAuthorization p where p.code = :code and " +
+	@NamedQuery(name="findPendingByCode", query="select p from PendingClientToken p where p.code = :code and " +
 			"p.clientApp.clientApp.clientId = :clientId and " +
 			"p.clientApp.clientApp.clientSecret = :clientSecret")
 })
-class PendingClientAuthorization implements IPendingClientToken {
+class PendingClientToken implements IPendingClientToken {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)	
@@ -30,12 +30,12 @@ class PendingClientAuthorization implements IPendingClientToken {
 	@ManyToOne
 	private AuthorizedClientApplication clientApp;
 	
-	public PendingClientAuthorization()
+	public PendingClientToken()
 	{
 		
 	}
 
-	public PendingClientAuthorization(AuthorizedClientApplication clientApp) {
+	public PendingClientToken(AuthorizedClientApplication clientApp) {
 		this.clientApp = clientApp;
 		code = UUID.randomUUID().toString(); //TODO
 	}
