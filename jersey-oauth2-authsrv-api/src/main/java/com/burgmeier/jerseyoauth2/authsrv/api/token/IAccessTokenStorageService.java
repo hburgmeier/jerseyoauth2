@@ -8,10 +8,10 @@ public interface IAccessTokenStorageService {
 
 	IAccessTokenInfo getTokenInfoByAccessToken(String accessToken) throws InvalidTokenException;
 
-	IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp);
+	IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp) throws TokenStorageException;
 	
 	IAccessTokenInfo getTokenInfoByRefreshToken(String refreshToken) throws InvalidTokenException;
 	
-	IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken);
+	IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken) throws TokenStorageException;
 	
 }

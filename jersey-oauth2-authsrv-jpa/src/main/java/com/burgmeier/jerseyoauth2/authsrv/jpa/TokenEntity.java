@@ -2,11 +2,16 @@ package com.burgmeier.jerseyoauth2.authsrv.jpa;
 
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
@@ -16,6 +21,8 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 @NamedQueries({
 	@NamedQuery(name="findTokenEntityByRefreshToken", query="select te from TokenEntity te where te.refreshToken = :refreshToken")
 })
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 class TokenEntity implements IAccessTokenInfo {
 
 	@Id
@@ -23,7 +30,7 @@ class TokenEntity implements IAccessTokenInfo {
 	private String refreshToken;
 	private long expiredIn;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private AuthorizedClientApplication clientApp;
 	
 	public TokenEntity()

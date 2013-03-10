@@ -38,11 +38,6 @@
 		</dependency>		
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-rs-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>					
-		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
@@ -75,12 +70,6 @@
 			<artifactId>geronimo-servlet_2.5_spec</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jersey.jersey-test-framework</groupId>
-			<artifactId>jersey-test-framework-grizzly2</artifactId>
-			<version>${jersey.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
@@ -89,6 +78,24 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.carrotsearch</groupId>
+			<artifactId>junit-benchmarks</artifactId>
+			<version>0.5.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>

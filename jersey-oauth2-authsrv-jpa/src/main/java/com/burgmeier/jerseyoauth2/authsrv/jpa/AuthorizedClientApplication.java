@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -26,10 +27,10 @@ public class AuthorizedClientApplication implements IAuthorizedClientApp {
 	
 	private String userName;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private RegisteredClient clientApp;
 	
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
 	private Set<String> scopes = new HashSet<>();
 
 	@Transient

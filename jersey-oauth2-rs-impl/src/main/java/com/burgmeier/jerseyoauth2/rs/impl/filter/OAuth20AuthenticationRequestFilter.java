@@ -47,6 +47,11 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 			{
 				throw new InvalidTokenException(accessToken);
 			}
+			if (accessTokenInfo.getUser()==null)
+				throw new WebApplicationException(buildUserProblem());
+			
+			if (accessTokenInfo.getClientApp()==null)
+				throw new WebApplicationException(buildClientProblem());			
 			
 			if (requiredScopes!=null)
 			{
@@ -101,6 +106,22 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 			entity("Not allowed").
 			build();
 	}
+	
+	protected Response buildUserProblem()
+	{
+		return Response.serverError().
+			status(401).
+			entity("No authorized user").
+			build();
+	}	
+	
+	protected Response buildClientProblem()
+	{
+		return Response.serverError().
+			status(401).
+			entity("No authorized client").
+			build();
+	}	
 	
 	private Response buildAuthProblem() {
 		return Response.serverError().

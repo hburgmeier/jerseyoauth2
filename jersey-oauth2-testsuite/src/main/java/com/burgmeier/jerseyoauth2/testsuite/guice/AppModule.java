@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
+import net.sf.ehcache.CacheManager;
+
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
@@ -15,10 +17,11 @@ import com.burgmeier.jerseyoauth2.authsrv.impl.authorize.AuthorizationServlet;
 import com.burgmeier.jerseyoauth2.authsrv.impl.authorize.IssueAccessTokenServlet;
 import com.burgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.burgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
-import com.burgmeier.jerseyoauth2.authsrv.jpa.DatabaseAccessTokenStorage;
+import com.burgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.burgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.impl.filter.OAuth20FilterFactory;
+import com.burgmeier.jerseyoauth2.testsuite.services.CacheManagerProvider;
 import com.burgmeier.jerseyoauth2.testsuite.services.Configuration;
 import com.burgmeier.jerseyoauth2.testsuite.services.PersistenceProvider;
 import com.burgmeier.jerseyoauth2.testsuite.services.TestAuthorizationFlow;
@@ -33,7 +36,7 @@ public class AppModule  extends JerseyServletModule {
     @Override
     protected void configureServlets() {
 //    	bind(IAccessTokenStorageService.class).to(TestAccessTokenStorageService.class);
-    	bind(IAccessTokenStorageService.class).to(DatabaseAccessTokenStorage.class);
+    	bind(IAccessTokenStorageService.class).to(CachingAccessTokenStorage.class);
 //    	bind(IClientService.class).to(TestClientService.class);
     	bind(IClientService.class).to(DatabaseClientService.class);
     	bind(IConfiguration.class).to(Configuration.class);
@@ -44,6 +47,7 @@ public class AppModule  extends JerseyServletModule {
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);
     	
     	bind(EntityManagerFactory.class).toProvider(new PersistenceProvider());
+    	bind(CacheManager.class).toProvider(new CacheManagerProvider());
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
     	serve("/oauth2/allow").with(AllowServlet.class);

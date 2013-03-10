@@ -21,6 +21,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
+import com.burgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;
 import com.google.inject.Inject;
 
 public class TokenService implements ITokenService {
@@ -61,6 +62,8 @@ public class TokenService implements ITokenService {
 						sendTokenResponse(response, accessTokenInfo);
 					} catch (InvalidTokenException e) {
 						throw OAuthProblemException.error("token_invalid", "token is invalid");
+					} catch (TokenStorageException e) {
+						throw OAuthProblemException.error("server_error", "Server error");						
 					}
 
 				} else if (oauthRequest.getGrantType().equals(GrantType.AUTHORIZATION_CODE.toString())) {
@@ -68,16 +71,20 @@ public class TokenService implements ITokenService {
 					IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
 							oauthRequest.getClientSecret(), oauthRequest.getCode());
 					if (pendingClientToken == null) {
-						throw OAuthProblemException.error("client_not_auth", "client not authorized");
+						throw OAuthProblemException.error("unauthorized_client", "client not authorized");
 					}
 
 					String accessToken = tokenGenerator.createAccessToken();
 					String refreshToken = tokenGenerator.createRefreshToken();
 
-					IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken,
-							pendingClientToken.getAuthorizedClient());
+					try {
+						IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken,
+								pendingClientToken.getAuthorizedClient());
 
-					sendTokenResponse(response, accessTokenInfo);
+						sendTokenResponse(response, accessTokenInfo);
+					} catch (TokenStorageException e) {
+						throw OAuthProblemException.error("server_error", "Server error");
+					}
 				}
 
 				// if something goes wrong

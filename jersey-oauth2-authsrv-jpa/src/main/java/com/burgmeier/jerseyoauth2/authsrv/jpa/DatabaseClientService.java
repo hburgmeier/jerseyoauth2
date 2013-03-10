@@ -13,19 +13,23 @@ import javax.persistence.TypedQuery;
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserStorageService;
+import com.burgmeier.jerseyoauth2.authsrv.api.user.UserStorageServiceException;
 import com.google.inject.Inject;
 
 public class DatabaseClientService implements IClientService {
 
 	private final EntityManagerFactory emf;
+	private IUserStorageService userStorageService = null;
 
 	@Inject
-	public DatabaseClientService(EntityManagerFactory emf)
+	public DatabaseClientService(EntityManagerFactory emf)//, IUserStorageService userStorageService)
 	{
 		this.emf = emf;
+//		this.userStorageService = userStorageService;
 	}
 	
 	@Override
@@ -67,9 +71,11 @@ public class DatabaseClientService implements IClientService {
 			AuthorizedClientApplication result = query.getSingleResult();
 			//TODO check if scopes match
 			
-			result.setAuthorizedUser(new User(result.getUserName()));			
+			setUser(result);			
 			return result;
 		} catch (NoResultException e) {
+			return null;
+		} catch (UserStorageServiceException e) {
 			return null;
 		} finally {
 			entityManager.close();
@@ -103,8 +109,11 @@ public class DatabaseClientService implements IClientService {
 				tx.rollback();
 				result = null;
 			}
+			setUser((AuthorizedClientApplication)result.getAuthorizedClient());
 			return result;
 		} catch (NoResultException e) {
+			return null;
+		} catch (UserStorageServiceException e) {
 			return null;
 		} finally {
 			entityManager.close();
@@ -126,6 +135,16 @@ e.printStackTrace();
 		} finally {
 			entityManager.close();
 		}
+	}
+	
+	protected void setUser(AuthorizedClientApplication result) throws UserStorageServiceException {
+		if (userStorageService!=null)
+		{
+			IUser iUser = userStorageService.loadUser(result.getUserName());
+			result.setAuthorizedUser(iUser);
+		}
+		else
+			result.setAuthorizedUser(new User(result.getUserName()));
 	}
 	
 }
