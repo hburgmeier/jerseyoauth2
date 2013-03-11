@@ -1,5 +1,7 @@
 package com.burgmeier.jerseyoauth2.authsrv.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 
 import net.sf.ehcache.CacheManager;
@@ -60,6 +62,16 @@ public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 		IAccessTokenInfo newToken = delegate.refreshToken(oldAccessToken, newAccessToken, newRefreshToken);
 		tokenCache.put(new Element(newAccessToken, newToken));
 		return newToken;
+	}
+
+	@Override
+	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
+		List<IAccessTokenInfo> tokens = delegate.invalidateTokensForUser(username);
+		for (IAccessTokenInfo token : tokens)
+		{
+			tokenCache.remove(token.getAccessToken());
+		}
+		return tokens;
 	}
 
 }

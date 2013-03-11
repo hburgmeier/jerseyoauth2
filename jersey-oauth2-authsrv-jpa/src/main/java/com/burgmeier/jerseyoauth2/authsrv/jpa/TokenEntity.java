@@ -19,7 +19,8 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="findTokenEntityByRefreshToken", query="select te from TokenEntity te where te.refreshToken = :refreshToken")
+	@NamedQuery(name="findTokenEntityByRefreshToken", query="select te from TokenEntity te where te.refreshToken = :refreshToken"),
+	@NamedQuery(name="findTokenEntityByUsername", query="select te from TokenEntity te where te.clientApp.username = :username")
 })
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)

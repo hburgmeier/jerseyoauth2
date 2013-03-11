@@ -18,14 +18,14 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name="findAuthorizedClient", query="select ac from AuthorizedClientApplication ac where ac.clientApp.clientId = :clientId and ac.userName = :userName")
+	@NamedQuery(name="findAuthorizedClient", query="select ac from AuthorizedClientApplication ac where ac.clientApp.clientId = :clientId and ac.username = :username")
 })
 public class AuthorizedClientApplication implements IAuthorizedClientApp {
 
 	@Id
 	private String id;
 	
-	private String userName;
+	private String username;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	private RegisteredClient clientApp;
@@ -46,7 +46,7 @@ public class AuthorizedClientApplication implements IAuthorizedClientApp {
 		this.user = user;
 		this.scopes = new HashSet<>(scopes);
 		
-		this.userName = user.getName();
+		this.username = user.getName();
 		this.id = UUID.randomUUID().toString();
 	}
 	
@@ -86,12 +86,12 @@ public class AuthorizedClientApplication implements IAuthorizedClientApp {
 		this.clientApp = clientApp;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	void setAuthorizedUser(IUser user)

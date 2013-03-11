@@ -1,8 +1,12 @@
 package com.burgmeier.jerseyoauth2.authsrv.jpa;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
@@ -61,6 +65,8 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			TokenEntity te = query.getSingleResult();
 			setUser(te);
 			return te;
+		} catch (NoResultException e) {
+			throw new InvalidTokenException(e);
 		} catch (UserStorageServiceException e) {
 			throw new InvalidTokenException(e);
 		}
@@ -93,6 +99,32 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		}
 	}
 
+	@Override
+	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
+		EntityManager em = emf.createEntityManager();
+		TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByUsername", TokenEntity.class);
+		query.setParameter("username", username);
+		List<TokenEntity> resultList = query.getResultList();
+		List<IAccessTokenInfo> result = new LinkedList<>();
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			for (TokenEntity te : resultList)
+			{
+				em.remove(te);
+				result.add(te);
+			}
+			em.flush();
+			tx.commit();
+		} catch (PersistenceException ex) {
+			tx.rollback();
+			throw ex;
+		} finally {
+			em.close();
+		}
+		return result;
+	}
+	
 	protected void saveTokenEntity(TokenEntity te) {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
@@ -115,10 +147,10 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			AuthorizedClientApplication clientApp = (AuthorizedClientApplication) tokenEntity.getClientApp();
 			if (userStorageService!=null)
 			{
-				IUser iUser = userStorageService.loadUser(clientApp.getUserName());
+				IUser iUser = userStorageService.loadUser(clientApp.getUsername());
 				clientApp.setAuthorizedUser(iUser);
 			} else
-				clientApp.setAuthorizedUser(new User(clientApp.getUserName()));
+				clientApp.setAuthorizedUser(new User(clientApp.getUsername()));
 		}
 	}
 	

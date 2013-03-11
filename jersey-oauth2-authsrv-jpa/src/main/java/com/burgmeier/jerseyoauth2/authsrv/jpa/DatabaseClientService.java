@@ -66,7 +66,7 @@ public class DatabaseClientService implements IClientService {
 		EntityManager entityManager = emf.createEntityManager();
 		try {
 			TypedQuery<AuthorizedClientApplication> query = entityManager.createNamedQuery("findAuthorizedClient", AuthorizedClientApplication.class);
-			query.setParameter("userName", user.getName());
+			query.setParameter("username", user.getName());
 			query.setParameter("clientId", clientId);
 			AuthorizedClientApplication result = query.getSingleResult();
 			//TODO check if scopes match
@@ -140,11 +140,11 @@ e.printStackTrace();
 	protected void setUser(AuthorizedClientApplication result) throws UserStorageServiceException {
 		if (userStorageService!=null)
 		{
-			IUser iUser = userStorageService.loadUser(result.getUserName());
+			IUser iUser = userStorageService.loadUser(result.getUsername());
 			result.setAuthorizedUser(iUser);
 		}
 		else
-			result.setAuthorizedUser(new User(result.getUserName()));
+			result.setAuthorizedUser(new User(result.getUsername()));
 	}
 	
 }

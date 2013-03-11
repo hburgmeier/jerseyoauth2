@@ -64,6 +64,35 @@ public class ProtocolTest extends BaseTest {
 			Assert.fail();
 		} catch (TokenExtractorException e) {
 		}		
+	}	
+	
+	@Test
+	public void testTokenInvalidation() throws ClientException
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		TestClient client = new TestClient(clientEntity);
+		Token token = client.getAccessToken(code);
+		Assert.assertNotNull(token);
+		Assert.assertNotNull(token.getToken());
+		
+		client.sendTestRequestSample1(token);
+		
+		authClient.invalidateToken("manager");
+		
+		try {
+			client.sendTestRequestSample1(token);
+			Assert.fail();
+		} catch (ClientException e) {
+		}
+		
+		try {
+			client.refreshToken((OAuth2Token)token);
+			Assert.fail();
+		} catch (TokenExtractorException e) {
+		}
 	}		
 	
 	@Test

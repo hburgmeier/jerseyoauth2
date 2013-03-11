@@ -2,6 +2,8 @@ package com.burgmeier.jerseyoauth2.sample.openid.services;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
@@ -76,6 +78,17 @@ public class TestAccessTokenStorageService implements IAccessTokenStorageService
 		tokenStore.put(newAccessToken, tokenInfo);
 		refreshTokenStore.put(newRefreshToken, tokenInfo);
 		return tokenInfo;
+	}
+
+	@Override
+	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
+		List<IAccessTokenInfo> values = new LinkedList<>(tokenStore.values());
+		for (IAccessTokenInfo tokenInfo : values)
+		{
+			tokenStore.remove(tokenInfo.getAccessToken());
+			refreshTokenStore.remove(tokenInfo.getRefreshToken());
+		}
+		return values;
 	}
 
 }

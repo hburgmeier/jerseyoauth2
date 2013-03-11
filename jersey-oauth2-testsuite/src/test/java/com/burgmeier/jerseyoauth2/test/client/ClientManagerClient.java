@@ -5,6 +5,7 @@ import javax.ws.rs.core.MediaType;
 import com.burgmeier.jerseyoauth2.testsuite.resource.ClientAuthEntity;
 import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
@@ -36,4 +37,14 @@ public class ClientManagerClient {
 				post(ClientAuthEntity.class);
 		return clientAuthEntity;
 	}
+	
+	public void invalidateToken(String username)
+	{
+		WebResource webResource = client.resource("http://localhost:9998/testsuite/rest/invalidateToken");
+		ClientResponse response = webResource.
+				queryParam("username", username).
+				get(ClientResponse.class);
+		if (response.getStatus()!=204)
+			throw new IllegalArgumentException(Integer.toString(response.getStatus()));
+	}	
 }
