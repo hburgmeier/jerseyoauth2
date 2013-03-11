@@ -8,6 +8,8 @@ public interface IAuthorizedClientApp {
 
 	String getClientId();
 	
+	String getCallbackUrl();	
+	
 	IUser getAuthorizedUser();
 	
 	Set<String> getAuthorizedScopes();

@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.amber.oauth2.as.request.OAuthTokenRequest;
+import org.apache.amber.oauth2.common.exception.OAuthProblemException;
+import org.apache.amber.oauth2.common.exception.OAuthSystemException;
+
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.google.inject.Inject;
@@ -34,8 +38,22 @@ public class IssueAccessTokenServlet extends HttpServlet {
 		if (configuration.getStrictSecurity() && !request.isSecure())
 		{
 			response.sendError(400);
-		} else
-			tokenService.issueToken(request, response);
+		} else {
+			
+			try {
+				try {
+					OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
+
+					tokenService.handleRequest(request, response, oauthRequest);
+
+					// if something goes wrong
+				} catch (OAuthProblemException ex) {
+					tokenService.sendErrorResponse(response, ex);
+				}
+			} catch (OAuthSystemException e) {
+				throw new ServletException(e);
+			}
+		}
 	}
 
 }

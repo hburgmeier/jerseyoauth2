@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.scribe.model.Token;
 
 import com.burgmeier.jerseyoauth2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.test.client.TestClient;
+import com.burgmeier.jerseyoauth2.test.client.ResourceClient;
 import com.burgmeier.jerseyoauth2.testsuite.resource.SampleEntity;
 
 public class ResourceTest extends BaseTest {
@@ -13,7 +13,7 @@ public class ResourceTest extends BaseTest {
 	@Test
 	public void testInvalidResourceAccess()
 	{
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		try {
 			client.sendTestRequestSample1(new Token("Invalid",""));
 			Assert.fail();
@@ -28,7 +28,7 @@ public class ResourceTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		Token tok = client.getAccessToken(code);
 		Assert.assertNotNull(tok);
 		Assert.assertNotNull(tok.getToken());
@@ -48,7 +48,7 @@ public class ResourceTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		Token oldToken = client.getAccessToken(code);
 		Assert.assertNotNull(oldToken);
 		Assert.assertNotNull(oldToken.getToken());
@@ -63,7 +63,7 @@ public class ResourceTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		Token tok = client.getAccessToken(code);
 		Assert.assertNotNull(tok);
 		Assert.assertNotNull(tok.getToken());

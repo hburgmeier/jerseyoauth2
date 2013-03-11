@@ -1,6 +1,7 @@
 package com.burgmeier.jerseyoauth2.client.scribe;
 
 import org.scribe.builder.api.DefaultApi20;
+import org.scribe.extractors.TokenExtractor20Impl;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
@@ -57,6 +58,12 @@ public class OAuth2ServiceWrapper implements IOAuth2Service {
 	    if(config.hasScope()) request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
 	    Response response = request.send();
 	    return api.getAccessTokenExtractor().extract(response.getBody());
+	}
+
+	@Override
+	public Token parseFragment(String fragment) {
+		TokenExtractor20Impl extractor = new TokenExtractor20Impl();
+		return extractor.extract(fragment);
 	}
 
 }

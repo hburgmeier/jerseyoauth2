@@ -8,7 +8,7 @@ import org.scribe.model.Token;
 
 import com.burgmeier.jerseyoauth2.test.client.ClientException;
 import com.burgmeier.jerseyoauth2.test.client.ClientManagerClient;
-import com.burgmeier.jerseyoauth2.test.client.TestClient;
+import com.burgmeier.jerseyoauth2.test.client.ResourceClient;
 import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 import com.burgmeier.jerseyoauth2.testsuite.resource.SampleEntity;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
@@ -23,7 +23,7 @@ public class PerformanceTest {
 	public BenchmarkRule benchmarkRun = new BenchmarkRule();
 	
 	private static Token token;
-	private static TestClient client;
+	private static ResourceClient client;
 	private static ClientEntity clientEntity;
 
 	@BeforeClass
@@ -38,7 +38,7 @@ public class PerformanceTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		client = new TestClient(clientEntity);
+		client = new ResourceClient(clientEntity);
 		token = client.getAccessToken(code);
 	}
 

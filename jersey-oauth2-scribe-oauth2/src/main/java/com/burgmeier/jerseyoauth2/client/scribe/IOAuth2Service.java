@@ -7,4 +7,6 @@ public interface IOAuth2Service extends OAuthService {
 
 	Token refreshToken(OAuth2Token token);
 
+	Token parseFragment(String fragment);
+
 }

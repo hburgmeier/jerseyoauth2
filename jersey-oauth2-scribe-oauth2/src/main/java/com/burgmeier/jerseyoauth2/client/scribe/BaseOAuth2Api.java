@@ -46,12 +46,9 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 			paramList.add("state", state);
 		paramList.add("response_type", getResponseType());
 		paramList.add("client_id", config.getApiKey());
+		if (config.getCallback()!=null)
+			paramList.add("redirect_uri", config.getCallback()); // for implicit grant
 		return paramList.appendTo(getAuthorizationUrlBase());
-		
-//		return MessageFormat.format("{0}?response_type={2}&client_id={1}",
-//				getAuthorizationUrlBase(),
-//				config.getApiKey(),
-//				getResponseType());
 	}	
 	
 	@Override

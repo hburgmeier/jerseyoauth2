@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.amber</groupId>
-			<artifactId>amber-oauth2-common</artifactId>
+			<artifactId>amber-oauth2-authzserver</artifactId>
 		</dependency>
 	</dependencies>
 	<name>Jersey OAuth2 Authorization Server API</name>

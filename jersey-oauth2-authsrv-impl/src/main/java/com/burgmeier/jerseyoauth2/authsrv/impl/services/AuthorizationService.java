@@ -14,15 +14,17 @@ import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
+import org.apache.amber.oauth2.common.message.types.ResponseType;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
-import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.burgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.burgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserService;
@@ -36,15 +38,17 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IUserService userService;
 	private final IAuthorizationFlow authFlow;
 	private final IConfiguration configuration;
+	private final ITokenService tokenService;
 	
 	@Inject
 	public AuthorizationService(final IClientService clientService, final IUserService userService,
-			final IAuthorizationFlow authFlow, final IConfiguration configuration)
+			final IAuthorizationFlow authFlow, final IConfiguration configuration, final ITokenService tokenService)
 	{
 		this.clientService = clientService;
 		this.userService = userService;
 		this.authFlow = authFlow;
 		this.configuration = configuration;
+		this.tokenService = tokenService;
 	}	
 	
 	@Override
@@ -61,22 +65,33 @@ public class AuthorizationService implements IAuthorizationService {
 				regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
 				if (regClientApp==null)
 					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client "+oauthRequest.getClientId()+" is invalid");
-				
-				if (oauthRequest.getClientSecret()!=null)
-				{
-					if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
-						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
-				}
-				
+
 				Set<String> scopes = oauthRequest.getScopes();
 				scopes = scopes.isEmpty()?configuration.getDefaultScopes():scopes;
 				
+				ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.toString())?
+						ResponseType.TOKEN:ResponseType.CODE;
+				
+				if (reqResponseType.equals(ResponseType.CODE))
+				{
+					if (oauthRequest.getClientSecret()!=null)
+					{
+						if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
+							throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+					}
+				}
+					
 				IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(), scopes);
 				if (authorizedClientApp!=null)
 				{
 					try {
-						IPendingClientToken pendingClientToken = clientService.createPendingClientToken(authorizedClientApp);
-						sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
+						if (reqResponseType.equals(ResponseType.CODE))
+						{
+							IPendingClientToken pendingClientToken = clientService.createPendingClientToken(authorizedClientApp);
+							sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
+						} else {
+							tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType);
+						}
 					} catch (ClientServiceException e) {
 						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 					}

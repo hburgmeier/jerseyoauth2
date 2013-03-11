@@ -7,7 +7,7 @@ import org.scribe.model.Token;
 import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
 import com.burgmeier.jerseyoauth2.client.scribe.TokenExtractorException;
 import com.burgmeier.jerseyoauth2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.test.client.TestClient;
+import com.burgmeier.jerseyoauth2.test.client.ResourceClient;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -20,7 +20,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		String authUrl = client.getAuthUrl(null);
 		
 		WebResource webResource = restClient.resource(authUrl);
@@ -43,7 +43,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity.getClientId(),"Invalid");
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(),"Invalid");
 		try {
 			client.getAccessToken(code);
 			Assert.fail();
@@ -58,7 +58,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		try {
 			client.getAccessToken("A"+code);
 			Assert.fail();
@@ -73,7 +73,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		Token token = client.getAccessToken(code);
 		Assert.assertNotNull(token);
 		Assert.assertNotNull(token.getToken());
@@ -102,7 +102,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		TestClient client = new TestClient(clientEntity);
+		ResourceClient client = new ResourceClient(clientEntity);
 		Token oldToken = client.getAccessToken(code);
 		Assert.assertNotNull(oldToken);
 		Assert.assertNotNull(oldToken.getToken());

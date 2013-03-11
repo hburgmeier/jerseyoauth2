@@ -39,4 +39,9 @@ public class SimpleAuthorizedClientApp implements IAuthorizedClientApp {
 		return registeredClient.getClientSecret().equals(clientSecret);
 	}
 
+	@Override
+	public String getCallbackUrl() {
+		return registeredClient.getCallbackUrl();
+	}
+
 }

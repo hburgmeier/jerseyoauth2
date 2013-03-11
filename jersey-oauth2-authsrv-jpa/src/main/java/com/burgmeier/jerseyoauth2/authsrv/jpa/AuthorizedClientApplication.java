@@ -69,6 +69,12 @@ public class AuthorizedClientApplication implements IAuthorizedClientApp {
 	public boolean isClientSecretValid(String clientSecret) {
 		return clientApp.getClientSecret().equals(clientSecret);
 	}
+	
+	@Override
+	public String getCallbackUrl() {
+		return clientApp.getCallbackUrl();
+	}
+	
 
 	public String getId() {
 		return id;
