@@ -3,15 +3,18 @@ package com.burgmeier.jerseyoauth2.test.client;
 import com.burgmeier.jerseyoauth2.client.scribe.BaseOAuth2Api;
 
 
-public class LocalTestAPI extends BaseOAuth2Api {
+public class TestsuiteAPI extends BaseOAuth2Api {
 	
-	public LocalTestAPI(String grantType, String state) {
+	private String responseType;
+
+	public TestsuiteAPI(String grantType, String state, String responseType) {
 		super(grantType, state);
+		this.responseType = responseType;
 	}
 
 	@Override
 	protected String getResponseType() {
-		return "code";
+		return responseType;
 	}
 
 	@Override

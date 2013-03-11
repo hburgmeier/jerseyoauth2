@@ -35,10 +35,10 @@ public class TestClient {
 		this.clientSecret = clientSecret;
 	}
 
-	protected OAuthService getOAuthService(GrantType grantType, String scope, String state)
+	protected OAuthService getOAuthService(GrantType grantType, String scope, String state, String responseType)
 	{
 		ServiceBuilder serviceBuilder = new ServiceBuilder()
-		.provider(new LocalTestAPI(grantType.toString(), state))
+		.provider(new TestsuiteAPI(grantType.toString(), state, responseType))
 		.apiKey(clientId)
 		.apiSecret(clientSecret);
 		if (scope!=null)
@@ -49,23 +49,23 @@ public class TestClient {
 	
 	public String getAuthUrl(String state)
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", state);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", state, "code");
 		return service.getAuthorizationUrl(null);
 	}
 
 	public Token getAccessToken(String code) {
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null, "code");
 		return service.getAccessToken(null, new Verifier(code));
 	}
 	
 	public Token refreshToken(OAuth2Token token) {
-		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, "test1 test2", null);
+		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, "test1 test2", null, "code");
 		return ((IOAuth2Service)service).refreshToken(token);
 	}		
 	
 	public String sendTestRequestSample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null, "code");
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -78,7 +78,7 @@ public class TestClient {
 	
 	public SampleEntity retrieveEntitySample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, "test1 test2", null, "code");
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -98,7 +98,7 @@ public class TestClient {
 	
 	public String sendTestRequestSample2(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null, null);
+		OAuthService service = getOAuthService(GrantType.AUTHORIZATION_CODE, null, null, "code");
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample2/1");
