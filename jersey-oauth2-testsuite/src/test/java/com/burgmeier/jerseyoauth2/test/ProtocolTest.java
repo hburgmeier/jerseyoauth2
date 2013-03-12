@@ -123,6 +123,29 @@ public class ProtocolTest extends BaseTest {
 	}
 	
 	@Test
+	public void testRefreshTokenFlowExpires() throws ClientException, InterruptedException
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		ResourceClient client = new ResourceClient(clientEntity);
+		Token oldToken = client.getAccessToken(code);
+		Assert.assertNotNull(oldToken);
+		Assert.assertNotNull(oldToken.getToken());
+		
+		client.sendTestRequestSample1(oldToken);
+		
+		Thread.sleep(5000);
+		
+		try {
+			client.refreshToken((OAuth2Token)oldToken);
+			Assert.fail();
+		} catch (TokenExtractorException e1) {
+		}
+	}	
+	
+	@Test
 	public void testInvalidScopes()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 someScope").getCode();
