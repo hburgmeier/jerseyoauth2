@@ -24,6 +24,7 @@ public class ResourceClient {
 	private String clientSecret;
 	private final GrantType grantType;
 	private final ResponseType responseType;
+	private final String scopes;
 	
 	public ResourceClient(ClientEntity clientEntity) {
 		super();
@@ -31,13 +32,15 @@ public class ResourceClient {
 		this.clientSecret = clientEntity.getClientSecret();
 		this.grantType = GrantType.AUTHORIZATION_CODE;
 		this.responseType = ResponseType.CODE;
+		this.scopes = "test1 test2";
 	}
 	
-	public ResourceClient(String clientId, String clientSecret)
+	public ResourceClient(String clientId, String clientSecret, String scopes)
 	{
 		super();
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
+		this.scopes = scopes;
 		this.grantType = GrantType.AUTHORIZATION_CODE;
 		this.responseType = ResponseType.CODE;
 	}
@@ -48,6 +51,7 @@ public class ResourceClient {
 		this.clientId = clientId;
 		this.grantType = grantType;
 		this.responseType = responseType;
+		this.scopes = "test1 test2";
 	}	
 
 	protected OAuthService getOAuthService(String scope, String state)
@@ -60,7 +64,8 @@ public class ResourceClient {
 		ServiceBuilder serviceBuilder = new ServiceBuilder()
 		.provider(new TestsuiteAPI(_grantType.toString(), state, responseType.toString()))
 		.apiKey(clientId)
-		.apiSecret(clientSecret==null?"DUMMYDUMMYDUMMY":clientSecret);
+		.apiSecret(clientSecret==null?"DUMMYDUMMYDUMMY":clientSecret)
+		.callback("http://localhost:9998/testsuite");
 		
 		if (scope!=null)
 			serviceBuilder = serviceBuilder.scope(scope);
@@ -70,23 +75,23 @@ public class ResourceClient {
 	
 	public String getAuthUrl(String state)
 	{
-		OAuthService service = getOAuthService("test1 test2", state);
+		OAuthService service = getOAuthService(scopes, state);
 		return service.getAuthorizationUrl(null);
 	}
 
 	public Token getAccessToken(String code) {
-		OAuthService service = getOAuthService("test1 test2", null);
+		OAuthService service = getOAuthService(scopes, null);
 		return service.getAccessToken(null, new Verifier(code));
 	}
 	
 	public Token refreshToken(OAuth2Token token) {
-		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, "test1 test2", null);
+		OAuthService service = getOAuthService(GrantType.REFRESH_TOKEN, scopes, null);
 		return ((IOAuth2Service)service).refreshToken(token);
 	}		
 	
 	public String sendTestRequestSample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService("test1 test2", null);
+		OAuthService service = getOAuthService(scopes, null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");
@@ -99,7 +104,7 @@ public class ResourceClient {
 	
 	public SampleEntity retrieveEntitySample1(Token accessToken) throws ClientException
 	{
-		OAuthService service = getOAuthService("test1 test2", null);
+		OAuthService service = getOAuthService(scopes, null);
 		
 		OAuthRequest request = new OAuthRequest(Verb.GET,
 				"http://localhost:9998/testsuite/rest/sample/1");

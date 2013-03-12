@@ -2,9 +2,11 @@ package com.burgmeier.jerseyoauth2.client.scribe;
 
 import java.text.MessageFormat;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.OAuthConstants;
 import org.scribe.model.ParameterList;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
@@ -46,8 +48,11 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 			paramList.add("state", state);
 		paramList.add("response_type", getResponseType());
 		paramList.add("client_id", config.getApiKey());
-		if (config.getCallback()!=null)
+		if (StringUtils.isNotEmpty(config.getCallback()) && 
+			!OAuthConstants.OUT_OF_BAND.equals(config.getCallback()))
 			paramList.add("redirect_uri", config.getCallback()); // for implicit grant
+		if (StringUtils.isNotEmpty(config.getScope()))
+			paramList.add("scope", config.getScope());
 		return paramList.appendTo(getAuthorizationUrlBase());
 	}	
 	

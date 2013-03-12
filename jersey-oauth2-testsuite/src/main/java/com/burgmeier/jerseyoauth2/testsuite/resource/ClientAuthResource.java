@@ -52,6 +52,7 @@ public class ClientAuthResource {
 		Set<String> authScopes = configuration.getDefaultScopes();
 		if (scope!=null)
 		{
+System.err.println("auth "+clientId+" "+scope);
 			String[] scopes = scope.split(" ");
 			if (!(scopes.length==1 && StringUtils.isEmpty(scopes[0])))
 				authScopes = new HashSet<String>(Arrays.asList(scopes));

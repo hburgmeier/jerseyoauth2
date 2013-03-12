@@ -2,7 +2,6 @@ package com.burgmeier.jerseyoauth2.authsrv.impl.authorize;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,15 +23,11 @@ public class AuthorizationServlet extends HttpServlet {
 	private final IAuthorizationService authService;
 	private final IConfiguration configuration;
 	
-	private ServletContext servletContext;
-	
-	
 	@Inject
-	public AuthorizationServlet(final IAuthorizationService authService, final IConfiguration configuration, ServletContext servletContext)
+	public AuthorizationServlet(final IAuthorizationService authService, final IConfiguration configuration)
 	{
 		this.authService = authService;
 		this.configuration = configuration;
-		this.servletContext = servletContext;
 	}
 
 	@Override
@@ -43,7 +38,7 @@ public class AuthorizationServlet extends HttpServlet {
 		{
 			response.sendError(400);
 		} else
-			authService.evaluateAuthorizationRequest(request, response, servletContext);
+			authService.evaluateAuthorizationRequest(request, response, getServletContext());
 	}
 
 }

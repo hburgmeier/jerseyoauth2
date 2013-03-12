@@ -45,7 +45,7 @@ public class ClientManagerClient {
 		ClientResponse response = webResource.
 				queryParam("username", username).
 				get(ClientResponse.class);
-		if (response.getStatus()!=204)
+		if (response.getStatus()!=200)
 			throw new IllegalArgumentException(Integer.toString(response.getStatus()));
 	}	
 }

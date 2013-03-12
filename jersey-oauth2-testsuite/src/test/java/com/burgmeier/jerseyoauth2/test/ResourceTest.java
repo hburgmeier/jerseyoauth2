@@ -73,5 +73,29 @@ public class ResourceTest extends BaseTest {
 			Assert.fail();
 		} catch (ClientException cex) {
 		}
+	}	
+	
+	@Test
+	public void testTokenExpiration() throws ClientException, InterruptedException
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		ResourceClient client = new ResourceClient(clientEntity);
+		Token tok = client.getAccessToken(code);
+		Assert.assertNotNull(tok);
+		Assert.assertNotNull(tok.getToken());
+		
+		client.sendTestRequestSample1(tok);
+		
+		Thread.sleep(5000);
+		
+		try {
+			client.sendTestRequestSample1(tok);
+			Assert.fail();
+		} catch (ClientException e) {
+		}
 	}		
+		
 }

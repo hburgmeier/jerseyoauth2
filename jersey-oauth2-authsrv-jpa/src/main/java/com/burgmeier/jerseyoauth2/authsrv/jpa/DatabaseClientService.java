@@ -24,6 +24,8 @@ import com.google.inject.Inject;
 public class DatabaseClientService implements IClientService {
 
 	private final EntityManagerFactory emf;
+	
+	@Inject(optional=true)
 	private IUserStorageService userStorageService = null;
 
 	@Inject
@@ -71,7 +73,12 @@ public class DatabaseClientService implements IClientService {
 			query.setParameter("username", user.getName());
 			query.setParameter("clientId", clientId);
 			AuthorizedClientApplication result = query.getSingleResult();
-			//TODO check if scopes match
+			
+			System.err.println("scopes:"+scopes+":"+result.getAuthorizedScopes());			
+			if (!result.getAuthorizedScopes().containsAll(scopes))
+			{
+				return null;
+			}
 			
 			setUser(result);			
 			return result;

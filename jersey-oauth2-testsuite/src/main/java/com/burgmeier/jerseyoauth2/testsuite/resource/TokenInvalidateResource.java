@@ -19,8 +19,9 @@ public class TokenInvalidateResource {
 	}
 
 	@GET
-	public void invalidateToken(@QueryParam("username") String username)
+	public String invalidateToken(@QueryParam("username") String username)
 	{
 		accessTokenService.invalidateTokensForUser(username);
+		return "OK";
 	}
 }

@@ -85,7 +85,7 @@ public class AuthorizationService implements IAuthorizationService {
 				if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL) && 
 					reqResponseType.equals(ResponseType.TOKEN))
 					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client type is invalid");
-					
+System.err.println("request "+oauthRequest.getClientId()+" "+scopes);					
 				IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(), scopes);
 				if (authorizedClientApp!=null)
 				{

@@ -43,7 +43,7 @@ public class ProtocolTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		ResourceClient client = new ResourceClient(clientEntity.getClientId(),"Invalid");
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(), "Invalid", "test1 test2");
 		try {
 			client.getAccessToken(code);
 			Assert.fail();
@@ -121,5 +121,20 @@ public class ProtocolTest extends BaseTest {
 		}
 		
 	}
+	
+	@Test
+	public void testInvalidScopes()
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 someScope").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(), clientEntity.getClientSecret(), "test1 test2");
+		String authUrl = client.getAuthUrl(null);
+		
+		WebResource webResource = restClient.resource(authUrl);
+		ClientResponse clientResponse = webResource.get(ClientResponse.class);
+		Assert.assertEquals(200, clientResponse.getStatus());
+	}	
 	
 }
