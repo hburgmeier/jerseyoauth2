@@ -73,11 +73,11 @@ public class TestClientService implements IClientService {
 	}
 
 	@Override
-	public IRegisteredClientApp registerClient(String appName, String callbackUrl) throws ClientServiceException {
+	public IRegisteredClientApp registerClient(String appName, String callbackUrl, ClientType clientType) throws ClientServiceException {
 		try {
 			String clientId = md5Gen.generateValue();
 			String clientSecret = md5Gen.generateValue();
-			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl, ClientType.CONFIDENTIAL);
+			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl, clientType);
 			registeredClients.put(clientId, client);
 			return client;
 		} catch (OAuthSystemException e) {

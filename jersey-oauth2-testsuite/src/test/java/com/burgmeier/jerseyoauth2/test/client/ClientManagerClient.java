@@ -18,11 +18,12 @@ public class ClientManagerClient {
 		this.client = client;
 	}
 	
-	public ClientEntity createClient()
+	public ClientEntity createClient(String clientType)
 	{
 		WebResource webResource = client.resource("http://localhost:9998/testsuite/rest/clients");
 		ClientEntity clientEntity = webResource.queryParam("appname", "UnitTest").
 				queryParam("callbackUrl","http://localhost:9998/example1").
+				queryParam("clientType",clientType).
 				accept(MediaType.APPLICATION_JSON_TYPE).post(ClientEntity.class);
 		return clientEntity;
 	}

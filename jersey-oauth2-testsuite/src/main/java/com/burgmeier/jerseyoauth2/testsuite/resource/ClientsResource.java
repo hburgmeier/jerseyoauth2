@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.google.inject.Inject;
@@ -24,9 +25,11 @@ public class ClientsResource {
 
 	@POST
 	@Produces({MediaType.APPLICATION_JSON})
-	public ClientEntity createClient(@QueryParam("appName") String appName, @QueryParam("callbackUrl") String callbackUrl) throws ClientServiceException
+	public ClientEntity createClient(@QueryParam("appName") String appName, @QueryParam("callbackUrl") String callbackUrl, @QueryParam("clientType") String clientTypeStr) throws ClientServiceException
 	{
-		IRegisteredClientApp regClient = clientService.registerClient(appName, callbackUrl);
+		ClientType clientType = "public".equalsIgnoreCase(clientTypeStr)?ClientType.PUBLIC:ClientType.CONFIDENTIAL;
+		
+		IRegisteredClientApp regClient = clientService.registerClient(appName, callbackUrl, clientType);
 		return new ClientEntity(regClient);
 	}
 	

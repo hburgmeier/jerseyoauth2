@@ -32,7 +32,7 @@ public class PerformanceTest {
 		ClientConfig cc = new DefaultClientConfig();
 		Client restClient = Client.create(cc);
 		ClientManagerClient authClient = new ClientManagerClient(restClient);
-		clientEntity = authClient.createClient();		
+		clientEntity = authClient.createClient("confidential");		
 		
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
 		Assert.assertNotNull(code);

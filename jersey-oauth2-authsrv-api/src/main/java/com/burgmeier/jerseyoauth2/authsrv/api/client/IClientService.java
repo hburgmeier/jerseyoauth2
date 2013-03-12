@@ -7,7 +7,7 @@ import com.burgmeier.jerseyoauth2.api.user.IUser;
 
 public interface IClientService {
 
-	IRegisteredClientApp registerClient(String appName, String callbackUrl) throws ClientServiceException;
+	IRegisteredClientApp registerClient(String appName, String callbackUrl, ClientType clientType) throws ClientServiceException;
 	
 	IRegisteredClientApp getRegisteredClient(String clientId);	
 	

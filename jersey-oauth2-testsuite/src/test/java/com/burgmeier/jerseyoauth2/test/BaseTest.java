@@ -20,7 +20,11 @@ public abstract class BaseTest {
 		ClientConfig cc = new DefaultClientConfig();
 		restClient = Client.create(cc);
 		authClient = new ClientManagerClient(restClient);
-		clientEntity = authClient.createClient();
+		clientEntity = registerClient();
+	}
+
+	protected ClientEntity registerClient() {
+		return authClient.createClient("confidential");
 	}	
 	
 }

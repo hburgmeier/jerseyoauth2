@@ -20,6 +20,7 @@ import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
+import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
@@ -80,6 +81,10 @@ public class AuthorizationService implements IAuthorizationService {
 							throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 					}
 				}
+				
+				if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL) && 
+					reqResponseType.equals(ResponseType.TOKEN))
+					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client type is invalid");
 					
 				IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(), scopes);
 				if (authorizedClientApp!=null)

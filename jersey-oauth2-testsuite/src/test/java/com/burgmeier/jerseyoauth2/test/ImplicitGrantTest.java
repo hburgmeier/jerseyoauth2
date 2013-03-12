@@ -8,12 +8,17 @@ import org.scribe.model.Token;
 
 import com.burgmeier.jerseyoauth2.test.client.ClientException;
 import com.burgmeier.jerseyoauth2.test.client.ResourceClient;
+import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 // This test OAuth2 Spec draft 31 Chapter 4.2
 public class ImplicitGrantTest extends BaseTest {
 
+	protected ClientEntity registerClient() {
+		return authClient.createClient("public");
+	}		
+	
 	@Test
 	public void testAccessToken()
 	{
