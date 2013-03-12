@@ -44,7 +44,7 @@ public class PerformanceTest {
 		token = client.getAccessToken(code);
 	}
 
-	@BenchmarkOptions(benchmarkRounds=500)
+	@BenchmarkOptions(benchmarkRounds=200)
 	@Test
 	public void testSimpleResourceAccess() throws ClientException
 	{
