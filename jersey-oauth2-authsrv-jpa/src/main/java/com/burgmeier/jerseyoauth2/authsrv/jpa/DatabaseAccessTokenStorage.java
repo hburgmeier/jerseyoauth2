@@ -25,14 +25,15 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 
 	private EntityManagerFactory emf;
 	private IConfiguration config;
+	
+	@Inject(optional=true)
 	private IUserStorageService userStorageService = null;
 
 	@Inject
-	public DatabaseAccessTokenStorage(final EntityManagerFactory emf, final IConfiguration config)//, @Nullable IUserStorageService userStorageService)
+	public DatabaseAccessTokenStorage(final EntityManagerFactory emf, final IConfiguration config)
 	{
 		this.emf = emf;
 		this.config = config;
-//		this.userStorageService = userStorageService;
 	}
 	
 	@Override
@@ -40,8 +41,14 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		try {
 			EntityManager em = emf.createEntityManager();		
 			TokenEntity tokenEntity = em.find(TokenEntity.class, accessToken);
-			setUser(tokenEntity);
-			return tokenEntity;
+			if (tokenEntity!=null && !tokenEntity.isExpired())
+			{
+				setUser(tokenEntity);
+				return tokenEntity;
+			} else {
+//TODO remove				
+				return null;
+			}
 		} catch (UserStorageServiceException e) {
 			throw new InvalidTokenException(e);
 		}
@@ -51,7 +58,8 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp) {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
-		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration());
+		long validUntil = System.currentTimeMillis()+(config.getTokenExpiration()*1000l);
+		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration(), validUntil);
 		saveTokenEntity(te);
 		return te;
 	}
@@ -63,8 +71,13 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByRefreshToken", TokenEntity.class);
 			query.setParameter("refreshToken", refreshToken);
 			TokenEntity te = query.getSingleResult();
-			setUser(te);
-			return te;
+			if (!te.isExpired())
+			{
+				setUser(te);
+				return te;
+			} else {
+				throw new InvalidTokenException("expired");
+			}
 		} catch (NoResultException e) {
 			throw new InvalidTokenException(e);
 		} catch (UserStorageServiceException e) {

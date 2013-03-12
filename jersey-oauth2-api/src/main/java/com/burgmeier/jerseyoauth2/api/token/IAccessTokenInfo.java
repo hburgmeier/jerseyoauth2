@@ -20,5 +20,7 @@ public interface IAccessTokenInfo {
 	String getAccessToken();
 
 	void updateTokens(String newAccessToken, String newRefreshToken);
+
+	boolean isExpired();
 	
 }

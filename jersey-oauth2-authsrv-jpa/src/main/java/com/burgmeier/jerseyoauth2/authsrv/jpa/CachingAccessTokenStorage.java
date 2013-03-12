@@ -34,7 +34,8 @@ public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 		if ((element = tokenCache.get(accessToken)) != null &&
 				!element.isExpired()) {
 			IAccessTokenInfo token = (IAccessTokenInfo) element.getObjectValue();
-			return token;
+			if (!token.isExpired())
+				return token;
 		}
 		IAccessTokenInfo token = delegate.getTokenInfoByAccessToken(accessToken);
 		if (token!=null)

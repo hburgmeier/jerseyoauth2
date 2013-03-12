@@ -29,7 +29,8 @@ class TokenEntity implements IAccessTokenInfo {
 	@Id
 	private String accessToken;
 	private String refreshToken;
-	private long expiredIn;
+	private long expiresIn;
+	private long validUntil;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	private AuthorizedClientApplication clientApp;
@@ -39,12 +40,13 @@ class TokenEntity implements IAccessTokenInfo {
 		
 	}
 	
-	public TokenEntity(String accessToken, String refreshToken, AuthorizedClientApplication clientApp, long expiredIn)
+	public TokenEntity(String accessToken, String refreshToken, AuthorizedClientApplication clientApp, long expiresIn, long validUntil)
 	{
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
-		this.expiredIn = expiredIn;
+		this.expiresIn = expiresIn;
+		this.validUntil = validUntil;
 	}
 	
 	@Override
@@ -64,7 +66,7 @@ class TokenEntity implements IAccessTokenInfo {
 
 	@Override
 	public String getExpiresIn() {
-		return Long.toString(expiredIn);
+		return Long.toString(expiresIn);
 	}
 
 	@Override
@@ -83,6 +85,11 @@ class TokenEntity implements IAccessTokenInfo {
 		setRefreshToken(newRefreshToken);
 	}
 
+	@Override
+	public boolean isExpired() {
+		return System.currentTimeMillis()>validUntil;
+	}
+
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
@@ -91,14 +98,16 @@ class TokenEntity implements IAccessTokenInfo {
 		this.refreshToken = refreshToken;
 	}
 
-	public void setExpiredIn(long expiredIn) {
-		this.expiredIn = expiredIn;
+	public void setExpiresIn(long expiresIn) {
+		this.expiresIn = expiresIn;
 	}
 
 	public void setClientApp(AuthorizedClientApplication clientApp) {
 		this.clientApp = clientApp;
 	}
 
-	
+	public long getValidUntil() {
+		return validUntil;
+	}
 	
 }

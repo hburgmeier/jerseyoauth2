@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.scribe.model.Token;
 
+import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
 import com.burgmeier.jerseyoauth2.test.client.ClientException;
 import com.burgmeier.jerseyoauth2.test.client.ClientManagerClient;
 import com.burgmeier.jerseyoauth2.test.client.ResourceClient;
@@ -25,6 +26,7 @@ public class PerformanceTest {
 	private static Token token;
 	private static ResourceClient client;
 	private static ClientEntity clientEntity;
+	private static long testCount = 0l;
 
 	@BeforeClass
 	public static void classSetup()
@@ -61,5 +63,17 @@ public class PerformanceTest {
 		Assert.assertEquals("manager", entity.getUsername());
 		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
 	}	
+	
+	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_SEQUENTIAL)
+	@Test
+	public void testParallelResourceAccessWithRefresh() throws ClientException
+	{
+		if (testCount % 50 == 0 && testCount>0)
+			token = client.refreshToken((OAuth2Token)token);
+		SampleEntity entity = client.retrieveEntitySample1(token);
+		Assert.assertNotNull(entity);
+		Assert.assertEquals("manager", entity.getUsername());
+		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
+	}		
 	
 }

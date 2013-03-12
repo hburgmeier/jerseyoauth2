@@ -13,6 +13,7 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	
 	private String accessToken;
 	private String refreshToken;
+	private long validUntil;
 
 	public SimpleAccessTokenInfo(String accessToken, String refreshToken, IAuthorizedClientApp clientApp, String expiresIn) {
 		super();
@@ -20,6 +21,7 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
 		this.expiresIn = expiresIn;
+		this.validUntil = System.currentTimeMillis()+Long.valueOf(expiresIn);
 	}
 
 	@Override
@@ -56,6 +58,11 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	public void updateTokens(String newAccessToken, String newRefreshToken) {
 		this.accessToken = newAccessToken;
 		this.refreshToken = newRefreshToken;
+	}
+
+	@Override
+	public boolean isExpired() {
+		return System.currentTimeMillis()>validUntil;
 	}
 
 }
