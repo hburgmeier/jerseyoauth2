@@ -1,16 +1,7 @@
 h1. JerseyOAuth2
 
 Did you ever want to offer OAuth2 for your (Jersey) REST service? Did you hold back, because there
-was no server framework available for Jersey? Now here is the solution... 
+was no server framework available for Jersey? Now here is the solution...
 
-h2. OAuth2 Provider for Jersey
+See the "Wiki":https://github.com/hburgmeier/jerseyoauth2/wiki for details.
 
-It uses 
-* Jersey 1.17
-* Guice 3.0
-* Apache Amber 0.22 
-
-to implement the OAuth2 functionality. This project
-aims to support "OAuth2 draft 31":http://tools.ietf.org/html/ietf-oauth-v2-31.
-
-**THIS IS WORK IN PROGRESS, SO DON'T USE IN PRODUCTION.** 
