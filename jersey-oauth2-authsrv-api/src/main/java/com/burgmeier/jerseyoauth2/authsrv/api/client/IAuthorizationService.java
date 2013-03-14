@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
+import com.burgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
+
 
 public interface IAuthorizationService {
 
-	void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
-			 throws ServletException, IOException;
+	void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
+			throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException;
 	
 	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException;
