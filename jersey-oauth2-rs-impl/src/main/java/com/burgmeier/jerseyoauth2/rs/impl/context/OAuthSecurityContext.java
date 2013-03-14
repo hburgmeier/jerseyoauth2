@@ -4,8 +4,13 @@ import java.security.Principal;
 
 import javax.ws.rs.core.SecurityContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class OAuthSecurityContext implements SecurityContext {
 
+	private static final Logger logger = LoggerFactory.getLogger(OAuthSecurityContext.class);
+	
 	private OAuthPrincipal principal;
 	private boolean secure;
 	
@@ -32,6 +37,7 @@ public class OAuthSecurityContext implements SecurityContext {
 
 	@Override
 	public String getAuthenticationScheme() {
+		logger.warn("getAuthenticationScheme called. This is not supported nor necessary.");
 		return null; // the token request is indeed not authorized
 	}
 

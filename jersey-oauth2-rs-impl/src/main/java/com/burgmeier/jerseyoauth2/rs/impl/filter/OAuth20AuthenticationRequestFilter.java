@@ -13,6 +13,8 @@ import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.types.ParameterStyle;
 import org.apache.amber.oauth2.rs.request.OAuthAccessResourceRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
@@ -25,6 +27,8 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 
+	private static final Logger logger = LoggerFactory.getLogger(OAuth20AuthenticationRequestFilter.class);
+	
 	private Set<String> requiredScopes;
 	private final IAccessTokenVerifier accessTokenVerifier;
 	private ParameterStyle[] parameterStyles;
@@ -40,6 +44,7 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 		try {
 			OAuthAccessResourceRequest oauthRequest = new 
 			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
+			logger.debug("parse request successful");
 			
 			String accessToken = oauthRequest.getAccessToken();
 
@@ -49,31 +54,43 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 				throw new InvalidTokenException(accessToken);
 			}
 			if (accessTokenInfo.getUser()==null)
+			{
+				logger.error("no user stored in token {}", accessToken);
 				throw new WebApplicationException(buildUserProblem());
+			}
 			
 			if (accessTokenInfo.getClientApp()==null)
-				throw new WebApplicationException(buildClientProblem());			
+			{
+				logger.error("no client stored in token {}", accessToken);
+				throw new WebApplicationException(buildClientProblem());
+			}
 			
+			Set<String> authorizedScopes = accessTokenInfo.getAuthorizedScopes();
 			if (requiredScopes!=null)
 			{
-				if (!matchScopes(requiredScopes, accessTokenInfo.getAuthorizedScopes()))
+				if (!matchScopes(requiredScopes, authorizedScopes))
 				{
+					logger.error("Scopes did not match, required {}, actual {}", requiredScopes, authorizedScopes);
 					throw new WebApplicationException(buildScopeProblem());
 				}
 			}
 			
 			boolean secure = isRequestSecure(containerRequest);
 			
-			OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), accessTokenInfo.getAuthorizedScopes());
+			OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), authorizedScopes);
 			SecurityContext securityContext = new OAuthSecurityContext(principal, secure);
 			containerRequest.setSecurityContext(securityContext );
+			logger.debug("set SecurityContext. User {}", principal.getName());
 			
 			return containerRequest;
 		} catch (OAuthSystemException e) {
+			logger.error("Error in filter request", e);
 			throw new WebApplicationException(buildAuthProblem());
 		} catch (OAuthProblemException e) {
+			logger.error("Error in filter request", e);
 			throw new WebApplicationException(buildAuthProblem());			
 		} catch (InvalidTokenException e) {
+			logger.error("Error in filter request", e);
 			throw new WebApplicationException(buildAuthProblem());			
 		}
 	}

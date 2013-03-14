@@ -7,6 +7,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Providers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
@@ -18,6 +21,8 @@ import com.sun.jersey.spi.container.ResourceFilterFactory;
 
 public class OAuth20FilterFactory  implements ResourceFilterFactory {
 
+	private static final Logger logger = LoggerFactory.getLogger(OAuth20FilterFactory.class);
+	
 	@Context
 	private Providers providers;
 	
@@ -30,6 +35,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 			
 			if (oauth20!=null)
 			{
+				logger.debug("Installing oauth2 filter on {}", am.getResource());
 				return getFilters(scopes);
 			}
 			else {
@@ -37,6 +43,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 				scopes = am.getResource().getAnnotation(AllowedScopes.class);
 				if (oauth20!=null)
 				{
+					logger.debug("Installing oauth2 filter on {}", am.getResource());
 					return getFilters(scopes);				
 				}
 				return null;	
@@ -51,6 +58,7 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenVerifier(), getRSConfiguration());
 		if (scopes!=null && scopes.scopes().length>0)
 		{
+			logger.debug("Installing scope filter");
 			oAuth20AuthenticationFilter.setRequiredScopes(scopes.scopes());
 		}
 		securityFilters.add(oAuth20AuthenticationFilter);
