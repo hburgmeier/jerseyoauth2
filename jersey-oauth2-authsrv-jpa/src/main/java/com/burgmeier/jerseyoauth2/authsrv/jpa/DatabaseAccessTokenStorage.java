@@ -10,6 +10,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
@@ -23,6 +26,8 @@ import com.google.inject.Inject;
 
 public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 
+	private static final Logger logger = LoggerFactory.getLogger(DatabaseAccessTokenStorage.class);
+	
 	private EntityManagerFactory emf;
 	private IConfiguration config;
 	
@@ -46,7 +51,12 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 				setUser(tokenEntity);
 				return tokenEntity;
 			} else {
-//TODO remove				
+				if (tokenEntity==null)
+					logger.debug("token {} unknown", accessToken);
+				else  {
+					// TODO remove
+					logger.debug("token {} expired", accessToken);
+				}
 				return null;
 			}
 		} catch (UserStorageServiceException e) {
@@ -61,6 +71,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		long validUntil = System.currentTimeMillis()+(config.getTokenExpiration()*1000l);
 		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration(), validUntil);
 		saveTokenEntity(te);
+		logger.debug("token {} saved", accessToken);
 		return te;
 	}
 
@@ -76,6 +87,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 				setUser(te);
 				return te;
 			} else {
+				logger.debug("refresh token {} is expired", refreshToken);
 				throw new InvalidTokenException("expired");
 			}
 		} catch (NoResultException e) {
@@ -97,6 +109,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 				em.flush();
 				tx.commit();
 			} catch (PersistenceException ex) {
+				logger.error("persistence error", ex);
 				tx.rollback();
 				throw ex;
 			} finally {
@@ -129,7 +142,9 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			}
 			em.flush();
 			tx.commit();
+			logger.debug("tokens for user {} invalidated", username);
 		} catch (PersistenceException ex) {
+			logger.error("persistence error", ex);
 			tx.rollback();
 			throw ex;
 		} finally {
@@ -147,6 +162,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			em.flush();
 			tx.commit();
 		} catch (PersistenceException ex) {
+			logger.error("persistence error", ex);
 			tx.rollback();
 			throw ex;
 		} finally {
@@ -160,10 +176,13 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			AuthorizedClientApplication clientApp = (AuthorizedClientApplication) tokenEntity.getClientApp();
 			if (userStorageService!=null)
 			{
+				logger.debug("using UserStorageService");
 				IUser iUser = userStorageService.loadUser(clientApp.getUsername());
 				clientApp.setAuthorizedUser(iUser);
-			} else
+			} else {
+				logger.debug("using no UserStorageService");
 				clientApp.setAuthorizedUser(new User(clientApp.getUsername()));
+			}
 		}
 	}
 	

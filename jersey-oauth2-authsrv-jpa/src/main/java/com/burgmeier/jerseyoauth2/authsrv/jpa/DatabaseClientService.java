@@ -10,6 +10,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
@@ -23,16 +26,17 @@ import com.google.inject.Inject;
 
 public class DatabaseClientService implements IClientService {
 
+	private static final Logger logger = LoggerFactory.getLogger(DatabaseClientService.class);
+	
 	private final EntityManagerFactory emf;
 	
 	@Inject(optional=true)
 	private IUserStorageService userStorageService = null;
 
 	@Inject
-	public DatabaseClientService(EntityManagerFactory emf)//, IUserStorageService userStorageService)
+	public DatabaseClientService(EntityManagerFactory emf)
 	{
 		this.emf = emf;
-//		this.userStorageService = userStorageService;
 	}
 	
 	@Override
@@ -45,6 +49,7 @@ public class DatabaseClientService implements IClientService {
 		client.setCallbackUrl(callbackUrl);
 		client.setClientType(clientType);
 		persist(client);
+		logger.debug("registered client {}", clientId);
 		return client;
 	}
 
@@ -74,9 +79,9 @@ public class DatabaseClientService implements IClientService {
 			query.setParameter("clientId", clientId);
 			AuthorizedClientApplication result = query.getSingleResult();
 			
-			System.err.println("scopes:"+scopes+":"+result.getAuthorizedScopes());			
 			if (!result.getAuthorizedScopes().containsAll(scopes))
 			{
+				logger.debug("scopes do not match authorized scopes {} auth {}", scopes, result.getAuthorizedScopes());
 				return null;
 			}
 			
@@ -115,6 +120,7 @@ public class DatabaseClientService implements IClientService {
 				entityManager.remove(result);
 				tx.commit();
 			} catch (PersistenceException e) {
+				logger.error("persistence error - rollback", e);
 				tx.rollback();
 				result = null;
 			}
@@ -138,7 +144,7 @@ public class DatabaseClientService implements IClientService {
 			entityManager.flush();
 			tx.commit();
 		} catch (PersistenceException e) {
-e.printStackTrace();
+			logger.error("persistence error - rollback", e);
 			tx.rollback();
 			throw e;
 		} finally {
@@ -149,11 +155,14 @@ e.printStackTrace();
 	protected void setUser(AuthorizedClientApplication result) throws UserStorageServiceException {
 		if (userStorageService!=null)
 		{
+			logger.debug("using userStorageService to load user");
 			IUser iUser = userStorageService.loadUser(result.getUsername());
 			result.setAuthorizedUser(iUser);
 		}
-		else
+		else {
+			logger.debug("using no user storage service");
 			result.setAuthorizedUser(new User(result.getUsername()));
+		}
 	}
 	
 }
