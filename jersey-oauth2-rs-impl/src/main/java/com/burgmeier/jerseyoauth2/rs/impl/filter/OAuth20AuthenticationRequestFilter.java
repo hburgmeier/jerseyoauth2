@@ -16,16 +16,14 @@ import org.apache.amber.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
-import com.burgmeier.jerseyoauth2.rs.impl.context.OAuthPrincipal;
-import com.burgmeier.jerseyoauth2.rs.impl.context.OAuthSecurityContext;
+import com.burgmeier.jerseyoauth2.rs.impl.base.AbstractOAuth2Filter;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
-class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
+class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements ContainerRequestFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(OAuth20AuthenticationRequestFilter.class);
 	
@@ -45,7 +43,7 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 			OAuthAccessResourceRequest oauthRequest = new 
 			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
 			logger.debug("parse request successful");
-			
+/*			
 			String accessToken = oauthRequest.getAccessToken();
 
 			IAccessTokenInfo accessTokenInfo = accessTokenVerifier.verifyAccessToken(accessToken);
@@ -75,12 +73,14 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 				}
 			}
 			
-			boolean secure = isRequestSecure(containerRequest);
-			
 			OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), authorizedScopes);
 			SecurityContext securityContext = new OAuthSecurityContext(principal, secure);
+*/			
+			boolean secure = isRequestSecure(containerRequest);
+			SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
+			
 			containerRequest.setSecurityContext(securityContext );
-			logger.debug("set SecurityContext. User {}", principal.getName());
+			logger.debug("set SecurityContext. User {}", securityContext.getUserPrincipal().getName());
 			
 			return containerRequest;
 		} catch (OAuthSystemException e) {
@@ -108,44 +108,16 @@ class OAuth20AuthenticationRequestFilter implements ContainerRequestFilter {
 		this.requiredScopes = new HashSet<>(Arrays.asList(scopes));
 	}
 	
-	protected boolean matchScopes(Set<String> requiredScopes, Set<String> actualScopes)
-	{
-		if (actualScopes==null && requiredScopes==null)
-			return true;
-		if (actualScopes==null && requiredScopes!=null && !requiredScopes.isEmpty())
-			return false;
-		return actualScopes.containsAll(requiredScopes);
-	}
-	
-	protected Response buildScopeProblem()
-	{
-		return Response.serverError().
-			status(401).
-			entity("Not allowed").
-			build();
-	}
-	
-	protected Response buildUserProblem()
-	{
-		return Response.serverError().
-			status(401).
-			entity("No authorized user").
-			build();
-	}	
-	
-	protected Response buildClientProblem()
-	{
-		return Response.serverError().
-			status(401).
-			entity("No authorized client").
-			build();
-	}	
-	
 	private Response buildAuthProblem() {
 		return Response.serverError().
 				status(401).
 				entity("Not allowed").
 				build();
+	}
+
+	@Override
+	protected IAccessTokenVerifier getAccessTokenVerifier() {
+		return accessTokenVerifier;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.rs.impl.context;
+package com.burgmeier.jerseyoauth2.rs.impl.base.context;
 
 import java.security.Principal;
 

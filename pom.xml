@@ -138,5 +138,7 @@
 		<module>jersey-oauth2-authsrv-openid</module>
 		<module>jersey-oauth2-sample-openid</module>
 		<module>jersey-oauth2-authsrv-jpa</module>
+		<module>jersey-oauth2-rs-impl-rs2</module>
+		<module>jersey-oauth2-rs-impl-base</module>
 	</modules>
 </project>

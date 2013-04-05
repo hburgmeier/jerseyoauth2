@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.rs.impl.guice;
+package com.burgmeier.jerseyoauth2.rs.impl.rs2.guice;
 
 import com.burgmeier.jerseyoauth2.rs.impl.base.AccessTokenVerifierProvider;
 import com.burgmeier.jerseyoauth2.rs.impl.base.ConfigurationServiceProvider;
