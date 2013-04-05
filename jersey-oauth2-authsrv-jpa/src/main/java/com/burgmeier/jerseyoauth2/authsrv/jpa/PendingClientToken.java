@@ -37,7 +37,7 @@ class PendingClientToken implements IPendingClientToken {
 
 	public PendingClientToken(AuthorizedClientApplication clientApp) {
 		this.clientApp = clientApp;
-		code = UUID.randomUUID().toString(); //TODO
+		code = UUID.randomUUID().toString(); //TODO use code generator
 	}
 
 	public int getId() {

@@ -54,7 +54,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 				if (tokenEntity==null)
 					logger.debug("token {} unknown", accessToken);
 				else  {
-					// TODO remove
+					removeToken(em, tokenEntity);
 					logger.debug("token {} expired", accessToken);
 				}
 				return null;
@@ -102,19 +102,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		try {
 			EntityManager em = emf.createEntityManager();
 			TokenEntity tokenEntity = em.find(TokenEntity.class, oldAccessToken);
-			EntityTransaction tx = em.getTransaction();
-			try {
-				tx.begin();
-				em.remove(tokenEntity);
-				em.flush();
-				tx.commit();
-			} catch (PersistenceException ex) {
-				logger.error("persistence error", ex);
-				tx.rollback();
-				throw ex;
-			} finally {
-				em.close();
-			}
+			removeToken(em, tokenEntity);
 			
 			tokenEntity.updateTokens(newAccessToken, newRefreshToken);
 			saveTokenEntity(tokenEntity);
@@ -122,6 +110,22 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			return tokenEntity;
 		} catch (UserStorageServiceException | PersistenceException e) {
 			throw new TokenStorageException(e);
+		}
+	}
+
+	protected void removeToken(EntityManager em, TokenEntity tokenEntity) {
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.remove(tokenEntity);
+			em.flush();
+			tx.commit();
+		} catch (PersistenceException ex) {
+			logger.error("persistence error", ex);
+			tx.rollback();
+			throw ex;
+		} finally {
+			em.close();
 		}
 	}
 

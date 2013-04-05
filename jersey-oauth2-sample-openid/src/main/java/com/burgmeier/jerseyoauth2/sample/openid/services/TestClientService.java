@@ -100,7 +100,7 @@ public class TestClientService implements IClientService {
 			pendingAuth.put(authKey, clientAuth);
 			return clientAuth;
 		} catch (OAuthSystemException e) {
-			return null; //TODO
+			return null; //TODO handle this exception
 		}
 	}
 
