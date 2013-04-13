@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
@@ -20,6 +19,7 @@ import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
 import com.burgmeier.jerseyoauth2.rs.impl.base.AbstractOAuth2Filter;
+import com.burgmeier.jerseyoauth2.rs.impl.base.OAuth2FilterException;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
@@ -92,6 +92,9 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 		} catch (InvalidTokenException e) {
 			logger.error("Error in filter request", e);
 			throw new WebApplicationException(buildAuthProblem());			
+		} catch (OAuth2FilterException e) {
+			logger.error("Error in filter request", e);
+			throw new WebApplicationException(e.getErrorResponse());			
 		}
 	}
 
@@ -102,17 +105,10 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			return true;
 		String scheme = requestUri.getScheme();
 		return scheme!=null?scheme.equalsIgnoreCase("https"):false;
-	}
+	}	
 	
 	void setRequiredScopes(String[] scopes) {
 		this.requiredScopes = new HashSet<>(Arrays.asList(scopes));
-	}
-	
-	private Response buildAuthProblem() {
-		return Response.serverError().
-				status(401).
-				entity("Not allowed").
-				build();
 	}
 
 	@Override

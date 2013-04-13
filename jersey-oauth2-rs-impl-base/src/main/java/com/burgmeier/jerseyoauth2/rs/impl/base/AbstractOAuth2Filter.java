@@ -1,8 +1,8 @@
 package com.burgmeier.jerseyoauth2.rs.impl.base;
 
+import java.net.URI;
 import java.util.Set;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -21,7 +21,7 @@ public abstract class AbstractOAuth2Filter {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOAuth2Filter.class);	
 	
-	protected final SecurityContext filterOAuth2Request(OAuthAccessResourceRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException
+	protected final SecurityContext filterOAuth2Request(OAuthAccessResourceRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException, OAuth2FilterException
 	{
 		String accessToken = oauthRequest.getAccessToken();
 
@@ -33,13 +33,13 @@ public abstract class AbstractOAuth2Filter {
 		if (accessTokenInfo.getUser()==null)
 		{
 			logger.error("no user stored in token {}", accessToken);
-			throw new WebApplicationException(buildUserProblem());
+			throw new OAuth2FilterException(buildUserProblem());
 		}
 		
 		if (accessTokenInfo.getClientApp()==null)
 		{
 			logger.error("no client stored in token {}", accessToken);
-			throw new WebApplicationException(buildClientProblem());
+			throw new OAuth2FilterException(buildClientProblem());
 		}
 		
 		Set<String> authorizedScopes = accessTokenInfo.getAuthorizedScopes();
@@ -48,7 +48,7 @@ public abstract class AbstractOAuth2Filter {
 			if (!matchScopes(requiredScopes, authorizedScopes))
 			{
 				logger.error("Scopes did not match, required {}, actual {}", requiredScopes, authorizedScopes);
-				throw new WebApplicationException(buildScopeProblem());
+				throw new OAuth2FilterException(buildScopeProblem());
 			}
 		}
 		
@@ -90,5 +90,19 @@ public abstract class AbstractOAuth2Filter {
 			status(401).
 			entity("No authorized client").
 			build();
+	}	
+	
+	protected Response buildAuthProblem() {
+		return Response.serverError().
+				status(401).
+				entity("Not allowed").
+				build();
+	}	
+	
+	protected boolean isRequestSecure(URI requestUri, String secureSSL) {
+		if (secureSSL!=null && "true".equals(secureSSL))
+			return true;
+		String scheme = requestUri.getScheme();
+		return scheme!=null?scheme.equalsIgnoreCase("https"):false;
 	}	
 }
