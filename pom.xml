@@ -140,5 +140,6 @@
 		<module>jersey-oauth2-authsrv-jpa</module>
 		<module>jersey-oauth2-rs-impl-rs2</module>
 		<module>jersey-oauth2-rs-impl-base</module>
+		<module>jersey-oauth2-testsuite-rs2</module>
 	</modules>
 </project>

@@ -43,39 +43,7 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			OAuthAccessResourceRequest oauthRequest = new 
 			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
 			logger.debug("parse request successful");
-/*			
-			String accessToken = oauthRequest.getAccessToken();
-
-			IAccessTokenInfo accessTokenInfo = accessTokenVerifier.verifyAccessToken(accessToken);
-			if (accessTokenInfo==null)
-			{
-				throw new InvalidTokenException(accessToken);
-			}
-			if (accessTokenInfo.getUser()==null)
-			{
-				logger.error("no user stored in token {}", accessToken);
-				throw new WebApplicationException(buildUserProblem());
-			}
-			
-			if (accessTokenInfo.getClientApp()==null)
-			{
-				logger.error("no client stored in token {}", accessToken);
-				throw new WebApplicationException(buildClientProblem());
-			}
-			
-			Set<String> authorizedScopes = accessTokenInfo.getAuthorizedScopes();
-			if (requiredScopes!=null)
-			{
-				if (!matchScopes(requiredScopes, authorizedScopes))
-				{
-					logger.error("Scopes did not match, required {}, actual {}", requiredScopes, authorizedScopes);
-					throw new WebApplicationException(buildScopeProblem());
-				}
-			}
-			
-			OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), authorizedScopes);
-			SecurityContext securityContext = new OAuthSecurityContext(principal, secure);
-*/			
+		
 			boolean secure = isRequestSecure(containerRequest);
 			SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 			
