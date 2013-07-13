@@ -9,7 +9,7 @@
 	<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 	<artifactId>jersey-oauth2-testsuite-rs2</artifactId>
 	<packaging>war</packaging>
-	<name>Jersey OAuth2 Provider Testsuite</name>
+	<name>Jersey OAuth2 Provider Testsuite Jax-RS 2</name>
 
 	<dependencies>
 		<dependency>
@@ -22,5 +22,122 @@
 			<artifactId>jersey-oauth2-authsrv-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>			
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.carrotsearch</groupId>
+			<artifactId>junit-benchmarks</artifactId>
+			<version>0.6.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.10</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>9998</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+					</connectors>
+					<jettyConfig>${basedir}/src/test/resources/jetty.xml</jettyConfig>
+					<contextPath>testsuite</contextPath>
+					<userRealms>
+						<userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
+							<name>testsuite</name>
+							<config>${basedir}/src/test/resources/jetty-users.properties</config>
+						</userRealm>
+					</userRealms>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start-jetty</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run-war</goal>
+						</goals>
+						<configuration>
+							<daemon>true</daemon>
+							<webApp>
+								${project.build.directory}/jersey-oauth2-testsuite-rs2-${project.version}.war
+							</webApp>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop-jetty</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+						<configuration>
+							<stopPort>9998</stopPort>
+							<stopKey>test</stopKey>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>jetty-plus</artifactId>
+						<version>6.1.10</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.derby</groupId>
+						<artifactId>derby</artifactId>
+						<version>10.9.1.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>jetty-atomikos</artifactId>
+						<version>8.1.9.v20130131</version>
+					</dependency>					
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
+		</plugins>
+	</build>	
+	
 </project>
