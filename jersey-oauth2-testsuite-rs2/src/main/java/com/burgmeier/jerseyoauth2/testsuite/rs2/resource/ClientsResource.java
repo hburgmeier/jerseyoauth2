@@ -1,5 +1,6 @@
 package com.burgmeier.jerseyoauth2.testsuite.rs2.resource;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -10,12 +11,16 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
-import com.google.inject.Inject;
 
 @Path("/clients")
 public class ClientsResource {
 
 	private final IClientService clientService;
+	
+	public ClientsResource() //TODO
+	{
+		clientService = null;
+	}
 	
 	@Inject
 	public ClientsResource(final IClientService clientService) {

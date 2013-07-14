@@ -15,6 +15,12 @@
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-rs-impl-base</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+				   <groupId>javax.ws.rs</groupId>
+				   <artifactId>jsr311-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>		
 		<dependency>
 			<groupId>javax.ws.rs</groupId>

@@ -7,6 +7,7 @@ import com.burgmeier.jerseyoauth2.testsuite.resource.ClientEntity;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 public abstract class BaseTest {
 
