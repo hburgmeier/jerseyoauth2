@@ -92,7 +92,7 @@
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
-					<jettyConfig>${basedir}/src/test/resources/jetty.xml</jettyConfig>
+					<jettyEnvXml>${basedir}/src/test/resources/jettyEnv.xml</jettyEnvXml>
 					<contextPath>testsuite</contextPath>
 					<userRealms>
 						<userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
