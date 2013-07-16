@@ -3,6 +3,7 @@ package com.burgmeier.jerseyoauth2.authsrv.jpa;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -22,7 +23,6 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserStorageService;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.UserStorageServiceException;
-import com.google.inject.Inject;
 
 public class DatabaseClientService implements IClientService {
 
@@ -30,7 +30,7 @@ public class DatabaseClientService implements IClientService {
 	
 	private final EntityManagerFactory emf;
 	
-	@Inject(optional=true)
+	@com.google.inject.Inject(optional=true)
 	private IUserStorageService userStorageService = null;
 
 	@Inject

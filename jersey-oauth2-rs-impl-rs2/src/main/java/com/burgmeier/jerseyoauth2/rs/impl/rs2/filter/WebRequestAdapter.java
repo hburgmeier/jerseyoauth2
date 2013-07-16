@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,9 +19,19 @@ import javax.ws.rs.container.ContainerRequestContext;
 public class WebRequestAdapter implements HttpServletRequest {
 
 	private ContainerRequestContext ctx;
+	private String queryString;
 
 	public WebRequestAdapter(ContainerRequestContext ctx) {
 		this.ctx = ctx;
+		
+		StringBuffer queryStr = new StringBuffer();
+		for (Map.Entry<String, List<String>> entry : this.ctx.getUriInfo().getQueryParameters(true).entrySet())
+		{
+			queryStr.append(entry.getKey()).append("=");
+			queryStr.append(entry.getValue().get(0)).append("&"); //TODO multivalue
+			
+		}
+		this.queryString = queryStr.toString();		
 	}
 
 	@Override
@@ -217,8 +228,7 @@ public class WebRequestAdapter implements HttpServletRequest {
 
 	@Override
 	public String getHeader(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return ctx.getHeaderString(name);
 	}
 
 	@Override
@@ -241,8 +251,7 @@ public class WebRequestAdapter implements HttpServletRequest {
 
 	@Override
 	public String getMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return ctx.getMethod();
 	}
 
 	@Override
@@ -265,8 +274,7 @@ public class WebRequestAdapter implements HttpServletRequest {
 
 	@Override
 	public String getQueryString() {
-		// TODO Auto-generated method stub
-		return null;
+		return queryString;
 	}
 
 	@Override

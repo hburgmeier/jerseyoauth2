@@ -2,6 +2,7 @@ package com.burgmeier.jerseyoauth2.authsrv.jpa;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
 import net.sf.ehcache.CacheManager;
@@ -14,7 +15,6 @@ import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;
-import com.google.inject.Inject;
 
 public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 
@@ -22,7 +22,7 @@ public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 	protected final Ehcache tokenCache;
 
 	@Inject
-	public CachingAccessTokenStorage(final EntityManagerFactory emf, final IConfiguration config, final CacheManager cacheManager) {
+	public CachingAccessTokenStorage(EntityManagerFactory emf, IConfiguration config, CacheManager cacheManager) {
 		this.delegate = new DatabaseAccessTokenStorage(emf, config);
 		tokenCache = cacheManager.getEhcache("tokenCache");
 		assert(tokenCache!=null);

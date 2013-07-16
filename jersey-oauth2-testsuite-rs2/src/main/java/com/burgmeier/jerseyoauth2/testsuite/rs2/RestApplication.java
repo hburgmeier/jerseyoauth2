@@ -4,7 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.Application;
+
+import net.sf.ehcache.CacheManager;
 
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -17,6 +20,8 @@ import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.burgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.burgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.burgmeier.jerseyoauth2.authsrv.impl.services.IntegratedAccessTokenVerifier;
+import com.burgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
+import com.burgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.burgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.burgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
 import com.burgmeier.jerseyoauth2.rs.impl.rs2.filter.OAuth2FilterFeature;
@@ -24,9 +29,9 @@ import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientAuthResource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientsResource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.Sample2Resource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.SampleResource;
+import com.burgmeier.jerseyoauth2.testsuite.rs2.services.CacheManagerProvider;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.services.Configuration;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.services.TestAccessTokenStorageService;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.services.TestClientService;
+import com.burgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
 
 public class RestApplication extends Application {
 
@@ -34,12 +39,18 @@ public class RestApplication extends Application {
     public RestApplication(ServiceLocator serviceLocator) {
 		DynamicConfiguration dc = Injections.getConfiguration(serviceLocator);
 
-        Injections.addBinding(Injections.newBinder(TestClientService.class).to(IClientService.class),dc);
+        Injections.addBinding(Injections.newBinder(DatabaseClientService.class).to(IClientService.class),dc);
         Injections.addBinding(Injections.newBinder(Configuration.class).to(IConfiguration.class),dc);
         Injections.addBinding(Injections.newBinder(Configuration.class).to(IRSConfiguration.class),dc);
         Injections.addBinding(Injections.newBinder(DefaultPrincipalUserService.class).to(IUserService.class),dc);
-        Injections.addBinding(Injections.newBinder(TestAccessTokenStorageService.class).to(IAccessTokenStorageService.class),dc);
+        Injections.addBinding(Injections.newBinder(CachingAccessTokenStorage.class).to(IAccessTokenStorageService.class),dc);
         Injections.addBinding(Injections.newBinder(IntegratedAccessTokenVerifier.class).to(IAccessTokenVerifier.class),dc);
+		
+		EntityManagerFactory emf = new PersistenceProvider().get();
+        Injections.addBinding(Injections.newBinder(emf).to(EntityManagerFactory.class),dc);
+        
+        CacheManager cacheManager = new CacheManagerProvider().get();
+        Injections.addBinding(Injections.newBinder(cacheManager).to(CacheManager.class),dc);
         
         dc.commit();
 	}

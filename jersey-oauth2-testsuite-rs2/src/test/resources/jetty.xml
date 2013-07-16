@@ -7,7 +7,7 @@
 		<Arg>jdbc/authds</Arg>
 		<Arg>
 			<New class="org.apache.derby.jdbc.EmbeddedDataSource">
-				<Set name="DatabaseName">tmp/authsrv</Set>
+				<Set name="DatabaseName">tmp/authsrv2</Set>
 				<Set name="createDatabase">create</Set>
 			</New>
 		</Arg>
