@@ -14,6 +14,18 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-testsuite-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-testsuite-base</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>				
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-rs-impl-rs2</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -24,20 +36,32 @@
 		</dependency>
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
-			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>			
-		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-authsrv-jpa</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
+		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet-core</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-json-jackson</artifactId>
+		    <version>2.0</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-servlet</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>		
+	
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -50,31 +74,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
 			<groupId>com.carrotsearch</groupId>
 			<artifactId>junit-benchmarks</artifactId>
 			<version>0.6.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.glassfish.jersey.media</groupId>
-		    <artifactId>jersey-media-json-jackson</artifactId>
-		    <version>2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
+			<version>${project.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
@@ -159,6 +173,9 @@
 						</goals>
 						<configuration>
 							<skip>false</skip>
+							<dependenciesToScan>
+                				<dependency>com.burgmeier.apps.jerseyoauth2:jersey-oauth2-testsuite-base</dependency>
+            				</dependenciesToScan>
 						</configuration>
 					</execution>
 				</executions>

@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -7,11 +7,9 @@ import org.junit.Test;
 import org.scribe.model.Token;
 
 import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientManagerClient;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ResourceClient;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientEntity;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.SampleEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientException;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientManagerClient;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 import com.sun.jersey.api.client.Client;

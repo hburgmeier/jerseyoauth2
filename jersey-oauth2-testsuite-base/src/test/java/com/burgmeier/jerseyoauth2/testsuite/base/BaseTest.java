@@ -1,9 +1,8 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import org.junit.Before;
 
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientManagerClient;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientManagerClient;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;

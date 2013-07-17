@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import org.apache.amber.oauth2.common.message.types.GrantType;
 import org.apache.amber.oauth2.common.message.types.ResponseType;
@@ -6,9 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scribe.model.Token;
 
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ResourceClient;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientException;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 

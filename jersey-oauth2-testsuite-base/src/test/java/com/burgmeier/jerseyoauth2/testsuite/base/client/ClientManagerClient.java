@@ -1,9 +1,9 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client;
+package com.burgmeier.jerseyoauth2.testsuite.base.client;
 
 import javax.ws.rs.core.MediaType;
 
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientAuthEntity;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.ClientAuthEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.ClientEntity;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;

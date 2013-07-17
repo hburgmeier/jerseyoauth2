@@ -11,6 +11,7 @@ import javax.ws.rs.core.SecurityContext;
 import com.burgmeier.jerseyoauth2.rs.api.IOAuthPrincipal;
 import com.burgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
 import com.burgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
+import com.burgmeier.jerseyoauth2.testsuite.base.SampleEntity;
 
 @Path("/sample2")
 @OAuth20

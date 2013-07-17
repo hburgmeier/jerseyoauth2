@@ -1,12 +1,11 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.scribe.model.Token;
 
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ResourceClient;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.SampleEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientException;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
 
 public class ResourceTest extends BaseTest {
 

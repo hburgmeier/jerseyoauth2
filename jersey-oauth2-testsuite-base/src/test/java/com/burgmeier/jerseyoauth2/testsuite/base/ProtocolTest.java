@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,8 +6,8 @@ import org.scribe.model.Token;
 
 import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
 import com.burgmeier.jerseyoauth2.client.scribe.TokenExtractorException;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ClientException;
-import com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client.ResourceClient;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientException;
+import com.burgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 

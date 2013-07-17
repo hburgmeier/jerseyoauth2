@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client;
+package com.burgmeier.jerseyoauth2.testsuite.base.client;
 
 import java.io.IOException;
 
@@ -14,8 +14,8 @@ import org.scribe.oauth.OAuthService;
 
 import com.burgmeier.jerseyoauth2.client.scribe.IOAuth2Service;
 import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientEntity;
-import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.SampleEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.ClientEntity;
+import com.burgmeier.jerseyoauth2.testsuite.base.SampleEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ResourceClient {

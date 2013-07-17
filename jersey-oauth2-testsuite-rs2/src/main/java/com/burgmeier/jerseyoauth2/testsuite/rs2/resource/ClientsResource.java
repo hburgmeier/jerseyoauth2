@@ -11,6 +11,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.burgmeier.jerseyoauth2.testsuite.base.ClientEntity;
 
 @Path("/clients")
 public class ClientsResource {

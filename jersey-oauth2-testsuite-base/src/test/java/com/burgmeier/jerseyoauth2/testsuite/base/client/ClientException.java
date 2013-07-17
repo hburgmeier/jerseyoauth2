@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.jerseyoauth2.testsuite.rs2.test.client;
+package com.burgmeier.jerseyoauth2.testsuite.base.client;
 
 public class ClientException extends Exception {
 

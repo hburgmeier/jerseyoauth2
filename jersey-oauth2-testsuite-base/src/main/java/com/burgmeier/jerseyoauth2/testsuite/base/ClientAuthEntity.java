@@ -1,4 +1,4 @@
-package com.burgmeier.jerseyoauth2.testsuite.rs2.resource;
+package com.burgmeier.jerseyoauth2.testsuite.base;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
