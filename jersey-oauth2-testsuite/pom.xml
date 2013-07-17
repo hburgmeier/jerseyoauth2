@@ -10,7 +10,21 @@
 	<artifactId>jersey-oauth2-testsuite</artifactId>
 	<packaging>war</packaging>
 	<name>Jersey OAuth2 Provider Testsuite</name>
+	
 	<dependencies>
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-testsuite-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<artifactId>jersey-oauth2-testsuite-base</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>	
+	
 		<dependency>
 			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-rs-api</artifactId>
@@ -185,6 +199,9 @@
 						</goals>
 						<configuration>
 							<skip>false</skip>
+							<dependenciesToScan>
+                				<dependency>com.burgmeier.apps.jerseyoauth2:jersey-oauth2-testsuite-base</dependency>
+            				</dependenciesToScan>
 						</configuration>
 					</execution>
 				</executions>
