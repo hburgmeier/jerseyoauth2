@@ -88,7 +88,7 @@ public class ResourceTest extends BaseTest {
 		
 		client.sendTestRequestSample1(tok);
 		
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		
 		try {
 			client.sendTestRequestSample1(tok);

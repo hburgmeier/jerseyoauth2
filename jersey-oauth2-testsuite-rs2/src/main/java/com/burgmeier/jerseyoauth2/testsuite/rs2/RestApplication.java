@@ -29,6 +29,7 @@ import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientAuthResource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.ClientsResource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.Sample2Resource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.SampleResource;
+import com.burgmeier.jerseyoauth2.testsuite.rs2.resource.TokenInvalidateResource;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.services.CacheManagerProvider;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.services.Configuration;
 import com.burgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
@@ -62,6 +63,7 @@ public class RestApplication extends Application {
         clazzes.add(ClientAuthResource.class);
         clazzes.add(SampleResource.class);
         clazzes.add(Sample2Resource.class);
+        clazzes.add(TokenInvalidateResource.class);
         
         clazzes.add(JacksonFeature.class);
         

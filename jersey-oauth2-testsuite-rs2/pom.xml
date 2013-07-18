@@ -95,7 +95,6 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.10</version>
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<connectors>
@@ -104,7 +103,7 @@
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
-					<jettyEnvXml>${basedir}/src/test/resources/jettyEnv.xml</jettyEnvXml>
+					<jettyConfig>${basedir}/src/test/resources/jetty.xml</jettyConfig>
 					<contextPath>testsuite</contextPath>
 					<userRealms>
 						<userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
@@ -112,6 +111,8 @@
 							<config>${basedir}/src/test/resources/jetty-users.properties</config>
 						</userRealm>
 					</userRealms>
+					<stopPort>9995</stopPort>
+					<stopKey>test</stopKey>					
 				</configuration>
 				<executions>
 					<execution>
@@ -133,17 +134,13 @@
 						<goals>
 							<goal>stop</goal>
 						</goals>
-						<configuration>
-							<stopPort>9998</stopPort>
-							<stopKey>test</stopKey>
-						</configuration>
 					</execution>
 				</executions>
 				<dependencies>
 					<dependency>
 						<groupId>org.mortbay.jetty</groupId>
 						<artifactId>jetty-plus</artifactId>
-						<version>6.1.10</version>
+						<version>6.1.25</version>
 					</dependency>
 					<dependency>
 						<groupId>org.apache.derby</groupId>

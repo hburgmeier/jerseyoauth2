@@ -136,7 +136,7 @@ public class ProtocolTest extends BaseTest {
 		
 		client.sendTestRequestSample1(oldToken);
 		
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		
 		try {
 			client.refreshToken((OAuth2Token)oldToken);

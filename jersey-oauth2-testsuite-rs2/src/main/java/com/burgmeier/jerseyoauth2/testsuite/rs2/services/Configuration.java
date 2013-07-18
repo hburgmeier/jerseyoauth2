@@ -26,7 +26,7 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	
 	@Override
 	public long getTokenExpiration() {
-		return 4;
+		return 6;
 	}
 
 	@Override

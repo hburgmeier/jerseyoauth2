@@ -35,4 +35,9 @@
       <realm-name>testsuite</realm-name>
     </login-config>
 
+	<resource-ref>
+		<res-ref-name>jdbc/authds</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+	</resource-ref>    
+
 </web-app>
