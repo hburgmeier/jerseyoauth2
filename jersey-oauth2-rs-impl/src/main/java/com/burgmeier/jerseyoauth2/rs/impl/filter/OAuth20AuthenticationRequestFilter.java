@@ -25,7 +25,6 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements ContainerRequestFilter {
 
-	private static final String HTTPS = "https";
 	private static final String X_SSL_SECURE = "X-SSL-Secure";
 	private static final String ERROR_FILTER_REQUEST = "Error in filter request";
 
@@ -47,8 +46,10 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			OAuthAccessResourceRequest oauthRequest = new 
 			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
 			LOGGER.debug("parse request successful");
-		
-			boolean secure = isRequestSecure(containerRequest);
+
+			URI requestUri = containerRequest.getRequestUri();
+			String secureSSL = containerRequest.getHeaderValue(X_SSL_SECURE);			
+			boolean secure = isRequestSecure(requestUri, secureSSL);
 			SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 			
 			containerRequest.setSecurityContext(securityContext );
@@ -70,15 +71,6 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 		}
 	}
 
-	protected boolean isRequestSecure(ContainerRequest containerRequest) {
-		URI requestUri = containerRequest.getRequestUri();
-		String secureSSL = containerRequest.getHeaderValue(X_SSL_SECURE);
-		if (secureSSL!=null && "true".equals(secureSSL))
-			return true;
-		String scheme = requestUri.getScheme();
-		return scheme!=null?scheme.equalsIgnoreCase(HTTPS):false;
-	}	
-	
 	void setRequiredScopes(String[] scopes) {
 		this.requiredScopes = new HashSet<>(Arrays.asList(scopes));
 	}

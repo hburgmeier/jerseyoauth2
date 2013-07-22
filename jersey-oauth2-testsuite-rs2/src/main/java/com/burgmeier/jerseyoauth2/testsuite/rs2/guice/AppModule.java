@@ -28,9 +28,7 @@ public class AppModule  extends ServletModule {
 	
     @Override
     protected void configureServlets() {
-//    	bind(IAccessTokenStorageService.class).to(TestAccessTokenStorageService.class);
     	bind(IAccessTokenStorageService.class).to(CachingAccessTokenStorage.class);
-//    	bind(IClientService.class).to(TestClientService.class);
     	bind(IClientService.class).to(DatabaseClientService.class);
     	bind(IConfiguration.class).to(Configuration.class);
     	bind(IRSConfiguration.class).to(Configuration.class);

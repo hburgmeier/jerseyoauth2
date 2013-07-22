@@ -19,7 +19,9 @@ import com.burgmeier.jerseyoauth2.rs.impl.base.context.OAuthSecurityContext;
 
 public abstract class AbstractOAuth2Filter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOAuth2Filter.class);	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOAuth2Filter.class);
+	
+	private static final String HTTPS = "https";
 	
 	protected final SecurityContext filterOAuth2Request(OAuthAccessResourceRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException, OAuth2FilterException
 	{
@@ -103,6 +105,6 @@ public abstract class AbstractOAuth2Filter {
 		if (secureSSL!=null && "true".equals(secureSSL))
 			return true;
 		String scheme = requestUri.getScheme();
-		return scheme!=null?scheme.equalsIgnoreCase("https"):false;
+		return scheme!=null?scheme.equalsIgnoreCase(HTTPS):false;
 	}	
 }

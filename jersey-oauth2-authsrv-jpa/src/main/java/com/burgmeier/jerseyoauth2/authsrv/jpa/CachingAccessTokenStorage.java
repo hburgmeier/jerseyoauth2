@@ -30,8 +30,8 @@ public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 
 	@Override
 	public IAccessTokenInfo getTokenInfoByAccessToken(String accessToken) throws InvalidTokenException {
-		Element element;
-		if ((element = tokenCache.get(accessToken)) != null &&
+		Element element = tokenCache.get(accessToken);
+		if (element != null &&
 				!element.isExpired()) {
 			IAccessTokenInfo token = (IAccessTokenInfo) element.getObjectValue();
 			if (!token.isExpired())

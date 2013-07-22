@@ -35,9 +35,7 @@ public class AppModule  extends JerseyServletModule {
 	
     @Override
     protected void configureServlets() {
-//    	bind(IAccessTokenStorageService.class).to(TestAccessTokenStorageService.class);
     	bind(IAccessTokenStorageService.class).to(CachingAccessTokenStorage.class);
-//    	bind(IClientService.class).to(TestClientService.class);
     	bind(IClientService.class).to(DatabaseClientService.class);
     	bind(IConfiguration.class).to(Configuration.class);
     	bind(IRSConfiguration.class).to(Configuration.class);
@@ -58,7 +56,7 @@ public class AppModule  extends JerseyServletModule {
 //see http://java.net/jira/browse/JERSEY-630	            
        params.put(PackagesResourceConfig.FEATURE_DISABLE_WADL, "true");
        params.put(ResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, OAuth20FilterFactory.class.getName());
-       // Route all requests for rest resources through GuiceContainer
+// Route all requests for rest resources through GuiceContainer
        serve("/rest/*").with(GuiceContainer.class, params);
     }
 }
