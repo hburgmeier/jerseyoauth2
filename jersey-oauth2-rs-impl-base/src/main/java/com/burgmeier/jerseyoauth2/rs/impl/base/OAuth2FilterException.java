@@ -24,7 +24,7 @@ public class OAuth2FilterException extends Exception {
 		return errorResponse;
 	}
 
-	public void setErrorResponse(Response errorResponse) {
+	public final void setErrorResponse(Response errorResponse) {
 		this.errorResponse = errorResponse;
 	}
 

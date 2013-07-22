@@ -31,7 +31,7 @@ import com.google.inject.Inject;
 
 public class TokenService implements ITokenService {
 
-	private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TokenService.class);
 	
 	private final IAccessTokenStorageService accessTokenService;
 	private final IClientService clientService;
@@ -49,7 +49,7 @@ public class TokenService implements ITokenService {
 	@Override
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response, OAuthTokenRequest oauthRequest)
 			throws OAuthSystemException, IOException, OAuthProblemException {
-		logger.debug("Token request received, grant type {}", oauthRequest.getGrantType());
+		LOGGER.debug("Token request received, grant type {}", oauthRequest.getGrantType());
 		
 		if (oauthRequest.getGrantType().equals(GrantType.REFRESH_TOKEN.toString())) {
 
@@ -60,7 +60,7 @@ public class TokenService implements ITokenService {
 			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
 					oauthRequest.getClientSecret(), oauthRequest.getCode());
 			if (pendingClientToken == null) {
-				logger.error("no pending token found, client id {}", oauthRequest.getClientId());
+				LOGGER.error("no pending token found, client id {}", oauthRequest.getClientId());
 				throw OAuthProblemException.error("unauthorized_client", "client not authorized");
 			}
 			
@@ -78,11 +78,11 @@ public class TokenService implements ITokenService {
 		try {
 			IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken,
 					clientApp);
-			logger.debug("token {} issued", accessToken);
+			LOGGER.debug("token {} issued", accessToken);
 
 			sendTokenResponse(request, response, accessTokenInfo, responseType);
 		} catch (TokenStorageException e) {
-			logger.error("error with token storage", e);
+			LOGGER.error("error with token storage", e);
 			throw OAuthProblemException.error("server_error", "Server error");
 		}
 	}	
@@ -99,14 +99,14 @@ public class TokenService implements ITokenService {
 
 			IAccessTokenInfo accessTokenInfo = accessTokenService.refreshToken(
 					oldTokenInfo.getAccessToken(), newAccessToken, newRefreshToken);
-			logger.debug("token {} refreshed to {}", oldTokenInfo.getAccessToken(), newAccessToken);
+			LOGGER.debug("token {} refreshed to {}", oldTokenInfo.getAccessToken(), newAccessToken);
 
 			sendTokenResponse(request, response, accessTokenInfo, ResponseType.CODE);
 		} catch (InvalidTokenException e) {
-			logger.error("invalid token", e);
+			LOGGER.error("invalid token", e);
 			throw OAuthProblemException.error("token_invalid", "token is invalid");
 		} catch (TokenStorageException e) {
-			logger.error("error with token storage", e);
+			LOGGER.error("error with token storage", e);
 			throw OAuthProblemException.error("server_error", "Server error");						
 		}
 	}
@@ -127,7 +127,7 @@ public class TokenService implements ITokenService {
 	@Override
 	public void sendTokenResponse(HttpServletRequest request, HttpServletResponse response, IAccessTokenInfo accessTokenInfo, ResponseType responseType)
 			throws OAuthSystemException, IOException {
-		logger.debug("sending response for {}", responseType);
+		LOGGER.debug("sending response for {}", responseType);
 		if (responseType.equals(ResponseType.TOKEN))
 		{
 			OAuthAuthorizationResponseBuilder responseBuilder = OAuthASResponse.authorizationResponse(request, HttpServletResponse.SC_MOVED_TEMPORARILY)

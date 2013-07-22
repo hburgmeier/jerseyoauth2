@@ -27,7 +27,7 @@ public class OAuth20TokenExtractorImpl implements AccessTokenExtractor {
 			
 			return new OAuth2Token(accessToken, refreshToken, expiration, response);
 		} catch (IOException e) {
-			throw new TokenExtractorException(response);
+			throw new TokenExtractorException(response, e);
 		}
 	}
 

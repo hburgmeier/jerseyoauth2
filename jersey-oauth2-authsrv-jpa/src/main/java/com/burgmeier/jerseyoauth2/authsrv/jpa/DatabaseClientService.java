@@ -26,7 +26,7 @@ import com.burgmeier.jerseyoauth2.authsrv.api.user.UserStorageServiceException;
 
 public class DatabaseClientService implements IClientService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DatabaseClientService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseClientService.class);
 	
 	private final EntityManagerFactory emf;
 	
@@ -49,7 +49,7 @@ public class DatabaseClientService implements IClientService {
 		client.setCallbackUrl(callbackUrl);
 		client.setClientType(clientType);
 		persist(client);
-		logger.debug("registered client {}", clientId);
+		LOGGER.debug("registered client {}", clientId);
 		return client;
 	}
 
@@ -81,7 +81,7 @@ public class DatabaseClientService implements IClientService {
 			
 			if (!result.getAuthorizedScopes().containsAll(scopes))
 			{
-				logger.debug("scopes do not match authorized scopes {} auth {}", scopes, result.getAuthorizedScopes());
+				LOGGER.debug("scopes do not match authorized scopes {} auth {}", scopes, result.getAuthorizedScopes());
 				return null;
 			}
 			
@@ -120,7 +120,7 @@ public class DatabaseClientService implements IClientService {
 				entityManager.remove(result);
 				tx.commit();
 			} catch (PersistenceException e) {
-				logger.error("persistence error - rollback", e);
+				LOGGER.error("persistence error - rollback", e);
 				tx.rollback();
 				result = null;
 			}
@@ -144,7 +144,7 @@ public class DatabaseClientService implements IClientService {
 			entityManager.flush();
 			tx.commit();
 		} catch (PersistenceException e) {
-			logger.error("persistence error - rollback", e);
+			LOGGER.error("persistence error - rollback", e);
 			tx.rollback();
 			throw e;
 		} finally {
@@ -155,12 +155,12 @@ public class DatabaseClientService implements IClientService {
 	protected void setUser(AuthorizedClientApplication result) throws UserStorageServiceException {
 		if (userStorageService!=null)
 		{
-			logger.debug("using userStorageService to load user");
+			LOGGER.debug("using userStorageService to load user");
 			IUser iUser = userStorageService.loadUser(result.getUsername());
 			result.setAuthorizedUser(iUser);
 		}
 		else {
-			logger.debug("using no user storage service");
+			LOGGER.debug("using no user storage service");
 			result.setAuthorizedUser(new User(result.getUsername()));
 		}
 	}

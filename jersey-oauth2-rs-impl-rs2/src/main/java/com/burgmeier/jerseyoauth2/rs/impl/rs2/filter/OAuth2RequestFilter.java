@@ -25,7 +25,7 @@ import com.burgmeier.jerseyoauth2.rs.impl.base.OAuth2FilterException;
 @Provider
 public class OAuth2RequestFilter extends AbstractOAuth2Filter implements ContainerRequestFilter {
 
-	private static final Logger logger = LoggerFactory.getLogger(OAuth2RequestFilter.class);	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2RequestFilter.class);	
 
 	private Set<String> requiredScopes;
 	private final IRSConfiguration config;
@@ -44,23 +44,23 @@ public class OAuth2RequestFilter extends AbstractOAuth2Filter implements Contain
 			try {
 				OAuthAccessResourceRequest oauthRequest = new 
 				        OAuthAccessResourceRequest(new WebRequestAdapter(ctx), getRSConfiguration().getSupportedOAuthParameterStyles());
-				logger.debug("parse request successful");		
+				LOGGER.debug("parse request successful");		
 				
 				boolean secure = isRequestSecure(ctx.getUriInfo().getRequestUri(), ctx.getHeaderString("X-SSL-Secure")); 
 				
 				SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 				ctx.setSecurityContext(securityContext);
 			} catch (OAuthSystemException e) {
-				logger.error("Error in filter request", e);
+				LOGGER.error("Error in filter request", e);
 				ctx.abortWith(buildAuthProblem());
 			} catch (OAuthProblemException e) {
-				logger.error("Error in filter request", e);
+				LOGGER.error("Error in filter request", e);
 				ctx.abortWith(buildAuthProblem());			
 			} catch (InvalidTokenException e) {
-				logger.error("Error in filter request", e);
+				LOGGER.error("Error in filter request", e);
 				ctx.abortWith(buildAuthProblem());			
 			} catch (OAuth2FilterException e) {
-				logger.debug("Filtered Request", e);
+				LOGGER.debug("Filtered Request", e);
 				ctx.abortWith(e.getErrorResponse());
 			}
 		}

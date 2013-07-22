@@ -25,7 +25,7 @@ public class AuthorizationServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger logger = LoggerFactory.getLogger(AuthorizationServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationServlet.class);
 	
 	private final IAuthorizationService authService;
 	private final IConfiguration configuration;
@@ -43,17 +43,17 @@ public class AuthorizationServlet extends HttpServlet {
 		
 		if (configuration.getStrictSecurity() && !request.isSecure())
 		{
-			logger.error("Strict security switch on but insecure request received");
+			LOGGER.error("Strict security switch on but insecure request received");
 			response.sendError(400);
 		} else {
 			try {
 				authService.evaluateAuthorizationRequest(request, response, getServletContext());
 			} catch (AuthorizationFlowException e) {
-				logger.error("Error in authorization flow",e);
-				throw new ServletException(e.getMessage());
+				LOGGER.error("Error in authorization flow",e);
+				throw new ServletException(e.getMessage(), e);
 			} catch (OAuthSystemException e) {
-				logger.error("Error in OAuth2 Protocol",e);
-				throw new ServletException();
+				LOGGER.error("Error in OAuth2 Protocol",e);
+				throw new ServletException(e);
 			}
 		}
 	}

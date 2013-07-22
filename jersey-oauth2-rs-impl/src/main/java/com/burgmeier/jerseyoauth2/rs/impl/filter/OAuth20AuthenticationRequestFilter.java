@@ -25,7 +25,11 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements ContainerRequestFilter {
 
-	private static final Logger logger = LoggerFactory.getLogger(OAuth20AuthenticationRequestFilter.class);
+	private static final String HTTPS = "https";
+	private static final String X_SSL_SECURE = "X-SSL-Secure";
+	private static final String ERROR_FILTER_REQUEST = "Error in filter request";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OAuth20AuthenticationRequestFilter.class);
 	
 	private Set<String> requiredScopes;
 	private final IAccessTokenVerifier accessTokenVerifier;
@@ -42,37 +46,37 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 		try {
 			OAuthAccessResourceRequest oauthRequest = new 
 			        OAuthAccessResourceRequest(new WebRequestAdapter(containerRequest), parameterStyles);
-			logger.debug("parse request successful");
+			LOGGER.debug("parse request successful");
 		
 			boolean secure = isRequestSecure(containerRequest);
 			SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 			
 			containerRequest.setSecurityContext(securityContext );
-			logger.debug("set SecurityContext. User {}", securityContext.getUserPrincipal().getName());
+			LOGGER.debug("set SecurityContext. User {}", securityContext.getUserPrincipal().getName());
 			
 			return containerRequest;
 		} catch (OAuthSystemException e) {
-			logger.error("Error in filter request", e);
-			throw new WebApplicationException(buildAuthProblem());
+			LOGGER.error(ERROR_FILTER_REQUEST, e);
+			throw new WebApplicationException(e, buildAuthProblem());
 		} catch (OAuthProblemException e) {
-			logger.error("Error in filter request", e);
-			throw new WebApplicationException(buildAuthProblem());			
+			LOGGER.error(ERROR_FILTER_REQUEST, e);
+			throw new WebApplicationException(e, buildAuthProblem());			
 		} catch (InvalidTokenException e) {
-			logger.error("Error in filter request", e);
-			throw new WebApplicationException(buildAuthProblem());			
+			LOGGER.error(ERROR_FILTER_REQUEST, e);
+			throw new WebApplicationException(e, buildAuthProblem());			
 		} catch (OAuth2FilterException e) {
-			logger.error("Error in filter request", e);
-			throw new WebApplicationException(e.getErrorResponse());			
+			LOGGER.error(ERROR_FILTER_REQUEST, e);
+			throw new WebApplicationException(e, e.getErrorResponse());			
 		}
 	}
 
 	protected boolean isRequestSecure(ContainerRequest containerRequest) {
 		URI requestUri = containerRequest.getRequestUri();
-		String secureSSL = containerRequest.getHeaderValue("X-SSL-Secure");
+		String secureSSL = containerRequest.getHeaderValue(X_SSL_SECURE);
 		if (secureSSL!=null && "true".equals(secureSSL))
 			return true;
 		String scheme = requestUri.getScheme();
-		return scheme!=null?scheme.equalsIgnoreCase("https"):false;
+		return scheme!=null?scheme.equalsIgnoreCase(HTTPS):false;
 	}	
 	
 	void setRequiredScopes(String[] scopes) {

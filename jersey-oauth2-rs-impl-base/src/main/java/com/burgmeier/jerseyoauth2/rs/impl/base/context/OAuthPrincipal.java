@@ -12,7 +12,7 @@ import com.burgmeier.jerseyoauth2.rs.api.IOAuthPrincipal;
 
 public class OAuthPrincipal implements Principal, IOAuthPrincipal {
 
-	private static final Logger logger = LoggerFactory.getLogger(OAuthPrincipal.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OAuthPrincipal.class);
 	
 	private IUser user;
 	private IAuthorizedClientApp clientApp;
@@ -31,7 +31,7 @@ public class OAuthPrincipal implements Principal, IOAuthPrincipal {
 	}
 
 	public boolean isUserInRole(String role) {
-		logger.warn("isUserInRole called. This is not supported right now.");
+		LOGGER.warn("isUserInRole called. This is not supported right now.");
 		return user.isUserInRole(role);
 	}
 

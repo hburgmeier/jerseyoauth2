@@ -37,7 +37,7 @@ import com.google.inject.Inject;
 
 public class AuthorizationService implements IAuthorizationService {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthorizationService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationService.class);
 	
 	private final IClientService clientService;
 	private final IUserService userService;
@@ -62,7 +62,7 @@ public class AuthorizationService implements IAuthorizationService {
 		try {
 			OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request,
 					configuration.getSupportAuthorizationHeader());
-			logger.debug("Parsing of AuthzRequest successful");
+			LOGGER.debug("Parsing of AuthzRequest successful");
 
 			IUser user = userService.getCurrentUser(request);
 			if (user == null)
@@ -75,11 +75,11 @@ public class AuthorizationService implements IAuthorizationService {
 
 			Set<String> scopes = oauthRequest.getScopes();
 			if (scopes.isEmpty()) {
-				logger.warn("using default scopes");
+				LOGGER.warn("using default scopes");
 				scopes = configuration.getDefaultScopes();
 			}
 
-			logger.debug("Response Type {}", oauthRequest.getResponseType());
+			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
 			ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.toString()) ? ResponseType.TOKEN
 					: ResponseType.CODE;
 
@@ -97,28 +97,28 @@ public class AuthorizationService implements IAuthorizationService {
 			IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(),
 					scopes);
 			if (authorizedClientApp != null) {
-				logger.debug("client is already authorized");
+				LOGGER.debug("client is already authorized");
 				try {
 					if (reqResponseType.equals(ResponseType.CODE)) {
 						IPendingClientToken pendingClientToken = clientService
 								.createPendingClientToken(authorizedClientApp);
 						sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
 					} else {
-						logger.debug("issue new token for token response type");
+						LOGGER.debug("issue new token for token response type");
 						tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType);
 					}
 				} catch (ClientServiceException e) {
 					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 				}
 			} else {
-				logger.debug("client is not authorized or missing scopes {}", scopes);
+				LOGGER.debug("client is not authorized or missing scopes {}", scopes);
 				authFlow.startAuthorizationFlow(user, regClientApp, scopes, request, response, servletContext);
 			}
 		} catch (OAuthProblemException e) {
-			logger.error("Problem with OAuth2 protocol", e);
+			LOGGER.error("Problem with OAuth2 protocol", e);
 			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
 		} catch (InvalidUserException e) {
-			logger.error("Missing or invalid user");
+			LOGGER.error("Missing or invalid user");
 			authFlow.handleMissingUser(request, response, servletContext);
 		}
 	}

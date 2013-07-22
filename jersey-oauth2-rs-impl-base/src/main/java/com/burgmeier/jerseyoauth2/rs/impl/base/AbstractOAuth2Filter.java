@@ -19,7 +19,7 @@ import com.burgmeier.jerseyoauth2.rs.impl.base.context.OAuthSecurityContext;
 
 public abstract class AbstractOAuth2Filter {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractOAuth2Filter.class);	
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOAuth2Filter.class);	
 	
 	protected final SecurityContext filterOAuth2Request(OAuthAccessResourceRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException, OAuth2FilterException
 	{
@@ -32,13 +32,13 @@ public abstract class AbstractOAuth2Filter {
 		}
 		if (accessTokenInfo.getUser()==null)
 		{
-			logger.error("no user stored in token {}", accessToken);
+			LOGGER.error("no user stored in token {}", accessToken);
 			throw new OAuth2FilterException(buildUserProblem());
 		}
 		
 		if (accessTokenInfo.getClientApp()==null)
 		{
-			logger.error("no client stored in token {}", accessToken);
+			LOGGER.error("no client stored in token {}", accessToken);
 			throw new OAuth2FilterException(buildClientProblem());
 		}
 		
@@ -47,7 +47,7 @@ public abstract class AbstractOAuth2Filter {
 		{
 			if (!matchScopes(requiredScopes, authorizedScopes))
 			{
-				logger.error("Scopes did not match, required {}, actual {}", requiredScopes, authorizedScopes);
+				LOGGER.error("Scopes did not match, required {}, actual {}", requiredScopes, authorizedScopes);
 				throw new OAuth2FilterException(buildScopeProblem());
 			}
 		}
