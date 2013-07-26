@@ -18,6 +18,27 @@
 		<jackson.version>2.1.3</jackson.version>
 		<slf4j.version>1.7.2</slf4j.version>
 	</properties>
+	
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<scm>
+		<connection>scm:git:git@github.com:hburgmeier/jerseyoauth2.git</connection>
+		<developerConnection>scm:git:git@github.com:hburgmeier/jerseyoauth2.git</developerConnection>
+		<url>https://github.com/hburgmeier/jerseyoauth2.git</url>
+	</scm>
+	
+	<developers>
+		<developer>
+			<id>hburgmeier</id>
+			<name>Hermann Burgmeier</name>
+		</developer>
+	</developers>	
 
 	<dependencyManagement>
 		<dependencies>
