@@ -2,8 +2,6 @@ package com.burgmeier.jerseyoauth2.testsuite.base.client;
 
 import java.io.IOException;
 
-import org.apache.amber.oauth2.common.message.types.GrantType;
-import org.apache.amber.oauth2.common.message.types.ResponseType;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -12,6 +10,8 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.burgmeier.jerseyoauth2.api.types.GrantType;
+import com.burgmeier.jerseyoauth2.api.types.ResponseType;
 import com.burgmeier.jerseyoauth2.client.scribe.IOAuth2Service;
 import com.burgmeier.jerseyoauth2.client.scribe.OAuth2Token;
 import com.burgmeier.jerseyoauth2.testsuite.base.ClientEntity;
@@ -30,7 +30,7 @@ public class ResourceClient {
 		super();
 		this.clientId = clientEntity.getClientId();
 		this.clientSecret = clientEntity.getClientSecret();
-		this.grantType = GrantType.AUTHORIZATION_CODE;
+		this.grantType = GrantType.AUTHORIZATION_REQUEST;
 		this.responseType = ResponseType.CODE;
 		this.scopes = "test1 test2";
 	}
@@ -41,7 +41,7 @@ public class ResourceClient {
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.scopes = scopes;
-		this.grantType = GrantType.AUTHORIZATION_CODE;
+		this.grantType = GrantType.AUTHORIZATION_REQUEST;
 		this.responseType = ResponseType.CODE;
 	}
 	
@@ -62,7 +62,7 @@ public class ResourceClient {
 	protected OAuthService getOAuthService(GrantType _grantType, String scope, String state)
 	{
 		ServiceBuilder serviceBuilder = new ServiceBuilder()
-		.provider(new TestsuiteAPI(_grantType.toString(), state, responseType.toString()))
+		.provider(new TestsuiteAPI(_grantType.getTechnicalCode(), state, responseType.getTechnicalCode()))
 		.apiKey(clientId)
 		.apiSecret(clientSecret==null?"DUMMYDUMMYDUMMY":clientSecret)
 		.callback("http://localhost:9998/testsuite");
@@ -98,7 +98,7 @@ public class ResourceClient {
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		if (response.getCode()!=200)
-			throw new ClientException(response.getBody());
+			throwClientException(response);
 		return response.getBody();
 	}
 	
@@ -111,7 +111,7 @@ public class ResourceClient {
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		if (response.getCode()!=200)
-			throw new ClientException(response.getBody());
+			throwClientException(response);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -131,7 +131,7 @@ public class ResourceClient {
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		if (response.getCode()!=200)
-			throw new ClientException(response.getBody());
+			throwClientException(response);
 		return response.getBody();
 	}
 	
@@ -143,5 +143,11 @@ public class ResourceClient {
 	}
 
 
+	protected void throwClientException(Response response) throws ClientException
+	{
+		int code = response.getCode();
+		String body = response.getBody();
+		throw new ClientException(Integer.toString(code)+" "+body);
+	}
 	
 }

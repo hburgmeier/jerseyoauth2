@@ -1,6 +1,7 @@
 package com.burgmeier.jerseyoauth2.authsrv.impl.authorize;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +44,7 @@ public class IssueAccessTokenServlet extends HttpServlet {
 		if (configuration.getStrictSecurity() && !request.isSecure())
 		{
 			LOGGER.error("Strict security switch on but insecure request received");
-			response.sendError(400);
+			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
 		} else {
 			
 			try {

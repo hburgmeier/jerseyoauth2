@@ -1,5 +1,6 @@
 package com.burgmeier.jerseyoauth2.rs.impl.base;
 
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public abstract class AbstractOAuth2Filter {
 	protected Response buildScopeProblem()
 	{
 		return Response.serverError().
-			status(401).
+			status(HttpURLConnection.HTTP_UNAUTHORIZED).
 			entity("Not allowed").
 			build();
 	}
@@ -81,7 +82,7 @@ public abstract class AbstractOAuth2Filter {
 	protected Response buildUserProblem()
 	{
 		return Response.serverError().
-			status(401).
+			status(HttpURLConnection.HTTP_UNAUTHORIZED).
 			entity("No authorized user").
 			build();
 	}	
@@ -89,14 +90,14 @@ public abstract class AbstractOAuth2Filter {
 	protected Response buildClientProblem()
 	{
 		return Response.serverError().
-			status(401).
+			status(HttpURLConnection.HTTP_UNAUTHORIZED).
 			entity("No authorized client").
 			build();
 	}	
 	
 	protected Response buildAuthProblem() {
 		return Response.serverError().
-				status(401).
+				status(HttpURLConnection.HTTP_UNAUTHORIZED).
 				entity("Not allowed").
 				build();
 	}	

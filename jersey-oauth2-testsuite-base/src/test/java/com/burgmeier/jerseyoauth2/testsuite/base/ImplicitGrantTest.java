@@ -1,11 +1,11 @@
 package com.burgmeier.jerseyoauth2.testsuite.base;
 
-import org.apache.amber.oauth2.common.message.types.GrantType;
-import org.apache.amber.oauth2.common.message.types.ResponseType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.scribe.model.Token;
 
+import com.burgmeier.jerseyoauth2.api.types.GrantType;
+import com.burgmeier.jerseyoauth2.api.types.ResponseType;
 import com.burgmeier.jerseyoauth2.testsuite.base.client.ClientException;
 import com.burgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
 import com.sun.jersey.api.client.ClientResponse;
@@ -25,7 +25,7 @@ public class ImplicitGrantTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		ResourceClient client = new ResourceClient(clientEntity.getClientId(), GrantType.AUTHORIZATION_CODE, ResponseType.TOKEN);
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(), GrantType.AUTHORIZATION_REQUEST, ResponseType.TOKEN);
 		String authUrl = client.getAuthUrl(null);
 		
 		WebResource webResource = restClient.resource(authUrl);
@@ -42,7 +42,7 @@ public class ImplicitGrantTest extends BaseTest {
 		Assert.assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
-		ResourceClient client = new ResourceClient(clientEntity.getClientId(), GrantType.AUTHORIZATION_CODE, ResponseType.TOKEN);
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(), GrantType.AUTHORIZATION_REQUEST, ResponseType.TOKEN);
 		String authUrl = client.getAuthUrl(null);
 		
 		WebResource webResource = restClient.resource(authUrl);

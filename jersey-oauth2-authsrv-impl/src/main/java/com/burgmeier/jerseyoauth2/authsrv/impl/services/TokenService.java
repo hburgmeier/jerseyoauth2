@@ -2,6 +2,7 @@ package com.burgmeier.jerseyoauth2.authsrv.impl.services;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,7 +115,7 @@ public class TokenService implements ITokenService {
 	@Override
 	public void sendErrorResponse(HttpServletResponse response, OAuthProblemException ex) throws OAuthSystemException,
 			IOException {
-		OAuthResponse r = OAuthResponse.errorResponse(401).error(ex).buildJSONMessage();
+		OAuthResponse r = OAuthResponse.errorResponse(HttpURLConnection.HTTP_UNAUTHORIZED).error(ex).buildJSONMessage();
 
 		response.setStatus(r.getResponseStatus());
 
