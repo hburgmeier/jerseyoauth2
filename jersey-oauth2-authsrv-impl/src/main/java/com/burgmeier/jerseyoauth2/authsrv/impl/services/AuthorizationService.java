@@ -14,11 +14,11 @@ import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
-import org.apache.amber.oauth2.common.message.types.ResponseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
+import com.burgmeier.jerseyoauth2.api.types.ResponseType;
 import com.burgmeier.jerseyoauth2.api.user.IUser;
 import com.burgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
@@ -80,7 +80,7 @@ public class AuthorizationService implements IAuthorizationService {
 			}
 
 			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
-			ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.toString()) ? ResponseType.TOKEN
+			ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.getTechnicalCode()) ? ResponseType.TOKEN
 					: ResponseType.CODE;
 
 			if (reqResponseType.equals(ResponseType.CODE)) {

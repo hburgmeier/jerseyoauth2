@@ -14,14 +14,14 @@ import org.apache.amber.oauth2.as.response.OAuthASResponse.OAuthTokenResponseBui
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.apache.amber.oauth2.common.message.OAuthResponse;
-import org.apache.amber.oauth2.common.message.types.GrantType;
-import org.apache.amber.oauth2.common.message.types.ResponseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.burgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.burgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.burgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.burgmeier.jerseyoauth2.api.types.GrantType;
+import com.burgmeier.jerseyoauth2.api.types.ResponseType;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.burgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.burgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
@@ -52,11 +52,11 @@ public class TokenService implements ITokenService {
 			throws OAuthSystemException, IOException, OAuthProblemException {
 		LOGGER.debug("Token request received, grant type {}", oauthRequest.getGrantType());
 		
-		if (oauthRequest.getGrantType().equals(GrantType.REFRESH_TOKEN.toString())) {
+		if (oauthRequest.getGrantType().equals(GrantType.REFRESH_TOKEN.getTechnicalCode())) {
 
 			refreshToken(request, response, oauthRequest);
 
-		} else if (oauthRequest.getGrantType().equals(GrantType.AUTHORIZATION_CODE.toString())) {
+		} else if (oauthRequest.getGrantType().equals(GrantType.AUTHORIZATION_REQUEST.getTechnicalCode())) {
 
 			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
 					oauthRequest.getClientSecret(), oauthRequest.getCode());
