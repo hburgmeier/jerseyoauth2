@@ -48,4 +48,5 @@
 			</plugin>
 		</plugins>
 	</build>	
+	<name>Jersey OAuth2 OpenID Sample</name>
 </project>

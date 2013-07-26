@@ -45,4 +45,5 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
+	<name>Jersey OAuth2 Authorization Server Java Persistence</name>
 </project>

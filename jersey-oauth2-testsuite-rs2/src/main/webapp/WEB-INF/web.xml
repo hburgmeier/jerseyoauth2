@@ -5,27 +5,13 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
     version="3.0">
 
-    <!-- servlet>
-        <servlet-name>com.burgmeier.jerseyoauth2.testsuite.rs2.RestApplication</servlet-name>
-        <servlet-class>com.burgmeier.jerseyoauth2.testsuite.rs2.RestApplication</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>com.burgmeier.jerseyoauth2.testsuite.rs2.RestApplication</servlet-name>
-        <url-pattern>/rest</url-pattern>
-    </servlet-mapping -->
-
 	<servlet>
 		<servlet-name>jersey-servlet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
              <param-name>javax.ws.rs.Application</param-name>
-             <param-value>com.burgmeier.jerseyoauth2.testsuite.rs2.RestApplication</param-value>
+             <param-value>com.github.hburgmeier.jerseyoauth2.testsuite.rs2.RestApplication</param-value>
         </init-param>
-        <!-- init-param>		
-		     <param-name>jersey.config.server.provider.packages</param-name>
-		     <param-value>com.burgmeier.jerseyoauth2.testsuite.rs2.resource;com.burgmeier.jerseyoauth2.rs.impl.rs2.filter</param-value>
-		</init-param -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
  
@@ -44,7 +30,7 @@
 		<url-pattern>/oauth2/*</url-pattern>
 	</filter-mapping>
 	<listener>
-		<listener-class>com.burgmeier.jerseyoauth2.testsuite.rs2.guice.ContextListener</listener-class>
+		<listener-class>com.github.hburgmeier.jerseyoauth2.testsuite.rs2.guice.ContextListener</listener-class>
 	</listener>  
 
 	<security-constraint>

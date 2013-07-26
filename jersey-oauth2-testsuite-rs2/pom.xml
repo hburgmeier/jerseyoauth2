@@ -87,6 +87,10 @@
 			<version>0.6.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>		
 
 	</dependencies>
 	
@@ -169,7 +173,7 @@
 						<configuration>
 							<skip>false</skip>
 							<dependenciesToScan>
-                				<dependency>com.burgmeier.apps.jerseyoauth2:jersey-oauth2-testsuite-base</dependency>
+                				<dependency>${project.groupId}:jersey-oauth2-testsuite-base</dependency>
             				</dependenciesToScan>
 						</configuration>
 					</execution>

@@ -180,19 +180,23 @@
 
 	<modules>
 		<module>jersey-oauth2-api</module>
+		
 		<module>jersey-oauth2-rs-api</module>
-		<module>jersey-oauth2-authsrv-api</module>
-		<module>jersey-oauth2-rs-impl</module>
-		<module>jersey-oauth2-authsrv-impl</module>
-		<module>jersey-oauth2-scribe-oauth2</module>		
-		<module>jersey-oauth2-testsuite</module>
-		<module>jersey-oauth2-sample</module>
-		<module>jersey-oauth2-authsrv-openid</module>
-		<module>jersey-oauth2-sample-openid</module>
-		<module>jersey-oauth2-authsrv-jpa</module>
-		<module>jersey-oauth2-rs-impl-rs2</module>
 		<module>jersey-oauth2-rs-impl-base</module>
-		<module>jersey-oauth2-testsuite-rs2</module>
+		<module>jersey-oauth2-rs-impl</module>
+		<module>jersey-oauth2-rs-impl-rs2</module>
+		
+		<module>jersey-oauth2-authsrv-api</module>
+		<module>jersey-oauth2-authsrv-impl</module>
+		<module>jersey-oauth2-authsrv-jpa</module>
+		<module>jersey-oauth2-authsrv-openid</module>
+		
+		<module>jersey-oauth2-sample</module>
+		<module>jersey-oauth2-sample-openid</module>
+		
+		<module>jersey-oauth2-scribe-oauth2</module>		
 		<module>jersey-oauth2-testsuite-base</module>
+		<module>jersey-oauth2-testsuite</module>
+		<module>jersey-oauth2-testsuite-rs2</module>
 	</modules>
 </project>

@@ -197,7 +197,7 @@
 						<configuration>
 							<skip>false</skip>
 							<dependenciesToScan>
-                				<dependency>com.burgmeier.apps.jerseyoauth2:jersey-oauth2-testsuite-base</dependency>
+                				<dependency>${project.groupId}:jersey-oauth2-testsuite-base</dependency>
             				</dependenciesToScan>
 						</configuration>
 					</execution>
