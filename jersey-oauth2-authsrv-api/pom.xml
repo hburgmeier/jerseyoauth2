@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>

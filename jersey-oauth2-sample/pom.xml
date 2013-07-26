@@ -12,22 +12,22 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-rs-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-rs-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-authsrv-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-authsrv-jpa</artifactId>
 			<version>${project.version}</version>
 		</dependency>		

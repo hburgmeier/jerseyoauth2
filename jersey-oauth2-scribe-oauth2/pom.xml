@@ -6,7 +6,6 @@
 		<artifactId>jersey-oauth2</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 	<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
 	<name>Jersey OAuth2 Scribe Extensions for OAuth2</name>
 	<packaging>jar</packaging>

@@ -11,12 +11,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-authsrv-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>jersey-oauth2-rs-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
