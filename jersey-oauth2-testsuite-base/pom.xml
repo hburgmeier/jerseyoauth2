@@ -2,13 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.burgmeier.apps</groupId>
+		<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 		<artifactId>jersey-oauth2</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
 	<artifactId>jersey-oauth2-testsuite-base</artifactId>
 	<name>Base Tests for Testsuites</name>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -28,18 +28,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-scribe-oauth2</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-authsrv-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.burgmeier.apps.jerseyoauth2</groupId>
+			<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 			<artifactId>jersey-oauth2-api</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
