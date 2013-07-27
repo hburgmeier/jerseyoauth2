@@ -6,9 +6,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
 import com.github.hburgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
@@ -16,8 +13,6 @@ import com.github.hburgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
 
 @Provider
 public class OAuth2FilterFeature implements DynamicFeature {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2FilterFeature.class);
 	
 	private final IRSConfiguration config;
 	private final IAccessTokenVerifier tokenVerifier;

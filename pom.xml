@@ -199,4 +199,11 @@
 		<module>jersey-oauth2-testsuite</module>
 		<module>jersey-oauth2-testsuite-rs2</module>
 	</modules>
+	<description>OAuth2 Provider Framework for Jersey</description>
+	<url>https://github.com/hburgmeier/jerseyoauth2.git</url>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 </project>
