@@ -1,13 +1,14 @@
 package com.github.hburgmeier.jerseyoauth2.sample.services;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.amber.oauth2.common.message.types.ParameterStyle;
-
+import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
@@ -51,8 +52,12 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	}
 
 	@Override
-	public ParameterStyle[] getSupportedOAuthParameterStyles() {
-		return new ParameterStyle[]{ ParameterStyle.QUERY, ParameterStyle.HEADER };
+	public EnumSet<ParameterStyle> getSupportedOAuthParameterStyles() {
+		return EnumSet.of(ParameterStyle.QUERY, ParameterStyle.HEADER);
 	}
-
+	
+	@Override
+	public EnumSet<TokenType> getSupportedTokenTypes() {
+		return EnumSet.of(TokenType.BEARER);
+	}
 }

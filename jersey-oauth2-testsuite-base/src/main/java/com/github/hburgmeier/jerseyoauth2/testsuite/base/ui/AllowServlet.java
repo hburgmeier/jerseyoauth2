@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.testsuite.ui;
+package com.github.hburgmeier.jerseyoauth2.testsuite.base.ui;
 
 import java.io.IOException;
 import java.util.Arrays;

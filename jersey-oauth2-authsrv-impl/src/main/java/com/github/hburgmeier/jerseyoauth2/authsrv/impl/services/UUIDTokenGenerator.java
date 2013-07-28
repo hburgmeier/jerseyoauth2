@@ -1,27 +1,30 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 
-import org.apache.amber.oauth2.as.issuer.UUIDValueGenerator;
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
+import java.util.UUID;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenGenerationException;
 
 public class UUIDTokenGenerator implements ITokenGenerator {
 
-	private UUIDValueGenerator vg = new UUIDValueGenerator();
+	@Override
+	public String createAccessToken() throws TokenGenerationException {
+		return generateValue();
+	}
+
+	@Override
+	public String createRefreshToken() throws TokenGenerationException {
+		return generateValue();
+	}
+
+	@Override
+	public String createAuthenticationCode() throws TokenGenerationException {
+		return generateValue();
+	}
 	
-	@Override
-	public String createAccessToken() throws OAuthSystemException {
-		return vg.generateValue();
-	}
-
-	@Override
-	public String createRefreshToken() throws OAuthSystemException {
-		return vg.generateValue();
-	}
-
-	@Override
-	public String createAuthenticationCode() throws OAuthSystemException {
-		return vg.generateValue();
+	protected String generateValue()
+	{
+		return UUID.randomUUID().toString();
 	}
 
 }

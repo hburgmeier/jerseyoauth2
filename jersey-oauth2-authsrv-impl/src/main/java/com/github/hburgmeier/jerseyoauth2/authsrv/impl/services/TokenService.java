@@ -27,6 +27,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenGenerationException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;
 import com.google.inject.Inject;
 
@@ -73,10 +74,11 @@ public class TokenService implements ITokenService {
 	public void issueNewToken(HttpServletRequest request, HttpServletResponse response, IAuthorizedClientApp clientApp, ResponseType responseType)
 			throws OAuthProblemException, OAuthSystemException, IOException {
 
-		String accessToken = tokenGenerator.createAccessToken();
-		String refreshToken = tokenGenerator.createRefreshToken();
-
 		try {
+		
+			String accessToken = tokenGenerator.createAccessToken();
+			String refreshToken = tokenGenerator.createRefreshToken();
+		
 			IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken,
 					clientApp);
 			LOGGER.debug("token {} issued", accessToken);
@@ -84,6 +86,9 @@ public class TokenService implements ITokenService {
 			sendTokenResponse(request, response, accessTokenInfo, responseType);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
+			throw OAuthProblemException.error("server_error", "Server error");
+		} catch (TokenGenerationException e) {
+			LOGGER.error("error with token generation", e);
 			throw OAuthProblemException.error("server_error", "Server error");
 		}
 	}	
@@ -108,7 +113,10 @@ public class TokenService implements ITokenService {
 			throw OAuthProblemException.error("token_invalid", "token is invalid");
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
-			throw OAuthProblemException.error("server_error", "Server error");						
+			throw OAuthProblemException.error("server_error", "Server error");
+		} catch (TokenGenerationException e) {
+			LOGGER.error("error with token generation", e);
+			throw OAuthProblemException.error("server_error", "Server error");
 		}
 	}
 

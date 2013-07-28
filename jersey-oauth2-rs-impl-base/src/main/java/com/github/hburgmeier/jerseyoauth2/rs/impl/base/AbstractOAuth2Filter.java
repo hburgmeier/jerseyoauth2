@@ -8,10 +8,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
-import org.apache.amber.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
 import com.github.hburgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
@@ -24,7 +24,7 @@ public abstract class AbstractOAuth2Filter {
 	
 	private static final String HTTPS = "https";
 	
-	protected final SecurityContext filterOAuth2Request(OAuthAccessResourceRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException, OAuth2FilterException
+	protected final SecurityContext filterOAuth2Request(IResourceAccessRequest oauthRequest, Set<String> requiredScopes, boolean secureRequest) throws InvalidTokenException, OAuthSystemException, OAuth2FilterException
 	{
 		String accessToken = oauthRequest.getAccessToken();
 

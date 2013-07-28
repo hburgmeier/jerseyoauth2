@@ -10,6 +10,7 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.api.annotations.AllowedScopes;
 import com.github.hburgmeier.jerseyoauth2.rs.api.annotations.OAuth20;
@@ -55,7 +56,8 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 	protected List<ResourceFilter> getFilters(AllowedScopes scopes)
 	{
 		List<ResourceFilter> securityFilters = new LinkedList<ResourceFilter>();
-		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenVerifier(), getRSConfiguration());
+		OAuth20AuthenticationFilter oAuth20AuthenticationFilter = new OAuth20AuthenticationFilter(getAccessTokenVerifier(), 
+				getRSConfiguration(), getRequestFactory());
 		if (scopes!=null && scopes.scopes().length>0)
 		{
 			LOGGER.debug("Installing scope filter");
@@ -65,6 +67,10 @@ public class OAuth20FilterFactory  implements ResourceFilterFactory {
 		return securityFilters;
 	}
 	
+	protected IRequestFactory getRequestFactory() {
+		return providers.getContextResolver(IRequestFactory.class, MediaType.WILDCARD_TYPE).getContext(IRequestFactory.class);
+	}
+
 	protected IAccessTokenVerifier getAccessTokenVerifier()
 	{
 		return providers.getContextResolver(IAccessTokenVerifier.class, MediaType.WILDCARD_TYPE).getContext(IAccessTokenVerifier.class);
