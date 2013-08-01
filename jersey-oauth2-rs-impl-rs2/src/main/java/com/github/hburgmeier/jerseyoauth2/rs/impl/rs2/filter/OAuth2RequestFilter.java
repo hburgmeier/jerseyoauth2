@@ -11,7 +11,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +58,6 @@ public class OAuth2RequestFilter extends AbstractOAuth2Filter implements Contain
 				
 				SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 				ctx.setSecurityContext(securityContext);
-			} catch (OAuthSystemException e) {
-				LOGGER.error("Error in filter request", e);
-				ctx.abortWith(buildAuthProblem());
 			} catch (OAuth2Exception e) {
 				LOGGER.error("Error in filter request", e);
 				ctx.abortWith(buildAuthProblem());			

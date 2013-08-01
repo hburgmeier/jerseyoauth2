@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.SecurityContext;
 
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +62,6 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			LOGGER.debug("set SecurityContext. User {}", securityContext.getUserPrincipal().getName());
 			
 			return containerRequest;
-		} catch (OAuthSystemException e) {
-			LOGGER.error(ERROR_FILTER_REQUEST, e);
-			throw new WebApplicationException(e, buildAuthProblem());
 		} catch (OAuth2Exception e) {
 			LOGGER.error(ERROR_FILTER_REQUEST, e);
 			throw new WebApplicationException(e, buildAuthProblem());			
