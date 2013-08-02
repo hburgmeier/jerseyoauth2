@@ -10,7 +10,6 @@ import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
 import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.github.hburgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 
 public interface ITokenService {

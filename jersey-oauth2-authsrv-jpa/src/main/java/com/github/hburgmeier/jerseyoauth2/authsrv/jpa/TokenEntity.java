@@ -14,8 +14,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.github.hburgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 
 @Entity
 @NamedQueries({

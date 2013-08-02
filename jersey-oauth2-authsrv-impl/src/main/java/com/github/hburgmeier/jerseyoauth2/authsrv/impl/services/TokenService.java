@@ -18,12 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
-import com.github.hburgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
