@@ -13,10 +13,10 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;

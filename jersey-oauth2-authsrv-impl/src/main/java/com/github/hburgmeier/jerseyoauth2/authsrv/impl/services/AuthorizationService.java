@@ -17,13 +17,13 @@ import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;

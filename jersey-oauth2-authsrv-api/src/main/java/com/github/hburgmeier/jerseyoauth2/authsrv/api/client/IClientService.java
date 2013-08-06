@@ -2,7 +2,6 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.client;
 
 import java.util.Set;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 
 public interface IClientService {

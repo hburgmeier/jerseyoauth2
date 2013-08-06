@@ -24,7 +24,7 @@ public class Sample2Resource {
 	public SampleEntity getEntity(@WebParam(name="id") String id, @Context SecurityContext securityContext)
 	{
 		IOAuthPrincipal principal = (IOAuthPrincipal)securityContext.getUserPrincipal();
-		return new SampleEntity(id, principal.getUser().getName(), principal.getClientApp().getClientId());
+		return new SampleEntity(id, principal.getUser().getName(), principal.getClientId());
 	}
 	
 }

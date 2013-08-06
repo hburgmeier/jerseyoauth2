@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.api.client;
+package com.github.hburgmeier.jerseyoauth2.authsrv.api.client;
 
 import java.util.Set;
 

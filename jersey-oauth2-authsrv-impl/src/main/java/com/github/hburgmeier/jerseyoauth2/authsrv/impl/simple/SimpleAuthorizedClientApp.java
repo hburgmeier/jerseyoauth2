@@ -2,8 +2,8 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple;
 
 import java.util.Set;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 
 public class SimpleAuthorizedClientApp implements IAuthorizedClientApp {

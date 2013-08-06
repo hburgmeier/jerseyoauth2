@@ -13,8 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 
 @Entity
 @NamedQueries({

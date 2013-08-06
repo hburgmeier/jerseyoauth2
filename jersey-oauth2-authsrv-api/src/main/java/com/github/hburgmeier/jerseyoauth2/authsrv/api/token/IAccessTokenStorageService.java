@@ -2,8 +2,8 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.token;
 
 import java.util.List;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 
 public interface IAccessTokenStorageService {
 

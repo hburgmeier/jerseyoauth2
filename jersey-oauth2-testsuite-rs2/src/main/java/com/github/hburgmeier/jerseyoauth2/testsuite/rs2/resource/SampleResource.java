@@ -25,7 +25,7 @@ public class SampleResource {
 	{
 		IOAuthPrincipal principal = (IOAuthPrincipal)securityContext.getUserPrincipal();
 		String username = principal.getUser().getName();
-		String clientId = principal.getClientApp().getClientId();
+		String clientId = principal.getClientId();
 		return new SampleEntity(id, username, clientId);
 	}
 	

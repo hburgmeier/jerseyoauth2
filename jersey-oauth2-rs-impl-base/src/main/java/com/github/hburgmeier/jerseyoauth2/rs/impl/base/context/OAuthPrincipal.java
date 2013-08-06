@@ -6,7 +6,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IOAuthPrincipal;
 
@@ -15,12 +14,12 @@ public class OAuthPrincipal implements Principal, IOAuthPrincipal {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OAuthPrincipal.class);
 	
 	private IUser user;
-	private IAuthorizedClientApp clientApp;
+	private String clientId;
 	private Set<String> allowedScopes;
 	
-	public OAuthPrincipal(IAuthorizedClientApp clientApp, IUser user, Set<String> allowedScopes) {
+	public OAuthPrincipal(String clientId, IUser user, Set<String> allowedScopes) {
 		super();
-		this.clientApp = clientApp;
+		this.clientId = clientId;
 		this.user = user;
 		this.allowedScopes = allowedScopes;
 	}
@@ -41,8 +40,8 @@ public class OAuthPrincipal implements Principal, IOAuthPrincipal {
 	}
 
 	@Override
-	public IAuthorizedClientApp getClientApp() {
-		return clientApp;
+	public String getClientId() {
+		return clientId;
 	}
 
 	@Override

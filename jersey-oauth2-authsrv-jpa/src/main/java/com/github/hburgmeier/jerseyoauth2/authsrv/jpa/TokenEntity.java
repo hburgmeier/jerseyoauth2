@@ -13,8 +13,8 @@ import javax.persistence.NamedQuery;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.github.hburgmeier.jerseyoauth2.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 
 @Entity
@@ -88,6 +88,11 @@ class TokenEntity implements IAccessTokenInfo {
 	@Override
 	public boolean isExpired() {
 		return System.currentTimeMillis()>validUntil;
+	}
+	
+	@Override
+	public String getClientId() {
+		return this.clientApp.getClientId();
 	}
 
 	public void setAccessToken(String accessToken) {

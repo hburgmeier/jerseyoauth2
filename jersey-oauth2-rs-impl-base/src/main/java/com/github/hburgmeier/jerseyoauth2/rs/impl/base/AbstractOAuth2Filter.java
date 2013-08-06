@@ -38,7 +38,7 @@ public abstract class AbstractOAuth2Filter {
 			throw new OAuth2FilterException(buildUserProblem());
 		}
 		
-		if (accessTokenInfo.getClientApp()==null)
+		if (accessTokenInfo.getClientId()==null)
 		{
 			LOGGER.error("no client stored in token {}", accessToken);
 			throw new OAuth2FilterException(buildClientProblem());
@@ -54,7 +54,7 @@ public abstract class AbstractOAuth2Filter {
 			}
 		}
 		
-		OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientApp(), accessTokenInfo.getUser(), authorizedScopes);
+		OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientId(), accessTokenInfo.getUser(), authorizedScopes);
 		SecurityContext securityContext = new OAuthSecurityContext(principal, secureRequest);	
 		return securityContext;
 	}
