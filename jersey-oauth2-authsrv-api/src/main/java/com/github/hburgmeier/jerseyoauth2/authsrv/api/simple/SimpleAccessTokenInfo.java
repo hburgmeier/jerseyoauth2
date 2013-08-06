@@ -4,7 +4,6 @@ import java.util.Set;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 
 public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	
