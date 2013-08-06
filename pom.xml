@@ -199,6 +199,7 @@
 		<module>jersey-oauth2-testsuite</module>
 		<module>jersey-oauth2-testsuite-rs2</module>
 		<module>jersey-oauth2-protocol-impl</module>
+		<module>jersey-oauth2-guice-utils</module>
 	</modules>
 	<description>OAuth2 Provider Framework for Jersey</description>
 	<url>https://github.com/hburgmeier/jerseyoauth2.git</url>

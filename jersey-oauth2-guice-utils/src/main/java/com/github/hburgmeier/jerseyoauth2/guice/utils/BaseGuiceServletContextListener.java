@@ -1,8 +1,6 @@
-package com.github.hburgmeier.jerseyoauth2.rs.impl.guice;
+package com.github.hburgmeier.jerseyoauth2.guice.utils;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -16,15 +14,11 @@ public abstract class BaseGuiceServletContextListener extends GuiceServletContex
 
 	@Override
 	protected final Injector getInjector() {
-		List<Module> modules = new LinkedList<>();
-		modules.add(new ResourceServerModule());
-		modules.addAll(getResourceServerModules());
-
-		Injector injector = Guice.createInjector(modules);
+		Injector injector = Guice.createInjector(getApplicationModules());
 		return injector;
 	}
 
-	protected abstract Collection<? extends Module> getResourceServerModules();
+	protected abstract Collection<? extends Module> getApplicationModules();
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
