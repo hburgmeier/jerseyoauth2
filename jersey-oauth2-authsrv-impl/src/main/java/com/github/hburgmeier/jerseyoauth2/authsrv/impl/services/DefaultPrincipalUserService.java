@@ -26,12 +26,7 @@ public class DefaultPrincipalUserService implements IUserService {
 		public String getName() {
 			return principal.getName();
 		}
-
-		@Override
-		public boolean isUserInRole(String role) {
-			return false;
-		}
-		
+	
 	}
 
 }

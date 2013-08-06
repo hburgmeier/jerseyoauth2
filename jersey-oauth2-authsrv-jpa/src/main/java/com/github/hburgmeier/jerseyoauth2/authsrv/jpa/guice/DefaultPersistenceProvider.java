@@ -16,9 +16,10 @@ public class DefaultPersistenceProvider implements Provider<EntityManagerFactory
 	public DefaultPersistenceProvider(String hibernateDialect)
 	{
 		Map params = new HashMap();
-		params.put("hibernate.hbm2ddl.auto","create-drop");
+		params.put("hibernate.hbm2ddl.auto","update");
 		params.put("hibernate.cache.use_second_level_cache","false");
-		params.put("hibernate.dialect",hibernateDialect);
+		if (hibernateDialect!=null)
+			params.put("hibernate.dialect",hibernateDialect);
 		
 		emf = Persistence.createEntityManagerFactory("authsrv", params );
 	}

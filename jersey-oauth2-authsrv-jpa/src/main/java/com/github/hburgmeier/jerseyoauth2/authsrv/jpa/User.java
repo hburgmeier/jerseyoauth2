@@ -16,9 +16,4 @@ public class User implements IUser {
 		return name;
 	}
 
-	@Override
-	public boolean isUserInRole(String role) {
-		return false;
-	}
-
 }

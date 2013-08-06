@@ -4,6 +4,4 @@ public interface IUser {
 
 	String getName();
 	
-	boolean isUserInRole(String role);
-	
 }

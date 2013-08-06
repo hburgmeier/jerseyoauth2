@@ -32,7 +32,7 @@ public class OAuthPrincipal implements Principal, IOAuthPrincipal {
 
 	public boolean isUserInRole(String role) {
 		LOGGER.warn("isUserInRole called. This is not supported right now.");
-		return user.isUserInRole(role);
+		return false;
 	}
 
 	@Override

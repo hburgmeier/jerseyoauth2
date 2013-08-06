@@ -23,9 +23,4 @@ public class OpenIDUser implements IUser, Serializable {
 		return email;
 	}
 
-	@Override
-	public boolean isUserInRole(String role) {
-		return false;
-	}
-
 }
