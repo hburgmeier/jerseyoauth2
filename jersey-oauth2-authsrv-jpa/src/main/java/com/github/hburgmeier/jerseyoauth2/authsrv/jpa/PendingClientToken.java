@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
@@ -19,6 +20,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken
 			"p.clientApp.clientApp.clientId = :clientId and " +
 			"p.clientApp.clientApp.clientSecret = :clientSecret")
 })
+@XmlRootElement
 class PendingClientToken implements IPendingClientToken {
 
 	@Id

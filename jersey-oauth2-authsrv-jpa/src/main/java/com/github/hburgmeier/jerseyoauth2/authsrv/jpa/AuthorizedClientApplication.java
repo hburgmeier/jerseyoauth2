@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
@@ -20,6 +21,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientAp
 @NamedQueries({
 	@NamedQuery(name="findAuthorizedClient", query="select ac from AuthorizedClientApplication ac where ac.clientApp.clientId = :clientId and ac.username = :username")
 })
+@XmlRootElement
 public class AuthorizedClientApplication implements IAuthorizedClientApp {
 
 	@Id

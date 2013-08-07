@@ -3,11 +3,13 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.jpa;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 
 @Entity
+@XmlRootElement
 class RegisteredClient implements IRegisteredClientApp {
 
 	@Id

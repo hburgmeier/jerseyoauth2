@@ -2,9 +2,12 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 
+@XmlRootElement
 public class SimpleRegisteredClient implements IRegisteredClientApp, Serializable {
 
 	/**
@@ -70,6 +73,10 @@ public class SimpleRegisteredClient implements IRegisteredClientApp, Serializabl
 	@Override
 	public String getCallbackUrl() {
 		return callbackUrl;
+	}
+
+	public void setCallbackUrl(String callbackUrl) {
+		this.callbackUrl = callbackUrl;
 	}
 
 	

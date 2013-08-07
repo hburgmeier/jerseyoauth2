@@ -1,5 +1,7 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice;
 
+import net.sf.ehcache.CacheManager;
+
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
@@ -12,6 +14,7 @@ public class PersistenceModule extends AbstractModule {
 	protected void configure() {
     	bind(IClientService.class).to(DatabaseClientService.class);
     	bind(IAccessTokenStorageService.class).to(CachingAccessTokenStorage.class);
+    	bind(CacheManager.class).toProvider(new DefaultCacheManagerProvider());
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,6 +25,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 })
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+@XmlRootElement
 class TokenEntity implements IAccessTokenInfo {
 
 	@Id
