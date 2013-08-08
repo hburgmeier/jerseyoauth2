@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
@@ -18,7 +19,7 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 
 	@Override
 	public void startAuthorizationFlow(IUser user,
-			IRegisteredClientApp clientApp, Set<String> scope,
+			IRegisteredClientApp clientApp, Set<String> scope, ResponseType requestedResponseType, 
 			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 			throws AuthorizationFlowException, ServletException, IOException {
 		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/auth.jsp");

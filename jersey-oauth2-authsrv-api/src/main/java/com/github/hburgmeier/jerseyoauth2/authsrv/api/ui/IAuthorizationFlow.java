@@ -8,12 +8,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 
 public interface IAuthorizationFlow {
 
-	void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+	void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, ResponseType requestedResponseType, 
+			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 		throws AuthorizationFlowException, ServletException, IOException;
 
 	void handleMissingUser(HttpServletRequest request,

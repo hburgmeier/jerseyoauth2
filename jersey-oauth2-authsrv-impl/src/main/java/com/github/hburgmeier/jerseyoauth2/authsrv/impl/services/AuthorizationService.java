@@ -1,6 +1,7 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -44,6 +45,7 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IAuthorizationFlow authFlow;
 	private final IConfiguration configuration;
 	private final ITokenService tokenService;
+	private final Set<String> defaultScopes;
 	
 	@Inject
 	public AuthorizationService(final IClientService clientService, final IUserService userService,
@@ -54,6 +56,8 @@ public class AuthorizationService implements IAuthorizationService {
 		this.authFlow = authFlow;
 		this.configuration = configuration;
 		this.tokenService = tokenService;
+		Set<String> defScopes = configuration.getDefaultScopes();
+		this.defaultScopes = defScopes==null?Collections.<String>emptySet():defScopes;
 	}	
 	
 	@Override
@@ -76,43 +80,31 @@ public class AuthorizationService implements IAuthorizationService {
 			Set<String> scopes = oauthRequest.getScopes();
 			if (scopes.isEmpty()) {
 				LOGGER.warn("using default scopes");
-				scopes = configuration.getDefaultScopes();
+				scopes = defaultScopes;
 			}
 
 			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
 			ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.getTechnicalCode()) ? ResponseType.TOKEN
 					: ResponseType.CODE;
 
-			if (reqResponseType.equals(ResponseType.CODE)) {
-				if (oauthRequest.getClientSecret() != null) {
-					if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
-						throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
-				}
+			switch (reqResponseType)
+			{
+			case CODE:
+				validateCodeRequest(oauthRequest, regClientApp);
+				break;
+			case TOKEN:
+				validateTokenRequest(oauthRequest, regClientApp);
+				break;
 			}
-
-			if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL)
-					&& reqResponseType.equals(ResponseType.TOKEN))
-				throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client type is invalid");
-
+			
 			IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(),
 					scopes);
 			if (authorizedClientApp != null) {
 				LOGGER.debug("client is already authorized");
-				try {
-					if (reqResponseType.equals(ResponseType.CODE)) {
-						IPendingClientToken pendingClientToken = clientService
-								.createPendingClientToken(authorizedClientApp);
-						sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
-					} else {
-						LOGGER.debug("issue new token for token response type");
-						tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType);
-					}
-				} catch (ClientServiceException e) {
-					throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
-				}
+				sendAuthorizationReponse(request, response, reqResponseType, regClientApp, authorizedClientApp);
 			} else {
 				LOGGER.debug("client is not authorized or missing scopes {}", scopes);
-				authFlow.startAuthorizationFlow(user, regClientApp, scopes, request, response, servletContext);
+				authFlow.startAuthorizationFlow(user, regClientApp, scopes, reqResponseType, request, response, servletContext);
 			}
 		} catch (OAuthProblemException e) {
 			LOGGER.error("Problem with OAuth2 protocol", e);
@@ -120,6 +112,24 @@ public class AuthorizationService implements IAuthorizationService {
 		} catch (InvalidUserException e) {
 			LOGGER.error("Missing or invalid user");
 			authFlow.handleMissingUser(request, response, servletContext);
+		}
+	}
+
+	@Override
+	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
+			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp)
+			throws OAuthSystemException, IOException, OAuthProblemException {
+		try {
+			if (reqResponseType.equals(ResponseType.CODE)) {
+				IPendingClientToken pendingClientToken = clientService
+						.createPendingClientToken(authorizedClientApp);
+				sendAuthorizationReponse(request, response, pendingClientToken, regClientApp);
+			} else {
+				LOGGER.debug("issue new token for token response type");
+				tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType);
+			}
+		} catch (ClientServiceException e) {
+			throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
 		}
 	}
 	
@@ -148,4 +158,20 @@ public class AuthorizationService implements IAuthorizationService {
         response.sendRedirect(resp.getLocationUri());
 	}
 
+	protected void validateCodeRequest(OAuth2AuthzRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
+	{
+		if (oauthRequest.getClientSecret() != null) {
+			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
+				throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client is invalid");
+		}
+	}
+	
+	protected void validateTokenRequest(OAuth2AuthzRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
+	{
+		if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL))
+			throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client type is invalid");
+		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl()))
+			throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "redirect uri does not match");
+	}
+	
 }

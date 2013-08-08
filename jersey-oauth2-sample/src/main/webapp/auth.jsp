@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h1>Authorize Client Application</h1>
-	<p>Do you trust the application ${clientApp.applicationName} ?</p>
+	<p>Do you trust the application <c:out value="${clientApp.applicationName}"/> ?</p>
 	<p>It requested the following permissions:<p>
 	<ul>
 	<c:forEach var="scopeItem" items="${scope}">

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 
 
@@ -22,5 +23,9 @@ public interface IAuthorizationService {
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp) throws OAuthSystemException, IOException;
 	
 	void sendErrorResponse(OAuthProblemException ex,
-			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException;	
+			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException;
+
+	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
+			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp)
+			throws OAuthSystemException, IOException, OAuthProblemException;	
 }

@@ -26,7 +26,7 @@ public class ProtocolTest extends BaseTest {
 		WebResource webResource = restClient.resource(authUrl);
 		ClientResponse clientResponse = webResource.get(ClientResponse.class);
 		Assert.assertEquals(302, clientResponse.getStatus());
-		Assert.assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/example1?code="));
+		Assert.assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/testsuite?code="));
 		
 		authUrl = client.getAuthUrl("stateTest");
 		
