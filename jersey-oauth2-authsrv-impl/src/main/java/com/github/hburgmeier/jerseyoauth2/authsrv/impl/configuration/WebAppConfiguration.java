@@ -50,7 +50,7 @@ public class WebAppConfiguration implements IConfiguration {
 	}
 
 	@Override
-	public boolean getSupportAuthorizationHeader() {
+	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return supportAuthorizationHeader;
 	}
 

@@ -65,7 +65,7 @@ public class AuthorizationService implements IAuthorizationService {
 		IRegisteredClientApp regClientApp = null;
 		try {
 			OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request,
-					configuration.getSupportAuthorizationHeader());
+					configuration.getEnableAuthorizationHeaderForClientAuth());
 			LOGGER.debug("Parsing of AuthzRequest successful");
 
 			IUser user = userService.getCurrentUser(request);

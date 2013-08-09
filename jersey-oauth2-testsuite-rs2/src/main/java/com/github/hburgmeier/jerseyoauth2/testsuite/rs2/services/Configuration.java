@@ -51,7 +51,7 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	}
 
 	@Override
-	public boolean getSupportAuthorizationHeader() {
+	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return false;
 	}
 	

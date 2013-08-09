@@ -13,6 +13,6 @@ public interface IConfiguration {
 
 	boolean getStrictSecurity();
 
-	boolean getSupportAuthorizationHeader();
+	boolean getEnableAuthorizationHeaderForClientAuth();
 	
 }

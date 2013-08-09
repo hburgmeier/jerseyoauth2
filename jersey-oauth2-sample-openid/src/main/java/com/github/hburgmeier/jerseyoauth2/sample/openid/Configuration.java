@@ -29,7 +29,7 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public boolean getSupportAuthorizationHeader() {
+	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return false;
 	}
 
