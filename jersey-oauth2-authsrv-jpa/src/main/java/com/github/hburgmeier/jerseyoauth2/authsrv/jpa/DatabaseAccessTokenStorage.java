@@ -44,20 +44,24 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	@Override
 	public IAccessTokenInfo getTokenInfoByAccessToken(String accessToken) throws InvalidTokenException {
 		try {
-			EntityManager em = emf.createEntityManager();		
-			TokenEntity tokenEntity = em.find(TokenEntity.class, accessToken);
-			if (tokenEntity!=null && !tokenEntity.isExpired())
-			{
-				setUser(tokenEntity);
-				return tokenEntity;
-			} else {
-				if (tokenEntity==null)
-					LOGGER.debug("token {} unknown", accessToken);
-				else  {
-					removeToken(em, tokenEntity);
-					LOGGER.debug("token {} expired", accessToken);
+			EntityManager em = emf.createEntityManager();
+			try {
+				TokenEntity tokenEntity = em.find(TokenEntity.class, accessToken);
+				if (tokenEntity!=null && !tokenEntity.isExpired())
+				{
+					setUser(tokenEntity);
+					return tokenEntity;
+				} else {
+					if (tokenEntity==null)
+						LOGGER.debug("token {} unknown", accessToken);
+					else  {
+						removeToken(em, tokenEntity);
+						LOGGER.debug("token {} expired", accessToken);
+					}
+					return null;
 				}
-				return null;
+			} finally {
+				em.close();
 			}
 		} catch (UserStorageServiceException e) {
 			throw new InvalidTokenException(e);
@@ -79,16 +83,20 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public IAccessTokenInfo getTokenInfoByRefreshToken(String refreshToken) throws InvalidTokenException {
 		try {
 			EntityManager em = emf.createEntityManager();
-			TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByRefreshToken", TokenEntity.class);
-			query.setParameter("refreshToken", refreshToken);
-			TokenEntity te = query.getSingleResult();
-			if (!te.isExpired())
-			{
-				setUser(te);
-				return te;
-			} else {
-				LOGGER.debug("refresh token {} is expired", refreshToken);
-				throw new InvalidTokenException("expired");
+			try {
+				TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByRefreshToken", TokenEntity.class);
+				query.setParameter("refreshToken", refreshToken);
+				TokenEntity te = query.getSingleResult();
+				if (!te.isExpired())
+				{
+					setUser(te);
+					return te;
+				} else {
+					LOGGER.debug("refresh token {} is expired", refreshToken);
+					throw new InvalidTokenException("expired");
+				}
+			} finally {
+				em.close();
 			}
 		} catch (NoResultException e) {
 			throw new InvalidTokenException(e);
@@ -101,13 +109,17 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken) throws TokenStorageException {
 		try {
 			EntityManager em = emf.createEntityManager();
-			TokenEntity tokenEntity = em.find(TokenEntity.class, oldAccessToken);
-			removeToken(em, tokenEntity);
-			
-			tokenEntity.updateTokens(newAccessToken, newRefreshToken);
-			saveTokenEntity(tokenEntity);
-			setUser(tokenEntity);
-			return tokenEntity;
+			try {
+				TokenEntity tokenEntity = em.find(TokenEntity.class, oldAccessToken);
+				removeToken(em, tokenEntity);
+				
+				tokenEntity.updateTokens(newAccessToken, newRefreshToken);
+				saveTokenEntity(tokenEntity);
+				setUser(tokenEntity);
+				return tokenEntity;
+			} finally {
+				em.close();
+			}
 		} catch (UserStorageServiceException | PersistenceException e) {
 			throw new TokenStorageException(e);
 		}
@@ -124,8 +136,6 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			LOGGER.error("persistence error", ex);
 			tx.rollback();
 			throw ex;
-		} finally {
-			em.close();
 		}
 	}
 
