@@ -9,7 +9,7 @@ public class DefaultConfiguration implements IRSConfiguration {
 
 	@Override
 	public EnumSet<ParameterStyle> getSupportedOAuthParameterStyles() {
-		return EnumSet.of(ParameterStyle.HEADER, ParameterStyle.QUERY);
+		return EnumSet.of(ParameterStyle.HEADER, ParameterStyle.QUERY, ParameterStyle.BODY);
 	}
 
 	@Override

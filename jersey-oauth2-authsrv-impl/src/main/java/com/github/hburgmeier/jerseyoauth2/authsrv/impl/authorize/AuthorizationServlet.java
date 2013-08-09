@@ -58,5 +58,24 @@ public class AuthorizationServlet extends HttpServlet {
 			}
 		}
 	}
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (configuration.getStrictSecurity() && !request.isSecure())
+		{
+			LOGGER.error("Strict security switch on but insecure request received");
+			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
+		} else {
+			try {
+				authService.evaluateAuthorizationRequest(request, response, getServletContext());
+			} catch (AuthorizationFlowException e) {
+				LOGGER.error("Error in authorization flow",e);
+				throw new ServletException(e.getMessage(), e);
+			} catch (OAuthSystemException e) {
+				LOGGER.error("Error in OAuth2 Protocol",e);
+				throw new ServletException(e);
+			}
+		}
+	}
 
 }
