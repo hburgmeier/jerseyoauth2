@@ -7,4 +7,6 @@ public interface IHttpRequest {
 	String getHeaderField(String field);
 	
 	String getQueryParameter(String queryParameter);
+	
+	String getFormParameterValue(String field);
 }
