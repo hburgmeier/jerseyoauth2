@@ -35,7 +35,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.amber.OAuth2AuthzRequest;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Inject;

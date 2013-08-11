@@ -2,6 +2,7 @@ package com.github.hburgmeier.jerseyoauth2.testsuite.base;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scribe.model.Token;
@@ -9,8 +10,6 @@ import org.scribe.model.Token;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 import com.github.hburgmeier.jerseyoauth2.client.scribe.OAuth2Token;
-import com.github.hburgmeier.jerseyoauth2.testsuite.base.ClientEntity;
-import com.github.hburgmeier.jerseyoauth2.testsuite.base.SampleEntity;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.client.ClientException;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.client.ClientManagerClient;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.client.ResourceClient;
@@ -18,6 +17,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
+@Ignore
 public class PerformanceTest {
 
 	@Rule
@@ -44,7 +44,7 @@ public class PerformanceTest {
 		token = client.getAccessToken(code);
 	}
 
-	@BenchmarkOptions(benchmarkRounds=200)
+	@BenchmarkOptions(benchmarkRounds=50)
 	@Test
 	public void testSimpleResourceAccess() throws ClientException
 	{

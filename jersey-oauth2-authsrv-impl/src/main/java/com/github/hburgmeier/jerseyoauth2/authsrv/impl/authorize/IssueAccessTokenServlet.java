@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.as.request.OAuthTokenRequest;
 import org.apache.amber.oauth2.common.exception.OAuthProblemException;
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.slf4j.Logger;
@@ -57,7 +56,6 @@ public class IssueAccessTokenServlet extends HttpServlet {
 				try {
 					IAccessTokenRequest oauthRequest = requestFactory.parseAccessTokenRequest(new HttpRequestAdapter(request), 
 							configuration.getEnableAuthorizationHeaderForClientAuth());
-//					OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
 					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
 					tokenService.handleRequest(request, response, oauthRequest);
