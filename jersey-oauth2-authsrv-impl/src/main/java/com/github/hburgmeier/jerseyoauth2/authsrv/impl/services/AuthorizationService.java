@@ -18,6 +18,9 @@ import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
@@ -34,6 +37,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.amber.OAuth2AuthzRequest;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Inject;
 
 public class AuthorizationService implements IAuthorizationService {
@@ -43,19 +47,22 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IClientService clientService;
 	private final IUserService userService;
 	private final IAuthorizationFlow authFlow;
-	private final IConfiguration configuration;
 	private final ITokenService tokenService;
+	private final IRequestFactory requestFactory;
 	private final Set<String> defaultScopes;
+	private final IConfiguration configuration;
 	
 	@Inject
 	public AuthorizationService(final IClientService clientService, final IUserService userService,
-			final IAuthorizationFlow authFlow, final IConfiguration configuration, final ITokenService tokenService)
+			final IAuthorizationFlow authFlow, final IConfiguration configuration, final ITokenService tokenService,
+			final IRequestFactory requestFactory)
 	{
 		this.clientService = clientService;
 		this.userService = userService;
 		this.authFlow = authFlow;
 		this.configuration = configuration;
 		this.tokenService = tokenService;
+		this.requestFactory = requestFactory;
 		Set<String> defScopes = configuration.getDefaultScopes();
 		this.defaultScopes = defScopes==null?Collections.<String>emptySet():defScopes;
 	}	
@@ -64,7 +71,9 @@ public class AuthorizationService implements IAuthorizationService {
 	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException {
 		IRegisteredClientApp regClientApp = null;
 		try {
-			OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request,
+//			OAuth2AuthzRequest oauthRequest = new OAuth2AuthzRequest(request,
+//					configuration.getEnableAuthorizationHeaderForClientAuth());
+			IAuthorizationRequest oauthRequest = requestFactory.parseAuthorizationRequest(new HttpRequestAdapter(request), 
 					configuration.getEnableAuthorizationHeaderForClientAuth());
 			LOGGER.debug("Parsing of AuthzRequest successful");
 
@@ -84,8 +93,7 @@ public class AuthorizationService implements IAuthorizationService {
 			}
 
 			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
-			ResponseType reqResponseType = oauthRequest.getResponseType().equals(ResponseType.TOKEN.getTechnicalCode()) ? ResponseType.TOKEN
-					: ResponseType.CODE;
+			ResponseType reqResponseType = oauthRequest.getResponseType();
 
 			switch (reqResponseType)
 			{
@@ -112,6 +120,9 @@ public class AuthorizationService implements IAuthorizationService {
 		} catch (InvalidUserException e) {
 			LOGGER.error("Missing or invalid user");
 			authFlow.handleMissingUser(request, response, servletContext);
+		} catch (OAuth2Exception e) {
+			LOGGER.error("Problem with OAuth2 protocol", e);
+//			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
 		}
 	}
 
@@ -158,7 +169,7 @@ public class AuthorizationService implements IAuthorizationService {
         response.sendRedirect(resp.getLocationUri());
 	}
 
-	protected void validateCodeRequest(OAuth2AuthzRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
+	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
 	{
 		if (oauthRequest.getClientSecret() != null) {
 			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
@@ -166,7 +177,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 	
-	protected void validateTokenRequest(OAuth2AuthzRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
+	protected void validateTokenRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuthProblemException
 	{
 		if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL))
 			throw OAuthProblemException.error(TokenResponse.INVALID_CLIENT, "client type is invalid");

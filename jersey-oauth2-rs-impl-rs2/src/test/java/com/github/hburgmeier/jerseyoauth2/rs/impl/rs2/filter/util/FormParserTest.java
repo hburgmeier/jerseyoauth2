@@ -1,18 +1,17 @@
 package com.github.hburgmeier.jerseyoauth2.rs.impl.rs2.filter.util;
 
-import static org.junit.Assert.*; 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import javax.ws.rs.core.Form;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.github.hburgmeier.jerseyoauth2.rs.impl.rs2.filter.util.FormParser;
 
 public class FormParserTest {
 

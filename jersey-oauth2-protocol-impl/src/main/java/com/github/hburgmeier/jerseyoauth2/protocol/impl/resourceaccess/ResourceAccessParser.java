@@ -7,12 +7,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.ResourceAccessRequest;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.FormExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.HeaderExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.IExtractor;
@@ -20,9 +18,10 @@ import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.QueryParameter
 
 public class ResourceAccessParser {
 	
-	public IResourceAccessRequest parse(IHttpRequest request,
+	public ResourceAccessRequest parse(IHttpRequest request,
 			EnumSet<ParameterStyle> parameterStyles, EnumSet<TokenType> tokenTypes) throws OAuth2Exception {
 		String accessToken = null;
+		TokenType usedTokenType = null;
 		for (TokenType tokenType : tokenTypes)
 		{
 			for (ParameterStyle parameterStyle : parameterStyles)
@@ -30,14 +29,17 @@ public class ResourceAccessParser {
 				IExtractor extractor = getAccessTokenExtractor(tokenType, parameterStyle);
 				accessToken = extractor.extractValue(request);
 				if (accessToken!=null)
+				{
+					usedTokenType = tokenType;
 					break;
+				}
 			}
+			if (accessToken!=null)
+				break;
 		}
 		if (accessToken == null)
 			throw new OAuth2Exception("Missing access token");
-		ResourceAccessRequest accessRequest = new ResourceAccessRequest(accessToken);
-		accessRequest.validate();
-		return accessRequest;
+		return new ResourceAccessRequest(accessToken, usedTokenType);
 	}
 	
 	protected IExtractor getAccessTokenExtractor(TokenType tokenType, ParameterStyle parameterStyle)

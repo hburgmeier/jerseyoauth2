@@ -7,7 +7,6 @@ import javax.persistence.EntityManagerFactory;
 
 import net.sf.ehcache.CacheManager;
 
-import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
@@ -20,7 +19,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipal
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.RequestFactory;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.impl.filter.OAuth20FilterFactory;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.ui.AllowServlet;
@@ -42,7 +40,6 @@ public class AppModule  extends JerseyServletModule {
     	bind(IConfiguration.class).to(Configuration.class);
     	bind(IRSConfiguration.class).to(Configuration.class);
     	bind(IAuthorizationFlow.class).to(TestAuthorizationFlow.class);
-    	bind(IRequestFactory.class).to(RequestFactory.class);
     	
     	bind(IUserService.class).to(DefaultPrincipalUserService.class);
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);

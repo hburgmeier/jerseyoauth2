@@ -1,9 +1,10 @@
 package com.github.hburgmeier.jerseyoauth2.api.protocol;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
+
 public interface IResourceAccessRequest {
 
-	//TODO allowed token types
-	
 	String getAccessToken();
 	
+	TokenType getTokenType();
 }
