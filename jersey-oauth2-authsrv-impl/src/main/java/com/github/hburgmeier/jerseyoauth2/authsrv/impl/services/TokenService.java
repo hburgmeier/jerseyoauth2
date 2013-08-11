@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthCodeAccessTokenRequest;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IRefreshTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
@@ -60,10 +62,11 @@ public class TokenService implements ITokenService {
 
 		} else if (oauthRequest.getGrantType() == GrantType.AUTHORIZATION_REQUEST) {
 
-			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
-					oauthRequest.getClientSecret(), oauthRequest.getCode());
+			IAuthCodeAccessTokenRequest tokenRequest = (IAuthCodeAccessTokenRequest)oauthRequest;
+			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(tokenRequest.getClientId(),
+					tokenRequest.getClientSecret(), tokenRequest.getCode());
 			if (pendingClientToken == null) {
-				LOGGER.error("no pending token found, client id {}", oauthRequest.getClientId());
+				LOGGER.error("no pending token found, client id {}", tokenRequest.getClientId());
 				throw OAuthProblemException.error("unauthorized_client", "client not authorized");
 			}
 			
@@ -96,7 +99,8 @@ public class TokenService implements ITokenService {
 	
 	protected void refreshToken(HttpServletRequest request, HttpServletResponse response, IAccessTokenRequest oauthRequest)
 			throws OAuthSystemException, IOException, OAuthProblemException {
-		String refreshToken = oauthRequest.getRefreshToken();
+		IRefreshTokenRequest refreshTokenRequest = (IRefreshTokenRequest)oauthRequest;
+		String refreshToken = refreshTokenRequest.getRefreshToken();
 
 		try {
 			IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);

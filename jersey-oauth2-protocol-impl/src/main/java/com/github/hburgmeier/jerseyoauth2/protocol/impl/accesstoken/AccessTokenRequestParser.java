@@ -27,13 +27,20 @@ public class AccessTokenRequestParser {
 	private final CombinedExtractor refreshTokenExtractor = new CombinedExtractor(Constants.REFRESH_TOKEN, supportedStyles);
 	private final CombinedExtractor scopeExtractor = new CombinedExtractor(Constants.SCOPE, supportedStyles);
 	
-	public AccessTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2Exception
+	public AbstractTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2Exception
 	{
 		String grantTypeString = grantTypeExtractor.extractValue(request);
 		if (StringUtils.isEmpty(grantTypeString))
 			throw new OAuth2Exception();
 		GrantType grantType = GrantType.parse(grantTypeString);
 		
+		if (grantType == GrantType.REFRESH_TOKEN)
+			return parseRefreshRequest(request, grantType);
+		else
+			return parseAuthCodeRequest(request, grantType, enableAuthorizationHeader);
+	}
+
+	protected AuthCodeAccessTokenRequest parseAuthCodeRequest(IHttpRequest request, GrantType grantType, boolean enableAuthorizationHeader) {
 		String clientId = clientIdExtractor.extractValue(request);
 		String code = codeExtractor.extractValue(request);
 		String redirectUri = redirectUriExtractor.extractValue(request);
@@ -41,16 +48,15 @@ public class AccessTokenRequestParser {
 		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
 		String clientSecret = clientSecretExtractor.extractValue(request);
 		
-		String refreshToken = null;
-		Set<String> scopes = null;
-		if (grantType == GrantType.REFRESH_TOKEN)
-		{
-			refreshToken = refreshTokenExtractor.extractValue(request);
-			String scope = scopeExtractor.extractValue(request);
-			scopes = scopeParser.parseScope(scope);
-		}
+		return new AuthCodeAccessTokenRequest(grantType, clientId, clientSecret, code, redirectUri);
+	}
+
+	protected RefreshTokenRequest parseRefreshRequest(IHttpRequest request, GrantType grantType) {
+		String refreshToken = refreshTokenExtractor.extractValue(request);
+		String scope = scopeExtractor.extractValue(request);
+		Set<String> scopes = scopeParser.parseScope(scope);
 		
-		return new AccessTokenRequest(grantType, clientId, clientSecret, code, redirectUri, refreshToken, scopes);
+		return new RefreshTokenRequest(grantType, refreshToken, scopes);
 	}
 	
 }

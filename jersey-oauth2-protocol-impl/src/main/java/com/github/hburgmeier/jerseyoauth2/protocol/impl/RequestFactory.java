@@ -10,7 +10,7 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken.AccessTokenRequest;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken.AbstractTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken.AccessTokenRequestParser;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.authorization.AuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.authorization.AuthorizationRequestParser;
@@ -40,7 +40,7 @@ public class RequestFactory implements IRequestFactory {
 	
 	@Override
 	public IAccessTokenRequest parseAccessTokenRequest(IHttpRequest request, boolean useAuthorizationHeader) throws OAuth2Exception {
-		AccessTokenRequest accessTokenRequest = accessTokenRequestParser.parse(request, useAuthorizationHeader);
+		AbstractTokenRequest accessTokenRequest = accessTokenRequestParser.parse(request, useAuthorizationHeader);
 		accessTokenRequest.validate();
 		return accessTokenRequest;
 	}
