@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.ClientSecretExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.CombinedExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.oauth2.Constants;

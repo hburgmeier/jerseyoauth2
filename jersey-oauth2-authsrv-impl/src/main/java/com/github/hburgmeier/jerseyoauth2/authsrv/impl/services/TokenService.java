@@ -17,6 +17,7 @@ import org.apache.amber.oauth2.common.message.OAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
@@ -49,15 +50,15 @@ public class TokenService implements ITokenService {
 	}
 
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response, OAuthTokenRequest oauthRequest)
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response, IAccessTokenRequest oauthRequest)
 			throws OAuthSystemException, IOException, OAuthProblemException {
 		LOGGER.debug("Token request received, grant type {}", oauthRequest.getGrantType());
 		
-		if (oauthRequest.getGrantType().equals(GrantType.REFRESH_TOKEN.getTechnicalCode())) {
+		if (oauthRequest.getGrantType() == GrantType.REFRESH_TOKEN) {
 
 			refreshToken(request, response, oauthRequest);
 
-		} else if (oauthRequest.getGrantType().equals(GrantType.AUTHORIZATION_REQUEST.getTechnicalCode())) {
+		} else if (oauthRequest.getGrantType() == GrantType.AUTHORIZATION_REQUEST) {
 
 			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(oauthRequest.getClientId(),
 					oauthRequest.getClientSecret(), oauthRequest.getCode());
@@ -93,7 +94,7 @@ public class TokenService implements ITokenService {
 		}
 	}	
 	
-	protected void refreshToken(HttpServletRequest request, HttpServletResponse response, OAuthTokenRequest oauthRequest)
+	protected void refreshToken(HttpServletRequest request, HttpServletResponse response, IAccessTokenRequest oauthRequest)
 			throws OAuthSystemException, IOException, OAuthProblemException {
 		String refreshToken = oauthRequest.getRefreshToken();
 

@@ -1,6 +1,7 @@
-package com.github.hburgmeier.jerseyoauth2.protocol.impl.authorization;
+package com.github.hburgmeier.jerseyoauth2.protocol.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,7 +9,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
+import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.CombinedExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.HeaderExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.IExtractor;
@@ -19,12 +20,19 @@ public class ClientSecretExtractor implements IExtractor {
 	private static final String BASIC_AUTH_PREFIX = "Basic ";
 	private static final Pattern BASIC_AUTH_PWD_PATTERN = Pattern.compile("(.*):(.*)");
 	
-	protected CombinedExtractor secretExtractor = new CombinedExtractor(Constants.CLIENT_SECRET);
+	protected CombinedExtractor secretExtractor;
 	protected HeaderExtractor authorizationExtractor = new HeaderExtractor(HttpHeaders.AUTHORIZATION);
 	protected final boolean useAuthorizationHeader;
 	
 	public ClientSecretExtractor(boolean useAuthorizationHeader) {
 		super();
+		this.secretExtractor = new CombinedExtractor(Constants.CLIENT_SECRET);
+		this.useAuthorizationHeader = useAuthorizationHeader;
+	}
+	
+	public ClientSecretExtractor(boolean useAuthorizationHeader, EnumSet<ParameterStyle> parameterStyles) {
+		super();
+		this.secretExtractor = new CombinedExtractor(Constants.CLIENT_SECRET, parameterStyles);
 		this.useAuthorizationHeader = useAuthorizationHeader;
 	}
 

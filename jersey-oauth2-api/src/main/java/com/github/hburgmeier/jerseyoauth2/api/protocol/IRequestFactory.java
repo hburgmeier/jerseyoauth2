@@ -12,5 +12,8 @@ public interface IRequestFactory {
 
 	IAuthorizationRequest parseAuthorizationRequest(IHttpRequest request, boolean useAuthorizationHeader)
 		throws OAuth2Exception;
+
+	IAccessTokenRequest parseAccessTokenRequest(IHttpRequest request, boolean useAuthorizationHeader)
+		throws OAuth2Exception;
 	
 }

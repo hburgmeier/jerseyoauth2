@@ -2,6 +2,7 @@ package com.github.hburgmeier.jerseyoauth2.protocol.impl;
 
 import java.util.EnumSet;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
@@ -9,6 +10,8 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken.AccessTokenRequest;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken.AccessTokenRequestParser;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.authorization.AuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.authorization.AuthorizationRequestParser;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.resourceaccess.ResourceAccessParser;
@@ -18,6 +21,7 @@ public class RequestFactory implements IRequestFactory {
 
 	private final ResourceAccessParser resourceAccessParser = new ResourceAccessParser();
 	private final AuthorizationRequestParser authorizationRequestParser = new AuthorizationRequestParser();
+	private final AccessTokenRequestParser accessTokenRequestParser = new AccessTokenRequestParser();
 	
 	@Override
 	public IResourceAccessRequest parseResourceAccessRequest(IHttpRequest request,
@@ -32,5 +36,12 @@ public class RequestFactory implements IRequestFactory {
 		AuthorizationRequest authzRequest = authorizationRequestParser.parse(request, useAuthorizationHeader);
 		authzRequest.validate();
 		return authzRequest;
+	}
+	
+	@Override
+	public IAccessTokenRequest parseAccessTokenRequest(IHttpRequest request, boolean useAuthorizationHeader) throws OAuth2Exception {
+		AccessTokenRequest accessTokenRequest = accessTokenRequestParser.parse(request, useAuthorizationHeader);
+		accessTokenRequest.validate();
+		return accessTokenRequest;
 	}
 }
