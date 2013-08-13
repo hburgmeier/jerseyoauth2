@@ -11,11 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.as.response.OAuthASResponse;
-import org.apache.amber.oauth2.common.exception.OAuthProblemException;
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
-import org.apache.amber.oauth2.common.message.OAuthResponse;
-import org.apache.amber.oauth2.common.message.OAuthResponse.OAuthErrorResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +70,7 @@ public class AuthorizationService implements IAuthorizationService {
 	}	
 	
 	@Override
-	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException, ResponseBuilderException {
+	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException {
 		IRegisteredClientApp regClientApp = null;
 		try {
 			IAuthorizationRequest oauthRequest = requestFactory.parseAuthorizationRequest(new HttpRequestAdapter(request), 
@@ -135,7 +130,7 @@ public class AuthorizationService implements IAuthorizationService {
 	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
 			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, 
 			String state)
-			throws OAuth2ProtocolException, OAuthSystemException, IOException, ResponseBuilderException {
+			throws OAuth2ProtocolException, IOException, ResponseBuilderException {
 		try {
 			if (reqResponseType.equals(ResponseType.CODE)) {
 				IPendingClientToken pendingClientToken = clientService
@@ -152,29 +147,36 @@ public class AuthorizationService implements IAuthorizationService {
 	
 	@Override
 	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
-			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) throws OAuthSystemException, IOException {
-		OAuthResponse resp = OAuthASResponse
-		        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
-		        .setCode(clientAuth.getCode())                    
-		        .location(clientApp.getCallbackUrl())
-		        .buildQueryMessage();
-
-		response.sendRedirect(resp.getLocationUri());
+			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) throws ResponseBuilderException {
+		try {
+			URI redirectUrl = new URI(clientApp.getCallbackUrl());
+			responseBuilder.buildAuthorizationCodeResponse(clientAuth.getCode(), redirectUrl , state, response);
+		} catch (URISyntaxException e) {
+			throw new ResponseBuilderException(e);
+		}
+		
+//		OAuthResponse resp = OAuthASResponse
+//		        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
+//		        .setCode(clientAuth.getCode())                    
+//		        .location(clientApp.getCallbackUrl())
+//		        .buildQueryMessage();
+//
+//		response.sendRedirect(resp.getLocationUri());
 	}
 	
-	@Override
-	public void sendErrorResponse(OAuthProblemException ex,
-			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
-		
-        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
-				        .errorResponse(HttpServletResponse.SC_FOUND)
-				        .error(ex);
-        if (redirectUri!=null)
-        	responseBuilder = responseBuilder.location(redirectUri);
-		final OAuthResponse resp = responseBuilder.buildQueryMessage();
-                   
-        response.sendRedirect(resp.getLocationUri());
-	}
+//	@Override
+//	public void sendErrorResponse(OAuthProblemException ex,
+//			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
+//		
+//        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
+//				        .errorResponse(HttpServletResponse.SC_FOUND)
+//				        .error(ex);
+//        if (redirectUri!=null)
+//        	responseBuilder = responseBuilder.location(redirectUri);
+//		final OAuthResponse resp = responseBuilder.buildQueryMessage();
+//                   
+//        response.sendRedirect(resp.getLocationUri());
+//	}
 	
 	protected void sendErrorResponse(OAuth2ProtocolException ex,
 			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {

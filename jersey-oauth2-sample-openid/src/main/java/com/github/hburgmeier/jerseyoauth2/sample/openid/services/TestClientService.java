@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.amber.oauth2.as.issuer.MD5Generator;
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
-
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
@@ -80,7 +77,7 @@ public class TestClientService implements IClientService {
 			SimpleRegisteredClient client = new SimpleRegisteredClient(clientId, clientSecret, appName, callbackUrl, clientType);
 			registeredClients.put(clientId, client);
 			return client;
-		} catch (OAuthSystemException e) {
+		} catch (GenerationException e) {
 			throw new ClientServiceException(e);
 		}
 	}
@@ -99,7 +96,7 @@ public class TestClientService implements IClientService {
 			String authKey = clientApp.getClientId()+"#"+code;
 			pendingAuth.put(authKey, clientAuth);
 			return clientAuth;
-		} catch (OAuthSystemException e) {
+		} catch (GenerationException e) {
 			return null; //TODO handle this exception
 		}
 	}

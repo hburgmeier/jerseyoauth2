@@ -56,11 +56,11 @@ public abstract class AbstractOAuth2Response implements IOAuth2Response {
 		}
 	}
 	
-	protected void renderRedirect(Map<String, Object> tokenInfo, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
+	protected void renderRedirect(Map<String, Object> entity, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
 	{
 		try {
 			UrlBuilder urlBuilder = new UrlBuilder();
-			URI modifiedUrl = urlBuilder.addQueryParameters(tokenInfo, redirectUrl);
+			URI modifiedUrl = urlBuilder.addQueryParameters(entity, redirectUrl);
 
 			response.setStatus(HttpServletResponse.SC_FOUND);
 			response.setHeader(HttpHeaders.LOCATION, modifiedUrl.toString());
@@ -69,11 +69,11 @@ public abstract class AbstractOAuth2Response implements IOAuth2Response {
 		}
 	}
 	
-	protected void renderRedirectWithFragment(Map<String, Object> tokenInfo, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
+	protected void renderRedirectWithFragment(Map<String, Object> entity, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
 	{
 		try {
 			UrlBuilder urlBuilder = new UrlBuilder();
-			String newFragment = urlBuilder.addQueryParameters(null, tokenInfo);
+			String newFragment = urlBuilder.addQueryParameters(null, entity);
 			URI modifiedUrl = urlBuilder.setFragment(redirectUrl, newFragment);
 
 			response.setStatus(HttpServletResponse.SC_FOUND);

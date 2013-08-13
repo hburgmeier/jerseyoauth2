@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,9 +52,6 @@ public class AuthorizationServlet extends HttpServlet {
 			} catch (AuthorizationFlowException e) {
 				LOGGER.error("Error in authorization flow",e);
 				throw new ServletException(e.getMessage(), e);
-			} catch (OAuthSystemException e) {
-				LOGGER.error("Error in OAuth2 Protocol",e);
-				throw new ServletException(e);
 			} catch (ResponseBuilderException e) {
 				LOGGER.error("Error in OAuth2 Protocol",e);
 				throw new ServletException(e);
@@ -75,9 +71,6 @@ public class AuthorizationServlet extends HttpServlet {
 			} catch (AuthorizationFlowException e) {
 				LOGGER.error("Error in authorization flow",e);
 				throw new ServletException(e.getMessage(), e);
-			} catch (OAuthSystemException e) {
-				LOGGER.error("Error in OAuth2 Protocol",e);
-				throw new ServletException(e);
 			} catch (ResponseBuilderException e) {
 				LOGGER.error("Error in OAuth2 Protocol",e);
 				throw new ServletException(e);

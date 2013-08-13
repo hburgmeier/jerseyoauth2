@@ -14,6 +14,8 @@ public interface IResponseBuilder {
 	
 	void buildRequestTokenErrorResponse(OAuth2ProtocolException ex, HttpServletResponse response) throws ResponseBuilderException;
 	
+	void buildAuthorizationCodeResponse(String code, URI redirectUrl, String state, HttpServletResponse response) throws ResponseBuilderException;
+	
 	void buildAccessTokenResponse(IAccessTokenInfo accessToken, String state, HttpServletResponse response) throws ResponseBuilderException;
 	
 	void buildImplicitGrantAccessTokenResponse(IAccessTokenInfo accessToken, URI redirectUrl, String state, 

@@ -10,6 +10,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenPostResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenRedirectResponse;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.authcode.AuthCodeResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.AuthRequestErrorResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.RequestTokenErrorResponse;
 
@@ -26,6 +27,13 @@ public class ResponseBuilder implements IResponseBuilder {
 			throws ResponseBuilderException {
 		AuthRequestErrorResponse errorResponse = new AuthRequestErrorResponse(HttpServletResponse.SC_MOVED_TEMPORARILY, redirectUrl, ex);
 		errorResponse.render(response);
+	}
+	
+	@Override
+	public void buildAuthorizationCodeResponse(String code, URI redirectUrl, String state, HttpServletResponse response)
+			throws ResponseBuilderException {
+		AuthCodeResponse oauthResponse = new AuthCodeResponse(HttpServletResponse.SC_MOVED_TEMPORARILY, code, redirectUrl, state);
+		oauthResponse.render(response);
 	}
 	
 	@Override

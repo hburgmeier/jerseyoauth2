@@ -19,10 +19,6 @@
 			<artifactId>geronimo-servlet_2.5_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.amber</groupId>
-			<artifactId>amber-oauth2-authzserver</artifactId>
-		</dependency>
 	</dependencies>
 	<name>Jersey OAuth2 Authorization Server API</name>
 </project>
