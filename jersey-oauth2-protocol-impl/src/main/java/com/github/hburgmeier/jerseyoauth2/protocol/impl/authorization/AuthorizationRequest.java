@@ -46,7 +46,7 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 
 	@Override
 	public Set<String> getScopes() {
-		return Collections.unmodifiableSet(scopes);
+		return scopes==null?null:Collections.unmodifiableSet(scopes);
 	}
 
 	@Override

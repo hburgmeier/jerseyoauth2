@@ -87,7 +87,7 @@ public class AuthorizationService implements IAuthorizationService {
 						+ " is invalid", oauthRequest.getState());
 
 			Set<String> scopes = oauthRequest.getScopes();
-			if (scopes.isEmpty()) {
+			if (scopes==null || scopes.isEmpty()) {
 				LOGGER.warn("using default scopes");
 				scopes = defaultScopes;
 			}
