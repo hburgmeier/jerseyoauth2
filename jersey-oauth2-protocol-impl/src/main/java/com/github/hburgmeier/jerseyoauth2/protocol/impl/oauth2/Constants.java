@@ -17,5 +17,10 @@ public final class Constants {
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String EXPIRES_IN = "expires_in";
 	
+	public static final String ERROR = "error";
+	public static final String ERROR_DESCRIPTION = "error_description";
+	public static final String ERROR_URI = "error_uri";
+	
+	
 	private Constants() { }
 }

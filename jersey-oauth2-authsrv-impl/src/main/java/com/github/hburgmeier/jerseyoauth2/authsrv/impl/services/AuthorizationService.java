@@ -1,6 +1,8 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -38,6 +40,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowExcept
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Inject;
 
@@ -50,13 +53,15 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IAuthorizationFlow authFlow;
 	private final ITokenService tokenService;
 	private final IRequestFactory requestFactory;
-	private final Set<String> defaultScopes;
 	private final IConfiguration configuration;
+	private final IResponseBuilder responseBuilder;
+	
+	private final Set<String> defaultScopes;
 	
 	@Inject
 	public AuthorizationService(final IClientService clientService, final IUserService userService,
 			final IAuthorizationFlow authFlow, final IConfiguration configuration, final ITokenService tokenService,
-			final IRequestFactory requestFactory)
+			final IRequestFactory requestFactory, final IResponseBuilder responseBuilder)
 	{
 		this.clientService = clientService;
 		this.userService = userService;
@@ -64,12 +69,13 @@ public class AuthorizationService implements IAuthorizationService {
 		this.configuration = configuration;
 		this.tokenService = tokenService;
 		this.requestFactory = requestFactory;
+		this.responseBuilder = responseBuilder;
 		Set<String> defScopes = configuration.getDefaultScopes();
 		this.defaultScopes = defScopes==null?Collections.<String>emptySet():defScopes;
 	}	
 	
 	@Override
-	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException {
+	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException, ResponseBuilderException {
 		IRegisteredClientApp regClientApp = null;
 		try {
 			IAuthorizationRequest oauthRequest = requestFactory.parseAuthorizationRequest(new HttpRequestAdapter(request), 
@@ -122,9 +128,6 @@ public class AuthorizationService implements IAuthorizationService {
 		} catch (OAuth2ProtocolException e) {
 			LOGGER.error("Problem with OAuth2 protocol", e);
 			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
-		} catch (ResponseBuilderException e) {
-			LOGGER.error("Problem with OAuth2 protocol", e);
-			//TODO
 		}
 	}
 
@@ -162,6 +165,7 @@ public class AuthorizationService implements IAuthorizationService {
 	@Override
 	public void sendErrorResponse(OAuthProblemException ex,
 			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
+		
         OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
 				        .errorResponse(HttpServletResponse.SC_FOUND)
 				        .error(ex);
@@ -172,15 +176,14 @@ public class AuthorizationService implements IAuthorizationService {
         response.sendRedirect(resp.getLocationUri());
 	}
 	
-	public void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
-        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
-				        .errorResponse(HttpServletResponse.SC_FOUND);
-        if (redirectUri!=null)
-        	responseBuilder = responseBuilder.location(redirectUri);
-		final OAuthResponse resp = responseBuilder.buildQueryMessage();
-                   
-        response.sendRedirect(resp.getLocationUri());
+	protected void sendErrorResponse(OAuth2ProtocolException ex,
+			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {
+		try {
+			URI redirectUri = new URI(redirectUrl);
+			responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUri, response);
+		} catch (URISyntaxException e) {
+			throw new ResponseBuilderException(e);
+		}
 	}	
 
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException

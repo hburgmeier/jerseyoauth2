@@ -10,6 +10,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 
 public interface IResponseBuilder {
 
+	void buildAuthorizationRequestErrorResponse(OAuth2ProtocolException ex, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException;
+	
 	void buildRequestTokenErrorResponse(OAuth2ProtocolException ex, HttpServletResponse response) throws ResponseBuilderException;
 	
 	void buildAccessTokenResponse(IAccessTokenInfo accessToken, String state, HttpServletResponse response) throws ResponseBuilderException;

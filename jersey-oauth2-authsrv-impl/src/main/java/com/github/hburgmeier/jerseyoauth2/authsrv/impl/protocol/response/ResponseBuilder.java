@@ -10,12 +10,21 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenPostResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenRedirectResponse;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.AuthRequestErrorResponse;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.RequestTokenErrorResponse;
 
 public class ResponseBuilder implements IResponseBuilder {
 
 	@Override
 	public void buildRequestTokenErrorResponse(OAuth2ProtocolException ex, HttpServletResponse response) throws ResponseBuilderException {
-		OAuth2ErrorResponse errorResponse = new OAuth2ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ResponseFormat.JSON, ex);
+		RequestTokenErrorResponse errorResponse = new RequestTokenErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ex);
+		errorResponse.render(response);
+	}
+	
+	@Override
+	public void buildAuthorizationRequestErrorResponse(OAuth2ProtocolException ex, URI redirectUrl, HttpServletResponse response)
+			throws ResponseBuilderException {
+		AuthRequestErrorResponse errorResponse = new AuthRequestErrorResponse(HttpServletResponse.SC_MOVED_TEMPORARILY, redirectUrl, ex);
 		errorResponse.render(response);
 	}
 	

@@ -19,7 +19,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowExcept
 public interface IAuthorizationService {
 
 	void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
-			throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException;
+			throws AuthorizationFlowException, OAuthSystemException, IOException, ServletException, ResponseBuilderException;
 	
 	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) 
