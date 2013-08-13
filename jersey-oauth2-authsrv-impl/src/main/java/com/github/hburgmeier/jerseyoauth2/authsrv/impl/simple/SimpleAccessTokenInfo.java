@@ -2,6 +2,7 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple;
 
 import java.util.Set;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
@@ -13,9 +14,10 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	
 	private String accessToken;
 	private String refreshToken;
+	private TokenType tokenType;
 	private long validUntil;
 
-	public SimpleAccessTokenInfo(String accessToken, String refreshToken, IAuthorizedClientApp clientApp, String expiresIn) {
+	public SimpleAccessTokenInfo(String accessToken, String refreshToken, IAuthorizedClientApp clientApp, String expiresIn, TokenType tokenType) {
 		super();
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
@@ -68,5 +70,10 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 	@Override
 	public String getClientId() {
 		return this.clientApp.getClientId();
+	}
+
+	@Override
+	public TokenType getTokenType() {
+		return tokenType;
 	}
 }

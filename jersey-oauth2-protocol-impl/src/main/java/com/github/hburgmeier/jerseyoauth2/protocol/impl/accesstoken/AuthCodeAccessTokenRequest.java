@@ -3,7 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.protocol.impl.accesstoken;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthCodeAccessTokenRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 
 public class AuthCodeAccessTokenRequest extends AbstractTokenRequest implements IAuthCodeAccessTokenRequest {
@@ -49,16 +49,16 @@ public class AuthCodeAccessTokenRequest extends AbstractTokenRequest implements 
 	}
 	
 	@Override
-	public void validate() throws OAuth2Exception
+	public void validate() throws OAuth2ParseException
 	{
 		if (grantType == null)
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing grant_type", null);
 		if (StringUtils.isEmpty(code))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing code", null);
 		if (StringUtils.isEmpty(redirectUri))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing redirect uri", null);
 		if (StringUtils.isEmpty(clientId))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing client id", null);
 		
 	}
 

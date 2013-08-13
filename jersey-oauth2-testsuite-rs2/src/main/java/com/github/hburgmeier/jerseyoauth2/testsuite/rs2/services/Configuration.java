@@ -60,5 +60,10 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 		return EnumSet.of(TokenType.BEARER);
 	}
 	
+	@Override
+	public boolean getEnableRefreshTokenGeneration() {
+		return true;
+	}
+
 
 }

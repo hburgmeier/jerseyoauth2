@@ -20,8 +20,9 @@ import org.slf4j.LoggerFactory;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ErrorCode;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
@@ -112,18 +113,18 @@ public class AuthorizationService implements IAuthorizationService {
 				LOGGER.debug("client is not authorized or missing scopes {}", scopes);
 				authFlow.startAuthorizationFlow(user, regClientApp, scopes, reqResponseType, request, response, servletContext);
 			}
-		} catch (OAuthProblemException e) {
-			LOGGER.error("Problem with OAuth2 protocol", e);
-			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
 		} catch (InvalidUserException e) {
 			LOGGER.error("Missing or invalid user");
 			authFlow.handleMissingUser(request, response, servletContext);
+		} catch (OAuth2ParseException e) {
+			LOGGER.error("Problem with OAuth2 protocol", e);
+			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
 		} catch (OAuth2ProtocolException e) {
 			LOGGER.error("Problem with OAuth2 protocol", e);
 			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
-		} catch (OAuth2Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ResponseBuilderException e) {
+			LOGGER.error("Problem with OAuth2 protocol", e);
+			//TODO
 		}
 	}
 
@@ -131,7 +132,7 @@ public class AuthorizationService implements IAuthorizationService {
 	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
 			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, 
 			String state)
-			throws OAuthSystemException, IOException, OAuthProblemException, OAuth2ProtocolException {
+			throws OAuth2ProtocolException, OAuthSystemException, IOException, ResponseBuilderException {
 		try {
 			if (reqResponseType.equals(ResponseType.CODE)) {
 				IPendingClientToken pendingClientToken = clientService
@@ -139,7 +140,7 @@ public class AuthorizationService implements IAuthorizationService {
 				sendAuthorizationReponse(request, response, pendingClientToken, regClientApp, state);
 			} else {
 				LOGGER.debug("issue new token for token response type");
-				tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType);
+				tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType, state);
 			}
 		} catch (ClientServiceException e) {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state);

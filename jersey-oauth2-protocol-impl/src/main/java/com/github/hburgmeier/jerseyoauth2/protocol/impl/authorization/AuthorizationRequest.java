@@ -6,7 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 
 public class AuthorizationRequest implements IAuthorizationRequest {
@@ -59,11 +59,11 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 		return state;
 	}
 	
-	public void validate() throws OAuth2Exception {
+	public void validate() throws OAuth2ParseException {
 		if (responseType == null)
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing response_type", state);
 		if (StringUtils.isEmpty(clientId))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing client id", state);
 	}
 
 }

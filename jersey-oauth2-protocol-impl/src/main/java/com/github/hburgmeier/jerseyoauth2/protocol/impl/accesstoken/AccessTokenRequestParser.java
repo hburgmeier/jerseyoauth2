@@ -6,7 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ClientSecretExtractor;
@@ -27,11 +27,11 @@ public class AccessTokenRequestParser {
 	private final CombinedExtractor refreshTokenExtractor = new CombinedExtractor(Constants.REFRESH_TOKEN, supportedStyles);
 	private final CombinedExtractor scopeExtractor = new CombinedExtractor(Constants.SCOPE, supportedStyles);
 	
-	public AbstractTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2Exception
+	public AbstractTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2ParseException
 	{
 		String grantTypeString = grantTypeExtractor.extractValue(request);
 		if (StringUtils.isEmpty(grantTypeString))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing grant_type", null);
 		GrantType grantType = GrantType.parse(grantTypeString);
 		
 		if (grantType == GrantType.REFRESH_TOKEN)

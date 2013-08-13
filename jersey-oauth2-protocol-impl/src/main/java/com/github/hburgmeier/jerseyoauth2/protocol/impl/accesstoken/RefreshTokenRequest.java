@@ -5,7 +5,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRefreshTokenRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 
 public class RefreshTokenRequest extends AbstractTokenRequest implements IRefreshTokenRequest {
@@ -37,12 +37,12 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 	}
 
 	@Override
-	public void validate() throws OAuth2Exception
+	public void validate() throws OAuth2ParseException
 	{
 		if (grantType == null)
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing grant_type", null);
 		if (StringUtils.isEmpty(refreshToken))
-			throw new OAuth2Exception();
+			throw new OAuth2ParseException("Missing refresh token", null);
 	}
 
 	

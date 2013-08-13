@@ -32,5 +32,10 @@ public class Configuration implements IConfiguration {
 	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return false;
 	}
+	
+	@Override
+	public boolean getEnableRefreshTokenGeneration() {
+		return true;
+	}
 
 }

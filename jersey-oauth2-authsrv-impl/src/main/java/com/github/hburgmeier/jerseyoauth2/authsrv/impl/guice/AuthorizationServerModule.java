@@ -3,6 +3,8 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.guice;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.AuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.IntegratedAccessTokenVerifier;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.TokenService;
@@ -18,6 +20,7 @@ public class AuthorizationServerModule extends AbstractModule {
 		bind(ITokenService.class).to(TokenService.class);
 		bind(IAccessTokenVerifier.class).to(IntegratedAccessTokenVerifier.class);
 		bind(IRequestFactory.class).to(RequestFactory.class);
+		bind(IResponseBuilder.class).to(ResponseBuilder.class);
 	}
 
 }

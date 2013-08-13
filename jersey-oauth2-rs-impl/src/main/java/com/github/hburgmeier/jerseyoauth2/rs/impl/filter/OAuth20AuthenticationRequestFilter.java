@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
@@ -62,7 +62,7 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			LOGGER.debug("set SecurityContext. User {}", securityContext.getUserPrincipal().getName());
 			
 			return containerRequest;
-		} catch (OAuth2Exception e) {
+		} catch (OAuth2ParseException e) {
 			LOGGER.error(ERROR_FILTER_REQUEST, e);
 			throw new WebApplicationException(e, buildAuthProblem());			
 		} catch (InvalidTokenException e) {

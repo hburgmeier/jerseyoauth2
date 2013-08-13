@@ -11,9 +11,23 @@ public class ScopeParser {
 
 	private static final Pattern SCOPE_PATTERN = Pattern.compile("[!#$%&'\\(\\)*+,\\-\\.\\/0-9:;<=>?@A-Z\\[\\]^_`a-z{|}~]+");
 	
+	public String render(Set<String> scopes)
+	{
+		if (scopes == null)
+			return null;
+		StringBuffer buffer = new StringBuffer();
+		for (String scope : scopes)
+		{
+			if (buffer.length()>0)
+				buffer.append(" ");
+			buffer.append(scope);
+		}
+		return buffer.toString();
+	}
+	
 	public Set<String> parseScope(String scope)
 	{
-		if (scope==null)
+		if (scope == null)
 			return null;
 		
 		Scanner scanner = new Scanner(StringUtils.trim(scope));

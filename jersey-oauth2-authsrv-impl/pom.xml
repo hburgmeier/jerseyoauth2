@@ -50,6 +50,18 @@
 			<artifactId>geronimo-servlet_2.5_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 	</dependencies>
 	<name>Jersey OAuth2 Authorization Server Implementation</name>
 </project>

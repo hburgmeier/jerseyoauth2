@@ -9,14 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.amber.oauth2.common.exception.OAuthProblemException;
-import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
@@ -59,17 +59,14 @@ public class IssueAccessTokenServlet extends HttpServlet {
 					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
 					tokenService.handleRequest(request, response, oauthRequest);
-
-					// if something goes wrong
-				} catch (OAuthProblemException ex) {
-					LOGGER.error("Token request problem", ex);
-					tokenService.sendErrorResponse(response, ex);
-				} catch (OAuth2Exception e) {
+				} catch (OAuth2ParseException e) {
 					LOGGER.error("Token request problem", e);
-					//TODO
-//					tokenService.sendErrorResponse(response, ex);
+					tokenService.sendErrorResponse(response, e);
+				} catch (OAuth2ProtocolException e) {
+					LOGGER.error("Token request problem", e);
+					tokenService.sendErrorResponse(response, e);
 				}
-			} catch (OAuthSystemException e) {
+			} catch (ResponseBuilderException e) {
 				LOGGER.error("OAuth2 system exception", e);
 				throw new ServletException(e);
 			}

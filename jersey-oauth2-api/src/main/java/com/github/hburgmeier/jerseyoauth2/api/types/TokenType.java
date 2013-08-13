@@ -4,4 +4,9 @@ public enum TokenType {
 
 	BEARER,
 	MAC;
+	
+	public String getTechnicalCode()
+	{
+		return this.name().toLowerCase();
+	}
 }

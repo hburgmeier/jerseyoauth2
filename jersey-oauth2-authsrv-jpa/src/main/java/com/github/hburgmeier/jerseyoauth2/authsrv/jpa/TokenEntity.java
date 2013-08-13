@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
@@ -33,6 +34,7 @@ class TokenEntity implements IAccessTokenInfo {
 	private String refreshToken;
 	private long expiresIn;
 	private long validUntil;
+	private TokenType tokenType;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	private AuthorizedClientApplication clientApp;
@@ -42,12 +44,13 @@ class TokenEntity implements IAccessTokenInfo {
 		
 	}
 	
-	public TokenEntity(String accessToken, String refreshToken, AuthorizedClientApplication clientApp, long expiresIn, long validUntil)
+	public TokenEntity(String accessToken, String refreshToken, AuthorizedClientApplication clientApp, long expiresIn, TokenType tokenType, long validUntil)
 	{
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
 		this.expiresIn = expiresIn;
+		this.tokenType = tokenType;
 		this.validUntil = validUntil;
 	}
 	
@@ -115,6 +118,11 @@ class TokenEntity implements IAccessTokenInfo {
 
 	public long getValidUntil() {
 		return validUntil;
+	}
+
+	@Override
+	public TokenType getTokenType() {
+		return tokenType;
 	}
 	
 }

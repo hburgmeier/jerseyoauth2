@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
@@ -73,7 +74,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
 		long validUntil = System.currentTimeMillis()+(config.getTokenExpiration()*1000l);
-		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration(), validUntil);
+		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration(), TokenType.BEARER, validUntil);
 		saveTokenEntity(te);
 		LOGGER.debug("token {} saved", accessToken);
 		return te;

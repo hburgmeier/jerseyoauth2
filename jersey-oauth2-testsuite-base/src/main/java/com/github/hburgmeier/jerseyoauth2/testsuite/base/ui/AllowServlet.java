@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.amber.oauth2.common.exception.OAuthSystemException;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
@@ -59,9 +61,7 @@ public class AllowServlet extends HttpServlet {
 			
 			IPendingClientToken clientAuth = clientService.createPendingClientToken(authorizedClient);
 			authorizationService.sendAuthorizationReponse(request, response, clientAuth, clientApp, null);
-		} catch (ClientServiceException e) {
-			throw new ServletException(e);
-		} catch (OAuthSystemException e) {
+		} catch (OAuthSystemException | ResponseBuilderException | ClientServiceException e) {
 			throw new ServletException(e);
 		}
 	}

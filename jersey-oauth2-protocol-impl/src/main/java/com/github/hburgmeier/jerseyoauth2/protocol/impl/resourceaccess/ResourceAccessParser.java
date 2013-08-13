@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
@@ -19,7 +19,7 @@ import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.QueryParameter
 public class ResourceAccessParser {
 	
 	public ResourceAccessRequest parse(IHttpRequest request,
-			EnumSet<ParameterStyle> parameterStyles, EnumSet<TokenType> tokenTypes) throws OAuth2Exception {
+			EnumSet<ParameterStyle> parameterStyles, EnumSet<TokenType> tokenTypes) throws OAuth2ParseException {
 		String accessToken = null;
 		TokenType usedTokenType = null;
 		for (TokenType tokenType : tokenTypes)
@@ -38,7 +38,7 @@ public class ResourceAccessParser {
 				break;
 		}
 		if (accessToken == null)
-			throw new OAuth2Exception("Missing access token");
+			throw new OAuth2ParseException("Missing access token", null);
 		return new ResourceAccessRequest(accessToken, usedTokenType);
 	}
 	

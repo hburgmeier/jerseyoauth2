@@ -1,6 +1,9 @@
 package com.github.hburgmeier.jerseyoauth2.protocol.impl.resourceaccess;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 
 public class ResourceAccessRequest implements IResourceAccessRequest {
@@ -14,9 +17,10 @@ public class ResourceAccessRequest implements IResourceAccessRequest {
 		this.tokenType = tokenType;
 	}
 	
-	public void validate()
+	public void validate() throws OAuth2ParseException
 	{
-		//TODO
+		if (StringUtils.isEmpty(accessToken))
+			throw new OAuth2ParseException("Missing token", null);
 	}
 
 	@Override

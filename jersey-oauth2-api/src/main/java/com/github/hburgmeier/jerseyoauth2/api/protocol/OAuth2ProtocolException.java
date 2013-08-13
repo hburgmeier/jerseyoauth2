@@ -7,15 +7,15 @@ public class OAuth2ProtocolException extends OAuth2Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final OAuth2ErrorCode errorCode;
-	private String description;
-	private String uri;
-	private String state;
+	private final String description;
+	private final String errorUri;
+	private final String state;
 
-	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String uri, String state)
+	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String errorUri, String state)
 	{
 		this.errorCode = errorCode;
 		this.description = description;
-		this.uri = uri;
+		this.errorUri = errorUri;
 		this.state = state;
 	}
 	
@@ -27,6 +27,22 @@ public class OAuth2ProtocolException extends OAuth2Exception {
 	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String state)
 	{
 		this(errorCode, description, null, state);
+	}
+
+	public OAuth2ErrorCode getErrorCode() {
+		return errorCode;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public String getErrorUri() {
+		return errorUri;
 	}
 	
 	

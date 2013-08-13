@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
@@ -47,7 +48,7 @@ public class TestAccessTokenStorageService implements IAccessTokenStorageService
 	@Override
 	public IAccessTokenInfo issueToken(String accessToken, String refreshToken, 
 			IAuthorizedClientApp clientApp) {
-		SimpleAccessTokenInfo tokenInfo = new SimpleAccessTokenInfo(accessToken, refreshToken, clientApp, tokenExpiration);
+		SimpleAccessTokenInfo tokenInfo = new SimpleAccessTokenInfo(accessToken, refreshToken, clientApp, tokenExpiration, TokenType.BEARER);
 		tokenStore.put(accessToken, tokenInfo);
 		refreshTokenStore.put(refreshToken, tokenInfo);
 		return tokenInfo;

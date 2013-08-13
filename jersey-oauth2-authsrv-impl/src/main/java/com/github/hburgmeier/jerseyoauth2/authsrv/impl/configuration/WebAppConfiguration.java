@@ -1,31 +1,35 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.configuration;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletContext;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
 import com.google.inject.Inject;
 
 public class WebAppConfiguration implements IConfiguration {
 
+	private final ScopeParser scopeParser = new ScopeParser();
+	
 	private final long tokenExpiration;
 	private final Set<String> defaultScopes;
 	private final boolean strictSecurity;
 	private final boolean supportAuthorizationHeader;
+	private final boolean refreshTokenGeneration;
 
 	@Inject
 	public WebAppConfiguration(final ServletContext servletContext) {
 		this.tokenExpiration = parseLong(servletContext.getInitParameter("oauth2.tokenexpiration"), 3600);
 
-		this.defaultScopes = parseScopes(servletContext.getInitParameter("oauth2.defaultscopes"));
+		this.defaultScopes = scopeParser.parseScope(servletContext.getInitParameter("oauth2.defaultscopes"));
 
 		this.strictSecurity = parseBoolean(servletContext.getInitParameter("oauth2.strictSecurity"), true);
 		this.supportAuthorizationHeader = parseBoolean(servletContext.getInitParameter("oauth2.supportAuthzHeader"),
+				true);
+		this.refreshTokenGeneration = parseBoolean(servletContext.getInitParameter("oauth2.refreshTokenGeneration"),
 				true);
 	}
 
@@ -53,15 +57,10 @@ public class WebAppConfiguration implements IConfiguration {
 	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return supportAuthorizationHeader;
 	}
-
-	private Set<String> parseScopes(String initParameter) {
-		Set<String> scopes = new HashSet<>();
-		if (initParameter != null) {
-			StringTokenizer st = new StringTokenizer(initParameter, ",");
-			while (st.hasMoreTokens())
-				scopes.add(st.nextToken());
-		}
-		return scopes;
+	
+	@Override
+	public boolean getEnableRefreshTokenGeneration() {
+		return refreshTokenGeneration;
 	}
 
 	private long parseLong(String initParameter, long defaultValue) {
