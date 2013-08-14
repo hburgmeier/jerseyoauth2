@@ -30,14 +30,17 @@ public class AccessTokenRequestParser {
 	public AbstractTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2ParseException
 	{
 		String grantTypeString = grantTypeExtractor.extractValue(request);
-		if (StringUtils.isEmpty(grantTypeString))
+		if (StringUtils.isEmpty(grantTypeString)) {
 			throw new OAuth2ParseException("Missing grant_type", null);
+		}
 		GrantType grantType = GrantType.parse(grantTypeString);
 		
-		if (grantType == GrantType.REFRESH_TOKEN)
+		if (grantType == GrantType.REFRESH_TOKEN) {
 			return parseRefreshRequest(request, grantType);
-		else
+		}
+		else {
 			return parseAuthCodeRequest(request, grantType, enableAuthorizationHeader);
+		}
 	}
 
 	protected AuthCodeAccessTokenRequest parseAuthCodeRequest(IHttpRequest request, GrantType grantType, boolean enableAuthorizationHeader) {

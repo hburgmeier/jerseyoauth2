@@ -26,8 +26,9 @@ public class HttpRequestAdapter implements IHttpRequest {
 			StringBuffer values = new StringBuffer();
 			for (String val : entry.getValue())
 			{
-				if (values.length()>0)
+				if (values.length()>0) {
 					values.append(",");
+				}
 				values.append(val);
 			}
 			this.queryParameters.put(entry.getKey(), values.toString());

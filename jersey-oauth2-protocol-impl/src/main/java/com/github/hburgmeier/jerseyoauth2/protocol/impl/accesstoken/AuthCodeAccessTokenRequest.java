@@ -51,14 +51,18 @@ public class AuthCodeAccessTokenRequest extends AbstractTokenRequest implements 
 	@Override
 	public void validate() throws OAuth2ParseException
 	{
-		if (grantType == null)
+		if (grantType == null) {
 			throw new OAuth2ParseException("Missing grant_type", null);
-		if (StringUtils.isEmpty(code))
+		}
+		if (StringUtils.isEmpty(code)) {
 			throw new OAuth2ParseException("Missing code", null);
-		if (StringUtils.isEmpty(redirectUri))
+		}
+		if (StringUtils.isEmpty(redirectUri)) {
 			throw new OAuth2ParseException("Missing redirect uri", null);
-		if (StringUtils.isEmpty(clientId))
+		}
+		if (StringUtils.isEmpty(clientId)) {
 			throw new OAuth2ParseException("Missing client id", null);
+		}
 		
 	}
 

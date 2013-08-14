@@ -44,15 +44,18 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 	@Override
 	public final String getAuthorizationUrl(OAuthConfig config) {
 		ParameterList paramList = new ParameterList();
-		if (state!=null)
+		if (state!=null) {
 			paramList.add("state", state);
+		}
 		paramList.add("response_type", getResponseType());
 		paramList.add("client_id", config.getApiKey());
 		if (StringUtils.isNotEmpty(config.getCallback()) && 
-			!OAuthConstants.OUT_OF_BAND.equals(config.getCallback()))
+			!OAuthConstants.OUT_OF_BAND.equals(config.getCallback())) {
 			paramList.add("redirect_uri", config.getCallback()); // for implicit grant
-		if (StringUtils.isNotEmpty(config.getScope()))
+		}
+		if (StringUtils.isNotEmpty(config.getScope())) {
 			paramList.add("scope", config.getScope());
+		}
 		return paramList.appendTo(getAuthorizationUrlBase());
 	}	
 	

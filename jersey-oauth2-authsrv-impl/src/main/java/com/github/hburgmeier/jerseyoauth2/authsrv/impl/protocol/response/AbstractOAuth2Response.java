@@ -31,11 +31,14 @@ public abstract class AbstractOAuth2Response implements IOAuth2Response {
 	@Override
 	public void render(HttpServletResponse response) throws ResponseBuilderException {
 		response.setStatus(statusCode);
-		if (responseFormat == ResponseFormat.JSON)
+		if (responseFormat == ResponseFormat.JSON) {
 			response.setContentType("application/json;charset=UTF-8");
+		}
 		
 		for (Map.Entry<String, String> header : headerFields.entrySet())
+		{
 			response.setHeader(header.getKey(), header.getValue());
+		}
 	}
 	
 	protected void setHeader(String header, String value)
