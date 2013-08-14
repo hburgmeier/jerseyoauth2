@@ -16,7 +16,10 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken
 @NamedQueries({
 	@NamedQuery(name="findPendingByCode", query="select p from PendingClientToken p where p.code = :code and " +
 			"p.clientApp.clientApp.clientId = :clientId and " +
-			"p.clientApp.clientApp.clientSecret = :clientSecret")
+			"p.clientApp.clientApp.clientSecret = :clientSecret"),
+	@NamedQuery(name="findPendingByUser", query="select p from PendingClientToken p where " +
+					"p.clientApp.username = :username")
+			
 })
 @XmlRootElement
 class PendingClientToken implements IPendingClientToken {

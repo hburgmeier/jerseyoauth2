@@ -108,4 +108,9 @@ public class TestClientService implements IClientService {
 		pendingAuth.remove(authKey);
 	}
 
+	@Override
+	public void removePendingTokensForUser(IUser user) {
+		pendingAuth.clear();
+	}
+	
 }

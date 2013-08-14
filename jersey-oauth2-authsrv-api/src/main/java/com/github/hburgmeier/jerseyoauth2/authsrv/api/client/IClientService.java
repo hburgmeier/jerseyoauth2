@@ -19,5 +19,7 @@ public interface IClientService {
 	IPendingClientToken findPendingClientToken(String clientId, String clientSecret, String code);
 
 	void removePendingClientToken(IPendingClientToken pendingClientToken);
+	
+	void removePendingTokensForUser(IUser user);
 
 }

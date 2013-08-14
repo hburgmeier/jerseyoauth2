@@ -141,10 +141,10 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	}
 
 	@Override
-	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
+	public List<IAccessTokenInfo> invalidateTokensForUser(IUser user) {
 		EntityManager em = emf.createEntityManager();
 		TypedQuery<TokenEntity> query = em.createNamedQuery("findTokenEntityByUsername", TokenEntity.class);
-		query.setParameter("username", username);
+		query.setParameter("username", user.getName());
 		List<TokenEntity> resultList = query.getResultList();
 		List<IAccessTokenInfo> result = new LinkedList<>();
 		EntityTransaction tx = em.getTransaction();
@@ -157,7 +157,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			}
 			em.flush();
 			tx.commit();
-			LOGGER.debug("tokens for user {} invalidated", username);
+			LOGGER.debug("tokens for user {} invalidated", user.getName());
 		} catch (PersistenceException ex) {
 			LOGGER.error("persistence error", ex);
 			tx.rollback();

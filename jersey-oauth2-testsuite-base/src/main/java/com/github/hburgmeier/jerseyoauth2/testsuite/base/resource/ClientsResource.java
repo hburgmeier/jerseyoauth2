@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.testsuite.resource;
+package com.github.hburgmeier.jerseyoauth2.testsuite.base.resource;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

@@ -20,5 +20,8 @@ public interface IAuthorizationService {
 	
 	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
 			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, String state)
-			throws IOException, OAuth2ProtocolException, ResponseBuilderException;	
+			throws IOException, OAuth2ProtocolException, ResponseBuilderException;
+	
+	void sendErrorResponse(OAuth2ProtocolException ex,
+			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException;	
 }

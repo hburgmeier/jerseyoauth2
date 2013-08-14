@@ -3,6 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.token;
 import java.util.List;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 
 public interface IAccessTokenStorageService {
@@ -15,6 +16,6 @@ public interface IAccessTokenStorageService {
 	
 	IAccessTokenInfo refreshToken(String oldAccessToken, String newAccessToken, String newRefreshToken) throws TokenStorageException;
 	
-	List<IAccessTokenInfo> invalidateTokensForUser(String username);
+	List<IAccessTokenInfo> invalidateTokensForUser(IUser user);
 	
 }

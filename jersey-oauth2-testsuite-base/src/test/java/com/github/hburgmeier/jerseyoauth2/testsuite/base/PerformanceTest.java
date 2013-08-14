@@ -43,7 +43,8 @@ public class PerformanceTest {
 		token = client.getAccessToken(code);
 	}
 
-	@BenchmarkOptions(benchmarkRounds=50)
+	@Ignore
+	@BenchmarkOptions(benchmarkRounds=200)
 	@Test
 	public void testSimpleResourceAccess() throws ClientException
 	{

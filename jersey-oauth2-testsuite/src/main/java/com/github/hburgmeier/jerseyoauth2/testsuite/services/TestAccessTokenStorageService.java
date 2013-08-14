@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
+import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
@@ -83,7 +84,7 @@ public class TestAccessTokenStorageService implements IAccessTokenStorageService
 	}
 	
 	@Override
-	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
+	public List<IAccessTokenInfo> invalidateTokensForUser(IUser user) {
 		List<IAccessTokenInfo> values = new LinkedList<>(tokenStore.values());
 		for (IAccessTokenInfo tokenInfo : values)
 		{

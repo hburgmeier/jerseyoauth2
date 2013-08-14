@@ -19,6 +19,7 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
+import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
@@ -99,6 +100,34 @@ public class TokenService implements ITokenService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
 		}
 	}	
+
+	@Override
+	public void sendErrorResponse(HttpServletResponse response, OAuth2ProtocolException ex) throws ResponseBuilderException {
+		responseBuilder.buildRequestTokenErrorResponse(ex, response);
+	}
+
+	@Override
+	public void sendTokenResponse(HttpServletRequest request, HttpServletResponse response, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
+			throws ResponseBuilderException {
+		LOGGER.debug("sending response for {}", responseType);
+		if (responseType == ResponseType.TOKEN)
+		{
+			try {
+				responseBuilder.buildImplicitGrantAccessTokenResponse(accessTokenInfo, new URI(accessTokenInfo.getClientApp().getCallbackUrl()), state, response);
+			} catch (URISyntaxException e) {
+				LOGGER.debug("error with callback URL {}", accessTokenInfo.getClientApp().getCallbackUrl());
+				throw new ResponseBuilderException(e);
+			}
+		} else {
+			responseBuilder.buildAccessTokenResponse(accessTokenInfo, state, response);
+		}
+	}
+	
+	@Override
+	public void removeTokensForUser(IUser user) {
+		accessTokenService.invalidateTokensForUser(user);
+		clientService.removePendingTokensForUser(user);
+	}
 	
 	protected void handleAuthorizationRequest(HttpServletRequest request, HttpServletResponse response,
 			IAccessTokenRequest oauthRequest) throws OAuth2ProtocolException, ResponseBuilderException {
@@ -153,28 +182,6 @@ public class TokenService implements ITokenService {
 		} catch (InvalidScopeException e) {
 			LOGGER.error("Scope is invalid", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null, e);
-		}
-	}
-
-	@Override
-	public void sendErrorResponse(HttpServletResponse response, OAuth2ProtocolException ex) throws ResponseBuilderException {
-		responseBuilder.buildRequestTokenErrorResponse(ex, response);
-	}
-
-	@Override
-	public void sendTokenResponse(HttpServletRequest request, HttpServletResponse response, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
-			throws ResponseBuilderException {
-		LOGGER.debug("sending response for {}", responseType);
-		if (responseType == ResponseType.TOKEN)
-		{
-			try {
-				responseBuilder.buildImplicitGrantAccessTokenResponse(accessTokenInfo, new URI(accessTokenInfo.getClientApp().getCallbackUrl()), state, response);
-			} catch (URISyntaxException e) {
-				LOGGER.debug("error with callback URL {}", accessTokenInfo.getClientApp().getCallbackUrl());
-				throw new ResponseBuilderException(e);
-			}
-		} else {
-			responseBuilder.buildAccessTokenResponse(accessTokenInfo, state, response);
 		}
 	}
 

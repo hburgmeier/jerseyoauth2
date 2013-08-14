@@ -152,14 +152,43 @@ public class DatabaseClientService implements IClientService {
 	@Override
 	public void removePendingClientToken(IPendingClientToken pendingClientToken) {
 		EntityManager entityManager = emf.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
 		try {
+			tx.begin();
 			IPendingClientToken dbPendingClientToken = entityManager.merge(pendingClientToken);
 			entityManager.remove(dbPendingClientToken);
+			tx.commit();
+		} catch (PersistenceException e) {
+			LOGGER.error("persistence error - rollback", e);
+			tx.rollback();
+			throw e;			
 		} finally {
 			entityManager.close();
 		}		
 	}
-
+	
+	@Override
+	public void removePendingTokensForUser(IUser user) {
+		EntityManager entityManager = emf.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
+		try {
+			tx.begin();
+			TypedQuery<PendingClientToken> query = entityManager.createNamedQuery("findPendingByUser", PendingClientToken.class);
+			query.setParameter("username", user.getName());
+			for (PendingClientToken token : query.getResultList())
+			{
+				entityManager.remove(token);
+			}
+			tx.commit();
+		} catch (PersistenceException e) {
+			LOGGER.error("persistence error - rollback", e);
+			tx.rollback();
+			throw e;			
+		} finally {
+			entityManager.close();
+		}		
+	}
+	
 	protected void persist(Object obj) {
 		EntityManager entityManager = emf.createEntityManager();
 		EntityTransaction tx = entityManager.getTransaction();

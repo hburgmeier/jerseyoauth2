@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
+import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
@@ -74,8 +75,8 @@ public class CachingAccessTokenStorage implements IAccessTokenStorageService {
 	}
 
 	@Override
-	public List<IAccessTokenInfo> invalidateTokensForUser(String username) {
-		List<IAccessTokenInfo> tokens = delegate.invalidateTokensForUser(username);
+	public List<IAccessTokenInfo> invalidateTokensForUser(IUser user) {
+		List<IAccessTokenInfo> tokens = delegate.invalidateTokensForUser(user);
 		for (IAccessTokenInfo token : tokens)
 		{
 			tokenCache.remove(token.getAccessToken());

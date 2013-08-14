@@ -7,6 +7,7 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
+import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 
 public interface ITokenService {
@@ -22,5 +23,5 @@ public interface ITokenService {
 	
 	void sendErrorResponse(HttpServletResponse response, OAuth2ProtocolException ex) throws ResponseBuilderException;
 
-	
+	void removeTokensForUser(IUser user);
 }

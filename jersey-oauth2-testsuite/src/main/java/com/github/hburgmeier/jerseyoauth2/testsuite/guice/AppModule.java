@@ -52,7 +52,8 @@ public class AppModule  extends JerseyServletModule {
     	serve("/oauth2/accessToken").with(IssueAccessTokenServlet.class);
     	
        Map<String, String> params = new HashMap<String, String>();
-       params.put(PackagesResourceConfig.PROPERTY_PACKAGES, "com.github.hburgmeier.jerseyoauth2.testsuite.resource");
+       params.put(PackagesResourceConfig.PROPERTY_PACKAGES, "com.github.hburgmeier.jerseyoauth2.testsuite.resource;" +
+       		"com.github.hburgmeier.jerseyoauth2.testsuite.base.resource");
 //see http://java.net/jira/browse/JERSEY-630	            
        params.put(PackagesResourceConfig.FEATURE_DISABLE_WADL, "true");
        params.put(ResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, OAuth20FilterFactory.class.getName());

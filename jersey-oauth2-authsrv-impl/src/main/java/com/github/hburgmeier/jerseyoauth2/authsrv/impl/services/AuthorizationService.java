@@ -156,6 +156,17 @@ public class AuthorizationService implements IAuthorizationService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state, e);
 		}
 	}
+
+	@Override
+	public void sendErrorResponse(OAuth2ProtocolException ex,
+			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {
+		try {
+			URI redirectUri = new URI(redirectUrl);
+			responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUri, response);
+		} catch (URISyntaxException e) {
+			throw new ResponseBuilderException(e);
+		}
+	}
 	
 	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) throws ResponseBuilderException {
@@ -166,16 +177,6 @@ public class AuthorizationService implements IAuthorizationService {
 			throw new ResponseBuilderException(e);
 		}
 	}
-	
-	protected void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {
-		try {
-			URI redirectUri = new URI(redirectUrl);
-			responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUri, response);
-		} catch (URISyntaxException e) {
-			throw new ResponseBuilderException(e);
-		}
-	}	
 
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
