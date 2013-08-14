@@ -6,4 +6,7 @@ public interface IAccessTokenRequest {
 
 	GrantType getGrantType();
 
+	String getClientId();
+	
+	String getClientSecret();
 }

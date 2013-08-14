@@ -36,7 +36,7 @@ public class AccessTokenRequestParser {
 		GrantType grantType = GrantType.parse(grantTypeString);
 		
 		if (grantType == GrantType.REFRESH_TOKEN) {
-			return parseRefreshRequest(request, grantType);
+			return parseRefreshRequest(request, grantType, enableAuthorizationHeader);
 		}
 		else {
 			return parseAuthCodeRequest(request, grantType, enableAuthorizationHeader);
@@ -54,12 +54,16 @@ public class AccessTokenRequestParser {
 		return new AuthCodeAccessTokenRequest(grantType, clientId, clientSecret, code, redirectUri);
 	}
 
-	protected RefreshTokenRequest parseRefreshRequest(IHttpRequest request, GrantType grantType) {
+	protected RefreshTokenRequest parseRefreshRequest(IHttpRequest request, GrantType grantType, boolean enableAuthorizationHeader) {
 		String refreshToken = refreshTokenExtractor.extractValue(request);
 		String scope = scopeExtractor.extractValue(request);
 		Set<String> scopes = scopeParser.parseScope(scope);
 		
-		return new RefreshTokenRequest(grantType, refreshToken, scopes);
+		String clientId = clientIdExtractor.extractValue(request);
+		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
+		String clientSecret = clientSecretExtractor.extractValue(request);
+		
+		return new RefreshTokenRequest(grantType, clientId, clientSecret, refreshToken, scopes);
 	}
 	
 }

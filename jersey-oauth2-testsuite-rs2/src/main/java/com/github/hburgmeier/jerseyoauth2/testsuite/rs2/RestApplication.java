@@ -25,6 +25,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.IntegratedAccess
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice.DefaultCacheManagerProvider;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.RequestFactory;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.api.token.IAccessTokenVerifier;
@@ -34,7 +35,6 @@ import com.github.hburgmeier.jerseyoauth2.testsuite.base.resource.ClientsResourc
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.resource.TokenInvalidateResource;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.resource.Sample2Resource;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.resource.SampleResource;
-import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.CacheManagerProvider;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
 
@@ -56,7 +56,7 @@ public class RestApplication extends Application {
 		EntityManagerFactory emf = new PersistenceProvider().get();
         Injections.addBinding(Injections.newBinder(emf).to(EntityManagerFactory.class),dc);
         
-        CacheManager cacheManager = new CacheManagerProvider().get();
+        CacheManager cacheManager = new DefaultCacheManagerProvider().get();
         Injections.addBinding(Injections.newBinder(cacheManager).to(CacheManager.class),dc);
         
         dc.commit();

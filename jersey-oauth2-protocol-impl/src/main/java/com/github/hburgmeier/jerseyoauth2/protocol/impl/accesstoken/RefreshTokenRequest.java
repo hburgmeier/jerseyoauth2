@@ -13,10 +13,14 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 	private final GrantType grantType;
 	private final String refreshToken;
 	private final Set<String> scopes;
+	private final String clientId;
+	private final String clientSecret;
 	
-	public RefreshTokenRequest(GrantType grantType, String refreshToken, Set<String> scopes) {
+	public RefreshTokenRequest(GrantType grantType, String clientId, String clientSecret, String refreshToken, Set<String> scopes) {
 		super();
 		this.grantType = grantType;
+		this.clientId = clientId;
+		this.clientSecret = clientSecret;
 		this.refreshToken = refreshToken;
 		this.scopes = scopes;
 	}
@@ -35,7 +39,17 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 	public Set<String> getScopes() {
 		return scopes;
 	}
-
+	
+	@Override
+	public String getClientId() {
+		return clientId;
+	}
+	
+	@Override
+	public String getClientSecret() {
+		return clientSecret;
+	}
+	
 	@Override
 	public void validate() throws OAuth2ParseException
 	{

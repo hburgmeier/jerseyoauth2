@@ -24,6 +24,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
@@ -161,6 +162,8 @@ public class TokenService implements ITokenService {
 			}
 			
 			IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);
+			
+			validateRefreshTokenRequest(oldTokenInfo, refreshTokenRequest);
 
 			String newAccessToken = tokenGenerator.createAccessToken();
 			String newRefreshToken = issueRefreshToken?tokenGenerator.createRefreshToken():null;
@@ -182,6 +185,17 @@ public class TokenService implements ITokenService {
 		} catch (InvalidScopeException e) {
 			LOGGER.error("Scope is invalid", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null, e);
+		}
+	}
+	
+	protected void validateRefreshTokenRequest(IAccessTokenInfo oldTokenInfo, IRefreshTokenRequest request) throws OAuth2ProtocolException
+	{
+		IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
+		String clientSecret = clientApp.getClientSecret();
+		if (clientSecret!=null)
+		{
+			if (!clientSecret.equals(request.getClientSecret()))
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, null);
 		}
 	}
 

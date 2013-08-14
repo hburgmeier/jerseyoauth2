@@ -19,10 +19,10 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipal
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice.DefaultCacheManagerProvider;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.impl.filter.OAuth20FilterFactory;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.ui.AllowServlet;
-import com.github.hburgmeier.jerseyoauth2.testsuite.services.CacheManagerProvider;
 import com.github.hburgmeier.jerseyoauth2.testsuite.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.services.PersistenceProvider;
 import com.github.hburgmeier.jerseyoauth2.testsuite.services.TestAuthorizationFlow;
@@ -45,7 +45,7 @@ public class AppModule  extends JerseyServletModule {
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);
     	
     	bind(EntityManagerFactory.class).toProvider(new PersistenceProvider());
-    	bind(CacheManager.class).toProvider(new CacheManagerProvider());
+    	bind(CacheManager.class).toProvider(new DefaultCacheManagerProvider());
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
     	serve("/oauth2/allow").with(AllowServlet.class);
