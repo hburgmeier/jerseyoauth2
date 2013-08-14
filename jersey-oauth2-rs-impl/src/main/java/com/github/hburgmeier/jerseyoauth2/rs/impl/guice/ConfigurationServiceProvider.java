@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.rs.impl.base;
+package com.github.hburgmeier.jerseyoauth2.rs.impl.guice;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

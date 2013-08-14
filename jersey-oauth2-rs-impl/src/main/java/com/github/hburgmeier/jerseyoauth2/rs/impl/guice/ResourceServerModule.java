@@ -2,9 +2,6 @@ package com.github.hburgmeier.jerseyoauth2.rs.impl.guice;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.RequestFactory;
-import com.github.hburgmeier.jerseyoauth2.rs.impl.base.AccessTokenVerifierProvider;
-import com.github.hburgmeier.jerseyoauth2.rs.impl.base.ConfigurationServiceProvider;
-import com.github.hburgmeier.jerseyoauth2.rs.impl.base.RequestFactoryProvider;
 import com.google.inject.AbstractModule;
 
 public class ResourceServerModule extends AbstractModule {
