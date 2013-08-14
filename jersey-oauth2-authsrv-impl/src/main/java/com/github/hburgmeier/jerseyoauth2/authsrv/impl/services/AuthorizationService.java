@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
-import com.google.inject.Inject;
 
 public class AuthorizationService implements IAuthorizationService {
 

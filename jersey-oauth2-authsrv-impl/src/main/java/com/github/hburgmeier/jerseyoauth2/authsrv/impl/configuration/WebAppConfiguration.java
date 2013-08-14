@@ -3,12 +3,12 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.configuration;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
-import com.google.inject.Inject;
 
 public class WebAppConfiguration implements IConfiguration {
 

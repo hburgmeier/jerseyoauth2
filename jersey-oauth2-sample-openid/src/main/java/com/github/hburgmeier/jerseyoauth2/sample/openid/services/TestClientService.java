@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
@@ -14,7 +16,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientAp
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple.SimpleAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple.SimplePendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple.SimpleRegisteredClient;
-import com.google.inject.Inject;
 
 public class TestClientService implements IClientService {
 

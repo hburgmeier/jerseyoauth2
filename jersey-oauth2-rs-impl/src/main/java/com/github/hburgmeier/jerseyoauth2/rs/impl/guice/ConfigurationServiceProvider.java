@@ -1,10 +1,10 @@
 package com.github.hburgmeier.jerseyoauth2.rs.impl.guice;
 
+import javax.inject.Inject;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton

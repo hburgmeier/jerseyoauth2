@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
@@ -13,7 +15,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientAp
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.simple.SimpleAccessTokenInfo;
-import com.google.inject.Inject;
 
 public class TestAccessTokenStorageService implements IAccessTokenStorageService {
 

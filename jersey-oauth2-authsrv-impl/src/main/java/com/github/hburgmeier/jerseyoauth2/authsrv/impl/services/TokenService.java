@@ -3,6 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +30,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenGenerationException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
-import com.google.inject.Inject;
 
 public class TokenService implements ITokenService {
 

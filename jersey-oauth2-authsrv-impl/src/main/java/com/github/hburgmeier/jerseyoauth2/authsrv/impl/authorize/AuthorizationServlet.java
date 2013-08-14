@@ -3,6 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton

@@ -1,11 +1,11 @@
 package com.github.hburgmeier.jerseyoauth2.testsuite.resource;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
-import com.google.inject.Inject;
 
 @Path("/invalidateToken")
 public class TokenInvalidateResource {
