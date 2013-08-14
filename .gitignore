@@ -9,7 +9,7 @@
 .project
 .classpath
 .settings*
-*/target/**
+target/
 
 # Derby
 */tmp/**
