@@ -153,8 +153,8 @@ public class DatabaseClientService implements IClientService {
 	public void removePendingClientToken(IPendingClientToken pendingClientToken) {
 		EntityManager entityManager = emf.createEntityManager();
 		try {
-			entityManager.merge(pendingClientToken);
-			entityManager.remove(pendingClientToken);
+			IPendingClientToken dbPendingClientToken = entityManager.merge(pendingClientToken);
+			entityManager.remove(dbPendingClientToken);
 		} finally {
 			entityManager.close();
 		}		

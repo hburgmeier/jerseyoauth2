@@ -181,17 +181,20 @@ public class AuthorizationService implements IAuthorizationService {
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
 		if (oauthRequest.getClientSecret() != null) {
-			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret()))
+			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret())) {
 				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client is invalid", oauthRequest.getState());
+			}
 		}
 	}
 	
 	protected void validateTokenRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
-		if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL))
+		if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL)) {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_RESPONSE_TYPE, "client type is invalid", oauthRequest.getState());
-		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl()))
+		}
+		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl())) {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "redirect uri does not match", oauthRequest.getState());
+		}
 	}
 	
 }
