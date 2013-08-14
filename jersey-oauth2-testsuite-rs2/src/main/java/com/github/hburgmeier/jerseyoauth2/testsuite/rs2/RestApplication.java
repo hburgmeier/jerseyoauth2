@@ -18,9 +18,11 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.IntegratedAccessTokenVerifier;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.RequestFactory;
@@ -49,6 +51,7 @@ public class RestApplication extends Application {
         Injections.addBinding(Injections.newBinder(CachingAccessTokenStorage.class).to(IAccessTokenStorageService.class),dc);
         Injections.addBinding(Injections.newBinder(IntegratedAccessTokenVerifier.class).to(IAccessTokenVerifier.class),dc);
         Injections.addBinding(Injections.newBinder(RequestFactory.class).to(IRequestFactory.class),dc);
+        Injections.addBinding(Injections.newBinder(MD5TokenGenerator.class).to(ITokenGenerator.class),dc);
 		
 		EntityManagerFactory emf = new PersistenceProvider().get();
         Injections.addBinding(Injections.newBinder(emf).to(EntityManagerFactory.class),dc);

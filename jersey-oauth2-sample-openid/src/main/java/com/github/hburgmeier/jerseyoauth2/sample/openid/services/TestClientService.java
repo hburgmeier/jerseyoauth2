@@ -100,5 +100,11 @@ public class TestClientService implements IClientService {
 			return null; //TODO handle this exception
 		}
 	}
+	
+	@Override
+	public void removePendingClientToken(IPendingClientToken pendingClientToken) {
+		String authKey = pendingClientToken.getAuthorizedClient().getClientId()+"#"+pendingClientToken.getCode();
+		pendingAuth.remove(authKey);
+	}
 
 }

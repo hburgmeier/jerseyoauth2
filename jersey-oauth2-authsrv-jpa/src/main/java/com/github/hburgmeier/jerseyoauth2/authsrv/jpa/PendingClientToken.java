@@ -1,7 +1,5 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.jpa;
 
-import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +26,7 @@ class PendingClientToken implements IPendingClientToken {
 	private int id;
 	
 	private String code;
+	private long expiration;
 	
 	@ManyToOne
 	private AuthorizedClientApplication clientApp;
@@ -37,9 +36,10 @@ class PendingClientToken implements IPendingClientToken {
 		
 	}
 
-	public PendingClientToken(AuthorizedClientApplication clientApp) {
+	public PendingClientToken(AuthorizedClientApplication clientApp, String code) {
 		this.clientApp = clientApp;
-		code = UUID.randomUUID().toString(); //TODO use code generator
+		this.code = code;
+		this.expiration = System.currentTimeMillis() + TEN_MINUTES;
 	}
 
 	public int getId() {
@@ -66,9 +66,21 @@ class PendingClientToken implements IPendingClientToken {
 		this.clientApp = clientApp;
 	}
 
+	public long getExpiration() {
+		return expiration;
+	}
+
+	public void setExpiration(long expiration) {
+		this.expiration = expiration;
+	}
+
 	@Override
 	public IAuthorizedClientApp getAuthorizedClient() {
 		return clientApp;
 	}
 	
+	@Override
+	public boolean isExpired() {
+		return System.currentTimeMillis() > expiration;
+	}
 }

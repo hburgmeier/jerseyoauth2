@@ -67,6 +67,22 @@ public class ProtocolTest extends BaseTest {
 	}	
 	
 	@Test
+	public void testDoubleUseOfCode()
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
+		Assert.assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		ResourceClient client = new ResourceClient(clientEntity);
+		client.getAccessToken(code);
+		try {
+			client.getAccessToken(code);
+			Assert.fail();
+		} catch (TokenExtractorException e) {
+		}		
+	}	
+	
+	@Test
 	public void testTokenInvalidation() throws ClientException
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();

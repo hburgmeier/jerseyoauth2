@@ -21,6 +21,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientAp
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenGenerationException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.UserStorageServiceException;
 
@@ -32,11 +34,14 @@ public class DatabaseClientService implements IClientService {
 	
 	@com.google.inject.Inject(optional=true)
 	private IUserStorageService userStorageService = null;
+	
+	private final ITokenGenerator tokenGenerator;
 
 	@Inject
-	public DatabaseClientService(EntityManagerFactory emf)
+	public DatabaseClientService(EntityManagerFactory emf, ITokenGenerator tokenGenerator)
 	{
 		this.emf = emf;
+		this.tokenGenerator = tokenGenerator;
 	}
 	
 	@Override
@@ -104,9 +109,15 @@ public class DatabaseClientService implements IClientService {
 	public IPendingClientToken createPendingClientToken(IAuthorizedClientApp clientApp) throws ClientServiceException {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
-		PendingClientToken pendingClientAuth = new PendingClientToken((AuthorizedClientApplication) clientApp);
-		persist(pendingClientAuth);
-		return pendingClientAuth;
+		try {
+			String code = tokenGenerator.createAuthenticationCode();
+			PendingClientToken pendingClientAuth = new PendingClientToken((AuthorizedClientApplication) clientApp, code);
+			persist(pendingClientAuth);
+			return pendingClientAuth;
+		} catch (TokenGenerationException e) {
+			LOGGER.error("Error creating authorization code", e);
+			throw new ClientServiceException(e);
+		}
 	}
 	
 	@Override
@@ -137,7 +148,18 @@ public class DatabaseClientService implements IClientService {
 		} finally {
 			entityManager.close();
 		}
-	}	
+	}
+	
+	@Override
+	public void removePendingClientToken(IPendingClientToken pendingClientToken) {
+		EntityManager entityManager = emf.createEntityManager();
+		try {
+			entityManager.merge(pendingClientToken);
+			entityManager.remove(pendingClientToken);
+		} finally {
+			entityManager.close();
+		}		
+	}
 
 	protected void persist(Object obj) {
 		EntityManager entityManager = emf.createEntityManager();

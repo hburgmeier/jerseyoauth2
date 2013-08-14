@@ -71,8 +71,15 @@ public class TokenService implements ITokenService {
 				LOGGER.error("no pending token found, client id {}", tokenRequest.getClientId());
 				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client not authorized", null);
 			}
+			if (pendingClientToken.isExpired()) {
+				LOGGER.debug("removing expired pending client token {}", tokenRequest.getClientId());
+				clientService.removePendingClientToken(pendingClientToken);
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client not authorized", null);
+			}
 			
 			issueNewToken(request, response, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
+			
+			clientService.removePendingClientToken(pendingClientToken);
 		}
 	}
 
