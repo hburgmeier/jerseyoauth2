@@ -18,10 +18,6 @@ public interface IAuthorizationService {
 	void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
 			throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException;
 	
-	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
-			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) 
-					throws IOException, ResponseBuilderException;
-
 	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
 			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, String state)
 			throws IOException, OAuth2ProtocolException, ResponseBuilderException;	

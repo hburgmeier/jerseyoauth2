@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
@@ -53,12 +55,13 @@ public class AllowServlet extends HttpServlet {
 		String scopes = request.getParameter("scope");
 		Set<String> allowedScopes = new HashSet<String>(Arrays.asList(scopes.split(" ")));
 		
+		String state = request.getParameter("state");
+		
 		try {
 			IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, allowedScopes);
 			
-			IPendingClientToken clientAuth = clientService.createPendingClientToken(authorizedClient);
-			authorizationService.sendAuthorizationReponse(request, response, clientAuth, clientApp, null);
-		} catch (ResponseBuilderException | ClientServiceException e) {
+			authorizationService.sendAuthorizationReponse(request, response, ResponseType.CODE, clientApp, authorizedClient, state);
+		} catch (ResponseBuilderException | ClientServiceException | OAuth2ProtocolException e) {
 			throw new ServletException(e);
 		}
 	}

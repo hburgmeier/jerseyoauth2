@@ -157,8 +157,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 	
-	@Override
-	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
+	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) throws ResponseBuilderException {
 		try {
 			URI redirectUrl = new URI(clientApp.getCallbackUrl());

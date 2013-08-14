@@ -3,6 +3,8 @@ package com.github.hburgmeier.jerseyoauth2.api.protocol;
 public enum OAuth2ErrorCode {
 
 	INVALID_REQUEST("invalid_request"),
+	INVALID_GRANT("invalid_grant"),
+	INVALID_CLIENT("invalid_client"),
 	UNAUTHORIZED_CLIENT("unauthorized_client"),
 	ACCESS_DENIED("access_denied"),
 	UNSUPPORTED_RESPONSE_TYPE("unsupported_response_type"),

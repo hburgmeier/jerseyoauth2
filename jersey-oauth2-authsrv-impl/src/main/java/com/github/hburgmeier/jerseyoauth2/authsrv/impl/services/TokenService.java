@@ -63,26 +63,17 @@ public class TokenService implements ITokenService {
 		
 		if (oauthRequest.getGrantType() == GrantType.REFRESH_TOKEN) {
 
-			refreshToken(request, response, oauthRequest);
+			if (issueRefreshToken) {
+				refreshToken(request, response, oauthRequest);
+			}
+			else {
+				LOGGER.error("Refresh token generation is disabled");
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE, "Refresh token is disabled", null);
+			}
 
 		} else if (oauthRequest.getGrantType() == GrantType.AUTHORIZATION_REQUEST) {
 
-			IAuthCodeAccessTokenRequest tokenRequest = (IAuthCodeAccessTokenRequest)oauthRequest;
-			IPendingClientToken pendingClientToken = clientService.findPendingClientToken(tokenRequest.getClientId(),
-					tokenRequest.getClientSecret(), tokenRequest.getCode());
-			if (pendingClientToken == null) {
-				LOGGER.error("no pending token found, client id {}", tokenRequest.getClientId());
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client not authorized", null);
-			}
-			if (pendingClientToken.isExpired()) {
-				LOGGER.debug("removing expired pending client token {}", tokenRequest.getClientId());
-				clientService.removePendingClientToken(pendingClientToken);
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client not authorized", null);
-			}
-			
-			issueNewToken(request, response, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
-			
-			clientService.removePendingClientToken(pendingClientToken);
+			handleAuthorizationRequest(request, response, oauthRequest);
 		}
 	}
 
@@ -109,6 +100,26 @@ public class TokenService implements ITokenService {
 		}
 	}	
 	
+	protected void handleAuthorizationRequest(HttpServletRequest request, HttpServletResponse response,
+			IAccessTokenRequest oauthRequest) throws OAuth2ProtocolException, ResponseBuilderException {
+		IAuthCodeAccessTokenRequest tokenRequest = (IAuthCodeAccessTokenRequest)oauthRequest;
+		IPendingClientToken pendingClientToken = clientService.findPendingClientToken(tokenRequest.getClientId(),
+				tokenRequest.getClientSecret(), tokenRequest.getCode());
+		if (pendingClientToken == null) {
+			LOGGER.error("no pending token found, client id {}", tokenRequest.getClientId());
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "client not authorized", null);
+		}
+		if (pendingClientToken.isExpired()) {
+			LOGGER.debug("removing expired pending client token {}", tokenRequest.getClientId());
+			clientService.removePendingClientToken(pendingClientToken);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "client not authorized", null);
+		}
+		
+		issueNewToken(request, response, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
+		
+		clientService.removePendingClientToken(pendingClientToken);
+	}
+	
 	protected void refreshToken(HttpServletRequest request, HttpServletResponse response, IAccessTokenRequest oauthRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException {
 		IRefreshTokenRequest refreshTokenRequest = (IRefreshTokenRequest)oauthRequest;
@@ -132,7 +143,7 @@ public class TokenService implements ITokenService {
 			sendTokenResponse(request, response, accessTokenInfo, ResponseType.CODE, null);
 		} catch (InvalidTokenException e) {
 			LOGGER.error("invalid token", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.ACCESS_DENIED, "token is invalid", null, e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "token is invalid", null, e);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
