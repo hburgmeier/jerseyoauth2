@@ -27,9 +27,13 @@ public class UrlBuilder {
 		try {
 			Map<String, String> params;
 			if (queryParams!=null)
+			{
 				params = new LinkedHashMap<String, String>(parseQueryParameters(queryParams));
+			}
 			else
+			{
 				params = new LinkedHashMap<>();
+			}
 			
 			for (Map.Entry<String, Object> entry : newParameters.entrySet())
 			{
@@ -55,7 +59,9 @@ public class UrlBuilder {
 	protected Map<String, String> parseQueryParameters(String query)
 	{
 		if (query == null)
+		{
 			return null;
+		}
 		
 		Scanner scanner = new Scanner(query);
 		try {
@@ -67,7 +73,9 @@ public class UrlBuilder {
 				String key = scanner.next("[^=]+");
 				String value = null;
 				if (scanner.hasNext("[^&]+"))
+				{
 				   value = scanner.next("[^&]+");
+				}
 				result.put(key, value);
 			}
 			return result;
@@ -82,11 +90,15 @@ public class UrlBuilder {
 		for (Map.Entry<String, String> entry : params.entrySet())
 		{
 			if (buffer.length()>0)
+			{
 				buffer.append("&");
+			}
 			buffer.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()));
 			buffer.append("=");
 			if (entry.getValue()!=null)
+			{
 				buffer.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
+			}
 		}
 		return buffer.toString();
 	}

@@ -14,8 +14,7 @@ public abstract class BaseGuiceServletContextListener extends GuiceServletContex
 
 	@Override
 	protected final Injector getInjector() {
-		Injector injector = Guice.createInjector(getApplicationModules());
-		return injector;
+		return Guice.createInjector(getApplicationModules());
 	}
 
 	protected abstract Collection<? extends Module> getApplicationModules();

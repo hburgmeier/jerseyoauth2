@@ -39,4 +39,5 @@
 			<artifactId>commons-codec</artifactId>
 		</dependency>
 	</dependencies>
+	<name>Jersey OAuth2 Protocol Implementation Classes</name>
 </project>

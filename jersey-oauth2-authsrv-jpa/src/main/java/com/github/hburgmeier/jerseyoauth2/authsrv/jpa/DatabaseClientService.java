@@ -62,8 +62,7 @@ public class DatabaseClientService implements IClientService {
 	public IRegisteredClientApp getRegisteredClient(String clientId) {
 		EntityManager entityManager = emf.createEntityManager();
 		try {
-			RegisteredClient client = entityManager.find(RegisteredClient.class, clientId);
-			return client;
+			return entityManager.find(RegisteredClient.class, clientId);
 		} finally {
 			entityManager.close();
 		}

@@ -16,16 +16,16 @@ import com.github.hburgmeier.jerseyoauth2.protocol.impl.oauth2.Constants;
 
 public class AccessTokenRequestParser {
 
-	private static final EnumSet<ParameterStyle> supportedStyles = EnumSet.of(ParameterStyle.BODY, ParameterStyle.QUERY);
+	private static final EnumSet<ParameterStyle> SUPPORTED_STYLES = EnumSet.of(ParameterStyle.BODY, ParameterStyle.QUERY);
 	
 	private final ScopeParser scopeParser = new ScopeParser();
 	
-	private final CombinedExtractor grantTypeExtractor = new CombinedExtractor(Constants.GRANT_TYPE, supportedStyles);
-	private final CombinedExtractor clientIdExtractor = new CombinedExtractor(Constants.CLIENT_ID, supportedStyles);
-	private final CombinedExtractor codeExtractor = new CombinedExtractor(Constants.CODE, supportedStyles);
-	private final CombinedExtractor redirectUriExtractor = new CombinedExtractor(Constants.REDIRECT_URI, supportedStyles);
-	private final CombinedExtractor refreshTokenExtractor = new CombinedExtractor(Constants.REFRESH_TOKEN, supportedStyles);
-	private final CombinedExtractor scopeExtractor = new CombinedExtractor(Constants.SCOPE, supportedStyles);
+	private final CombinedExtractor grantTypeExtractor = new CombinedExtractor(Constants.GRANT_TYPE, SUPPORTED_STYLES);
+	private final CombinedExtractor clientIdExtractor = new CombinedExtractor(Constants.CLIENT_ID, SUPPORTED_STYLES);
+	private final CombinedExtractor codeExtractor = new CombinedExtractor(Constants.CODE, SUPPORTED_STYLES);
+	private final CombinedExtractor redirectUriExtractor = new CombinedExtractor(Constants.REDIRECT_URI, SUPPORTED_STYLES);
+	private final CombinedExtractor refreshTokenExtractor = new CombinedExtractor(Constants.REFRESH_TOKEN, SUPPORTED_STYLES);
+	private final CombinedExtractor scopeExtractor = new CombinedExtractor(Constants.SCOPE, SUPPORTED_STYLES);
 	
 	public AbstractTokenRequest parse(IHttpRequest request, boolean enableAuthorizationHeader) throws OAuth2ParseException
 	{

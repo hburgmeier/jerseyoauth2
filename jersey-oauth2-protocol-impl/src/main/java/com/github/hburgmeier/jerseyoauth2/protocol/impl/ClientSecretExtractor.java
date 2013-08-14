@@ -1,6 +1,7 @@
 package com.github.hburgmeier.jerseyoauth2.protocol.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,25 +46,25 @@ public class ClientSecretExtractor implements IExtractor {
 			if (authorization!=null && authorization.startsWith(BASIC_AUTH_PREFIX))
 			{
 				value = parseAuthorizationHeader(authorization).right;
-			} else 
+			} else { 
 				value = secretExtractor.extractValue(request);
-		} else
+			}
+		} else {
 		   value = secretExtractor.extractValue(request);
+		}
 		return value;
 	}
 
 	protected ImmutablePair<String, String> parseAuthorizationHeader(String auth)
 	{
 		try {
-			auth = auth.substring(BASIC_AUTH_PREFIX.length());
-			
-			String decodedAuth = new String(Base64.decodeBase64(auth),"utf-8");
+			String authStr = auth.substring(BASIC_AUTH_PREFIX.length());
+			String decodedAuth = new String(Base64.decodeBase64(authStr),StandardCharsets.UTF_8.name());
 			
 			Matcher matcher = BASIC_AUTH_PWD_PATTERN.matcher(decodedAuth);
 			if (matcher.matches())
 			{
-				ImmutablePair<String, String> pair = new ImmutablePair<String, String>(matcher.group(1), matcher.group(2));
-				return pair;
+				return new ImmutablePair<String, String>(matcher.group(1), matcher.group(2));
 			} else
 				throw new IllegalArgumentException(auth);
 		} catch (UnsupportedEncodingException e) {

@@ -21,16 +21,21 @@ public abstract class AbstractAccessTokenResponse extends AbstractOAuth2Response
 		super(statusCode, responseFormat);
 		
 		tokenInfo.put(Constants.ACCESS_TOKEN, accessToken.getAccessToken());
-		if (StringUtils.isNotEmpty(accessToken.getExpiresIn()))
+		if (StringUtils.isNotEmpty(accessToken.getExpiresIn())) {
 				tokenInfo.put(Constants.EXPIRES_IN, Long.valueOf(accessToken.getExpiresIn()));
-		if (StringUtils.isNotEmpty(accessToken.getRefreshToken()))		
+		}
+		if (StringUtils.isNotEmpty(accessToken.getRefreshToken())) {		
 			tokenInfo.put(Constants.REFRESH_TOKEN, accessToken.getRefreshToken());
-		if (accessToken.getTokenType()!=null)
+		}
+		if (accessToken.getTokenType()!=null) {
 			tokenInfo.put(Constants.TOKEN_TYPE, accessToken.getTokenType().getTechnicalCode());
-		if (accessToken.getAuthorizedScopes()!=null && accessToken.getAuthorizedScopes().isEmpty())
+		}
+		if (accessToken.getAuthorizedScopes()!=null && accessToken.getAuthorizedScopes().isEmpty()) {
 			tokenInfo.put(Constants.SCOPE, scopeParser.render(accessToken.getAuthorizedScopes()));
-		if (StringUtils.isNotEmpty(state))
+		}
+		if (StringUtils.isNotEmpty(state)) {
 			tokenInfo.put(Constants.STATE, state);
+		}
 		
 	}
 }

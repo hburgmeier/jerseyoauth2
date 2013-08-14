@@ -29,8 +29,8 @@ public class HttpRequestAdapter implements IHttpRequest {
 	public HttpRequestAdapter(ContainerRequestContext ctx) {
 		this.context = ctx;
 		
-		MultivaluedMap<String, String> queryParameters = ctx.getUriInfo().getQueryParameters();
-		for (Entry<String, List<String>> entry : queryParameters.entrySet())
+		MultivaluedMap<String, String> queryParams = ctx.getUriInfo().getQueryParameters();
+		for (Entry<String, List<String>> entry : queryParams.entrySet())
 		{
 			StringBuffer values = new StringBuffer();
 			for (String val : entry.getValue())

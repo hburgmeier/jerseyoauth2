@@ -102,10 +102,10 @@ public class TokenService implements ITokenService {
 			sendTokenResponse(request, response, accessTokenInfo, responseType, state);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
 		} catch (TokenGenerationException e) {
 			LOGGER.error("error with token generation", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
 		}
 	}	
 	
@@ -116,8 +116,9 @@ public class TokenService implements ITokenService {
 
 		try {
 			if (refreshTokenRequest.getScopes()!=null &&
-				!refreshTokenRequest.getScopes().isEmpty())
+				!refreshTokenRequest.getScopes().isEmpty()) {
 				scopeValidator.validateScopes(refreshTokenRequest.getScopes());
+			}
 			
 			IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);
 
@@ -131,16 +132,16 @@ public class TokenService implements ITokenService {
 			sendTokenResponse(request, response, accessTokenInfo, ResponseType.CODE, null);
 		} catch (InvalidTokenException e) {
 			LOGGER.error("invalid token", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.ACCESS_DENIED, "token is invalid", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.ACCESS_DENIED, "token is invalid", null, e);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
 		} catch (TokenGenerationException e) {
 			LOGGER.error("error with token generation", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
 		} catch (InvalidScopeException e) {
 			LOGGER.error("Scope is invalid", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null, e);
 		}
 	}
 

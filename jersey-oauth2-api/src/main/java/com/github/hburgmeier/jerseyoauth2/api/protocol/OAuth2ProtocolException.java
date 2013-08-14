@@ -11,8 +11,9 @@ public class OAuth2ProtocolException extends OAuth2Exception {
 	private final String errorUri;
 	private final String state;
 
-	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String errorUri, String state)
+	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String errorUri, String state, Throwable cause)
 	{
+		super(cause);
 		this.errorCode = errorCode;
 		this.description = description;
 		this.errorUri = errorUri;
@@ -21,12 +22,17 @@ public class OAuth2ProtocolException extends OAuth2Exception {
 	
 	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String state)
 	{
-		this(errorCode, null, null, state);
+		this(errorCode, null, null, state, null);
 	}
 	
 	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String state)
 	{
-		this(errorCode, description, null, state);
+		this(errorCode, description, null, state, null);
+	}
+	
+	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String state, Throwable cause)
+	{
+		this(errorCode, description, null, state, cause);
 	}
 
 	public OAuth2ErrorCode getErrorCode() {

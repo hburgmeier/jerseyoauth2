@@ -3,7 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.client;
 
 public interface IPendingClientToken {
 
-	public static final long TEN_MINUTES = 10*60*1000;
+	static final long TEN_MINUTES = 10*60*1000;
 	
 	String getCode();
 

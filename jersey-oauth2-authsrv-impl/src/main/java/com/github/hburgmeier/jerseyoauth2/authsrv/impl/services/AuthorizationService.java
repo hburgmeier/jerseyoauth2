@@ -80,13 +80,15 @@ public class AuthorizationService implements IAuthorizationService {
 			LOGGER.debug("Parsing of AuthzRequest successful");
 
 			IUser user = userService.getCurrentUser(request);
-			if (user == null)
+			if (user == null) {
 				throw new InvalidUserException();
+			}
 
 			regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
-			if (regClientApp == null)
+			if (regClientApp == null) {
 				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client " + oauthRequest.getClientId()
 						+ " is invalid", oauthRequest.getState());
+			}
 
 			Set<String> scopes = oauthRequest.getScopes();
 			if (scopes==null || scopes.isEmpty()) {
@@ -99,7 +101,7 @@ public class AuthorizationService implements IAuthorizationService {
 			} catch (InvalidScopeException e)
 			{
 				LOGGER.error("Scope {} is unknown", e.getScope());
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, oauthRequest.getState());
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, oauthRequest.getState(), "Scope is invalid", e);
 			}
 
 			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
@@ -151,7 +153,7 @@ public class AuthorizationService implements IAuthorizationService {
 				tokenService.issueNewToken(request, response, authorizedClientApp, reqResponseType, state);
 			}
 		} catch (ClientServiceException e) {
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state, e);
 		}
 	}
 	

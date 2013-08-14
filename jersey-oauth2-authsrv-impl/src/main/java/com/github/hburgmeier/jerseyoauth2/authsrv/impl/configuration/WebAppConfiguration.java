@@ -12,6 +12,8 @@ import com.google.inject.Inject;
 
 public class WebAppConfiguration implements IConfiguration {
 
+	private static final long DFEAULT_TOKEN_EXPIRATION = 3600;
+
 	private final ScopeParser scopeParser = new ScopeParser();
 	
 	private final long tokenExpiration;
@@ -22,7 +24,7 @@ public class WebAppConfiguration implements IConfiguration {
 
 	@Inject
 	public WebAppConfiguration(final ServletContext servletContext) {
-		this.tokenExpiration = parseLong(servletContext.getInitParameter("oauth2.tokenexpiration"), 3600);
+		this.tokenExpiration = parseLong(servletContext.getInitParameter("oauth2.tokenexpiration"), DFEAULT_TOKEN_EXPIRATION);
 
 		this.defaultScopes = scopeParser.parseScope(servletContext.getInitParameter("oauth2.defaultscopes"));
 

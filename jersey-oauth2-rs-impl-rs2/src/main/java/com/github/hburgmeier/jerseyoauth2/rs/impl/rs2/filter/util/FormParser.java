@@ -12,7 +12,7 @@ import javax.ws.rs.core.Form;
 
 public class FormParser {
 
-	private static final Pattern fieldPattern = Pattern.compile("[^&=]+");
+	private static final Pattern FIELD_PATTERN = Pattern.compile("[^&=]+");
 	
 	public Form parseForm(InputStream inputStream) throws FormParserException
 	{
@@ -20,10 +20,10 @@ public class FormParser {
 		Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8.name());
 		scanner.useDelimiter(Pattern.compile("[&=]"));
 		try {
-			while (scanner.hasNext(fieldPattern))
+			while (scanner.hasNext(FIELD_PATTERN))
 			{
-				String name = urlDecode(scanner.next(fieldPattern));
-				String value = urlDecode(scanner.next(fieldPattern));
+				String name = urlDecode(scanner.next(FIELD_PATTERN));
+				String value = urlDecode(scanner.next(FIELD_PATTERN));
 				result.param(name, value);
 			}
 		} catch (NoSuchElementException | UnsupportedEncodingException e) {

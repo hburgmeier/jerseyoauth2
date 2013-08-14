@@ -55,8 +55,7 @@ public abstract class AbstractOAuth2Filter {
 		}
 		
 		OAuthPrincipal principal = new OAuthPrincipal(accessTokenInfo.getClientId(), accessTokenInfo.getUser(), authorizedScopes);
-		SecurityContext securityContext = new OAuthSecurityContext(principal, secureRequest);	
-		return securityContext;
+		return new OAuthSecurityContext(principal, secureRequest);	
 	}
 	
 	protected abstract IAccessTokenVerifier getAccessTokenVerifier();
@@ -64,9 +63,13 @@ public abstract class AbstractOAuth2Filter {
 	protected final boolean matchScopes(Set<String> requiredScopes, Set<String> actualScopes)
 	{
 		if (actualScopes==null && requiredScopes==null)
+		{
 			return true;
+		}
 		if (actualScopes==null && requiredScopes!=null && !requiredScopes.isEmpty())
+		{
 			return false;
+		}
 		return actualScopes.containsAll(requiredScopes);
 	}	
 	

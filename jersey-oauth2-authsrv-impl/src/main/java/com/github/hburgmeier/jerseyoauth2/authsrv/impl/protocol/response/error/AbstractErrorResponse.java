@@ -19,14 +19,17 @@ public abstract class AbstractErrorResponse extends AbstractOAuth2Response {
 		super(statusCode, responseFormat);
 		errorEntity.put(Constants.ERROR, ex.getErrorCode().getTechnicalCode());
 		
-		if (StringUtils.isNotEmpty(ex.getDescription()))
+		if (StringUtils.isNotEmpty(ex.getDescription())) {
 			errorEntity.put(Constants.ERROR_DESCRIPTION, ex.getDescription());
+		}
 
-		if (StringUtils.isNotEmpty(ex.getErrorUri()))
+		if (StringUtils.isNotEmpty(ex.getErrorUri())) {
 			errorEntity.put(Constants.ERROR_URI, ex.getErrorUri());
+		}
 		
-		if (StringUtils.isNotEmpty(ex.getState()))
+		if (StringUtils.isNotEmpty(ex.getState())) {
 			errorEntity.put(Constants.STATE, ex.getState());
+		}
 	}
 	
 

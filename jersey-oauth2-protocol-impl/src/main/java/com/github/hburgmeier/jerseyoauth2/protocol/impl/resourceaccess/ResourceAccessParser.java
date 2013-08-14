@@ -57,7 +57,7 @@ public class ResourceAccessParser {
 	}
 	
 	private static class AccessTokenHeaderExtractor extends HeaderExtractor {
-		private static final Pattern authPattern = Pattern.compile("([a-zA-Z]+) (.+)");
+		private static final Pattern AUTH_PATTERN = Pattern.compile("([a-zA-Z]+) (.+)");
 		private TokenType tokenType;
 
 		public AccessTokenHeaderExtractor(TokenType tokenType) {
@@ -71,7 +71,7 @@ public class ResourceAccessParser {
 			String accessToken = null;
 			if (StringUtils.isNotEmpty(value))
 			{
-				Matcher mat = authPattern.matcher(value);
+				Matcher mat = AUTH_PATTERN.matcher(value);
 				if (mat.matches() && mat.group(1).equalsIgnoreCase(tokenType.toString()))
 				{
 					accessToken = mat.group(2);

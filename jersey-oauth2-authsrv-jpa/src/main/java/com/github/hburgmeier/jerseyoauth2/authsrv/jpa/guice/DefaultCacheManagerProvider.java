@@ -9,6 +9,7 @@ import com.google.inject.Provider;
 
 public class DefaultCacheManagerProvider implements Provider<CacheManager> {
 
+	private static final int DEFAULT_MAX_CACHE_ENTRIES = 4000;
 	private CacheManager cacheManager;
 
 	public DefaultCacheManagerProvider()
@@ -16,7 +17,7 @@ public class DefaultCacheManagerProvider implements Provider<CacheManager> {
 		net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
 		config.setUpdateCheck(false);
 		CacheConfiguration tokenCacheConfiguration = new CacheConfiguration().
-				maxEntriesLocalHeap(4000).
+				maxEntriesLocalHeap(DEFAULT_MAX_CACHE_ENTRIES).
 				name("tokenCache").
 				persistence(new PersistenceConfiguration().strategy(Strategy.NONE));
 		tokenCacheConfiguration.validateConfiguration();

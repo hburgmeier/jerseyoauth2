@@ -23,8 +23,9 @@ public class AuthCodeResponse extends AbstractOAuth2Response {
 		this.redirectUrl = redirectUrl;
 		
 		codeEntity.put(Constants.CODE, code);
-		if (StringUtils.isNotEmpty(state))
+		if (StringUtils.isNotEmpty(state)) {
 			codeEntity.put(Constants.STATE, state);
+		}
 	}
 
 	@Override

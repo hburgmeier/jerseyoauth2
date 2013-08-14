@@ -37,7 +37,7 @@ public class OAuth2FilterFeature implements DynamicFeature {
 			AllowedScopes scopes = methodAnnotation?resourceInfo.getResourceMethod().getAnnotation(AllowedScopes.class):
 				resourceInfo.getResourceClass().getAnnotation(AllowedScopes.class);
 			OAuth2RequestFilter filter = new OAuth2RequestFilter(scopes.scopes(), config, tokenVerifier, requestFactory);
-			context.register(filter, 100);
+			context.register(filter);
 		}
 	}
 
