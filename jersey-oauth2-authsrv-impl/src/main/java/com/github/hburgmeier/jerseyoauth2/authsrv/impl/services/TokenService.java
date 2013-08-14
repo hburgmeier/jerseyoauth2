@@ -40,6 +40,7 @@ public class TokenService implements ITokenService {
 	private final ITokenGenerator tokenGenerator;
 	private final IResponseBuilder responseBuilder;
 	protected final boolean issueRefreshToken;
+	protected final ScopeValidator scopeValidator;
 	
 	@Inject
 	public TokenService(final IAccessTokenStorageService accessTokenService, final IClientService clientService, final ITokenGenerator tokenGenerator,
@@ -48,8 +49,10 @@ public class TokenService implements ITokenService {
 		this.accessTokenService = accessTokenService;
 		this.clientService = clientService;
 		this.tokenGenerator = tokenGenerator;
-		this.issueRefreshToken = configuration.getEnableRefreshTokenGeneration();
 		this.responseBuilder = responseBuilder;
+		
+		this.issueRefreshToken = configuration.getEnableRefreshTokenGeneration();
+		this.scopeValidator = new ScopeValidator(configuration);
 		
 	}
 
@@ -112,6 +115,10 @@ public class TokenService implements ITokenService {
 		String refreshToken = refreshTokenRequest.getRefreshToken();
 
 		try {
+			if (refreshTokenRequest.getScopes()!=null &&
+				!refreshTokenRequest.getScopes().isEmpty())
+				scopeValidator.validateScopes(refreshTokenRequest.getScopes());
+			
 			IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);
 
 			String newAccessToken = tokenGenerator.createAccessToken();
@@ -131,6 +138,9 @@ public class TokenService implements ITokenService {
 		} catch (TokenGenerationException e) {
 			LOGGER.error("error with token generation", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null);
+		} catch (InvalidScopeException e) {
+			LOGGER.error("Scope is invalid", e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null);
 		}
 	}
 

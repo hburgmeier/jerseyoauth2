@@ -50,6 +50,7 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IRequestFactory requestFactory;
 	private final IConfiguration configuration;
 	private final IResponseBuilder responseBuilder;
+	private final ScopeValidator scopeValidator;
 	
 	private final Set<String> defaultScopes;
 	
@@ -67,6 +68,7 @@ public class AuthorizationService implements IAuthorizationService {
 		this.responseBuilder = responseBuilder;
 		Set<String> defScopes = configuration.getDefaultScopes();
 		this.defaultScopes = defScopes==null?Collections.<String>emptySet():defScopes;
+		this.scopeValidator = new ScopeValidator(configuration);
 	}	
 	
 	@Override
@@ -90,6 +92,14 @@ public class AuthorizationService implements IAuthorizationService {
 			if (scopes==null || scopes.isEmpty()) {
 				LOGGER.warn("using default scopes");
 				scopes = defaultScopes;
+			}
+			
+			try {
+				scopeValidator.validateScopes(scopes);
+			} catch (InvalidScopeException e)
+			{
+				LOGGER.error("Scope {} is unknown", e.getScope());
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, oauthRequest.getState());
 			}
 
 			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
@@ -154,29 +164,7 @@ public class AuthorizationService implements IAuthorizationService {
 		} catch (URISyntaxException e) {
 			throw new ResponseBuilderException(e);
 		}
-		
-//		OAuthResponse resp = OAuthASResponse
-//		        .authorizationResponse(request, HttpServletResponse.SC_FOUND)
-//		        .setCode(clientAuth.getCode())                    
-//		        .location(clientApp.getCallbackUrl())
-//		        .buildQueryMessage();
-//
-//		response.sendRedirect(resp.getLocationUri());
 	}
-	
-//	@Override
-//	public void sendErrorResponse(OAuthProblemException ex,
-//			HttpServletResponse response, String redirectUri) throws OAuthSystemException, IOException {
-//		
-//        OAuthErrorResponseBuilder responseBuilder = OAuthASResponse
-//				        .errorResponse(HttpServletResponse.SC_FOUND)
-//				        .error(ex);
-//        if (redirectUri!=null)
-//        	responseBuilder = responseBuilder.location(redirectUri);
-//		final OAuthResponse resp = responseBuilder.buildQueryMessage();
-//                   
-//        response.sendRedirect(resp.getLocationUri());
-//	}
 	
 	protected void sendErrorResponse(OAuth2ProtocolException ex,
 			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {
