@@ -73,68 +73,75 @@ public class AuthorizationService implements IAuthorizationService {
 	
 	@Override
 	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException {
-		IRegisteredClientApp regClientApp = null;
 		try {
-			IAuthorizationRequest oauthRequest = requestFactory.parseAuthorizationRequest(new HttpRequestAdapter(request), 
-					configuration.getEnableAuthorizationHeaderForClientAuth());
-			LOGGER.debug("Parsing of AuthzRequest successful");
-
-			IUser user = userService.getCurrentUser(request);
-			if (user == null) {
-				throw new InvalidUserException();
-			}
-
-			regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
-			if (regClientApp == null) {
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client " + oauthRequest.getClientId()
-						+ " is invalid", oauthRequest.getState());
-			}
-
-			Set<String> scopes = oauthRequest.getScopes();
-			if (scopes==null || scopes.isEmpty()) {
-				LOGGER.warn("using default scopes");
-				scopes = defaultScopes;
-			}
-			
+			IRegisteredClientApp regClientApp = null;
+			IAuthorizationRequest oauthRequest = null;
 			try {
-				scopeValidator.validateScopes(scopes);
-			} catch (InvalidScopeException e)
-			{
-				LOGGER.error("Scope {} is unknown", e.getScope());
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, oauthRequest.getState(), "Scope is invalid", e);
-			}
+				oauthRequest = requestFactory.parseAuthorizationRequest(new HttpRequestAdapter(request), 
+						configuration.getEnableAuthorizationHeaderForClientAuth());
+				LOGGER.debug("Parsing of AuthzRequest successful");
 
-			LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
-			ResponseType reqResponseType = oauthRequest.getResponseType();
+				IUser user = userService.getCurrentUser(request);
+				if (user == null) {
+					throw new InvalidUserException();
+				}
 
-			switch (reqResponseType)
-			{
-			case CODE:
-				validateCodeRequest(oauthRequest, regClientApp);
-				break;
-			case TOKEN:
-				validateTokenRequest(oauthRequest, regClientApp);
-				break;
+				regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
+				if (regClientApp == null) {
+					throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client " + oauthRequest.getClientId()
+							+ " is invalid", oauthRequest.getState());
+				}
+
+				Set<String> scopes = oauthRequest.getScopes();
+				if (scopes==null || scopes.isEmpty()) {
+					LOGGER.warn("using default scopes");
+					scopes = defaultScopes;
+				}
+				
+				try {
+					scopeValidator.validateScopes(scopes);
+				} catch (InvalidScopeException e)
+				{
+					LOGGER.error("Scope {} is unknown", e.getScope());
+					throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, oauthRequest.getState(), "Scope is invalid", e);
+				}
+
+				LOGGER.debug("Response Type {}", oauthRequest.getResponseType());
+				ResponseType reqResponseType = oauthRequest.getResponseType();
+
+				switch (reqResponseType)
+				{
+				case CODE:
+					validateCodeRequest(oauthRequest, regClientApp);
+					break;
+				case TOKEN:
+					validateTokenRequest(oauthRequest, regClientApp);
+					break;
+				}
+				
+				IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(),
+						scopes);
+				if (authorizedClientApp != null) {
+					LOGGER.debug("client is already authorized");
+					sendAuthorizationReponse(request, response, reqResponseType, regClientApp, authorizedClientApp, oauthRequest.getState());
+				} else {
+					LOGGER.debug("client is not authorized or missing scopes {}", scopes);
+					authFlow.startAuthorizationFlow(user, regClientApp, scopes, oauthRequest, request, response, servletContext);
+				}
+			} catch (InvalidUserException e) {
+				LOGGER.error("Missing or invalid user");
+				authFlow.handleMissingUser(request, response, servletContext);
+			} catch (OAuth2ParseException e) {
+				LOGGER.error("Problem with OAuth2 protocol", e);
+				String redirectUrl = getRedirectUri(regClientApp, oauthRequest);
+				sendErrorResponse(e, response, redirectUrl);
+			} catch (OAuth2ProtocolException e) {
+				LOGGER.error("Problem with OAuth2 protocol", e);
+				String redirectUrl = getRedirectUri(regClientApp, oauthRequest);
+				sendErrorResponse(e, response, redirectUrl);
 			}
-			
-			IAuthorizedClientApp authorizedClientApp = clientService.isAuthorized(user, regClientApp.getClientId(),
-					scopes);
-			if (authorizedClientApp != null) {
-				LOGGER.debug("client is already authorized");
-				sendAuthorizationReponse(request, response, reqResponseType, regClientApp, authorizedClientApp, oauthRequest.getState());
-			} else {
-				LOGGER.debug("client is not authorized or missing scopes {}", scopes);
-				authFlow.startAuthorizationFlow(user, regClientApp, scopes, reqResponseType, request, response, servletContext);
-			}
-		} catch (InvalidUserException e) {
-			LOGGER.error("Missing or invalid user");
-			authFlow.handleMissingUser(request, response, servletContext);
-		} catch (OAuth2ParseException e) {
-			LOGGER.error("Problem with OAuth2 protocol", e);
-			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
-		} catch (OAuth2ProtocolException e) {
-			LOGGER.error("Problem with OAuth2 protocol", e);
-			sendErrorResponse(e, response, regClientApp == null ? null : regClientApp.getCallbackUrl());
+		} catch (InvalidRedirectUrlException e) {
+			authFlow.handleInvalidRedirectUrl(request, response, servletContext);
 		}
 	}
 
@@ -156,6 +163,25 @@ public class AuthorizationService implements IAuthorizationService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state, e);
 		}
 	}
+	
+	@Override
+	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
+			IAuthorizationRequest originalRequest, IRegisteredClientApp regClientApp,
+			IAuthorizedClientApp authorizedClientApp) throws IOException, OAuth2ProtocolException,
+			ResponseBuilderException {
+		try {
+			if (originalRequest.getResponseType() == ResponseType.CODE) {
+				IPendingClientToken pendingClientToken = clientService
+						.createPendingClientToken(authorizedClientApp);
+				sendAuthorizationReponse(request, response, pendingClientToken, regClientApp, originalRequest.getState());
+			} else {
+				LOGGER.debug("issue new token for token response type");
+				tokenService.issueNewToken(request, response, authorizedClientApp, originalRequest.getResponseType(), originalRequest.getState());
+			}
+		} catch (ClientServiceException e) {
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", originalRequest.getState(), e);
+		}
+	}	
 
 	@Override
 	public void sendErrorResponse(OAuth2ProtocolException ex,
@@ -178,6 +204,28 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 
+	protected String getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest) throws InvalidRedirectUrlException
+	{
+		String result = null;
+		if (oauthRequest!=null &&
+			oauthRequest.getRedirectURI()!=null)
+			result = oauthRequest.getRedirectURI();
+		if (regClientApp!=null)
+		{
+			if (result!=null && regClientApp.getCallbackUrl()!=null)
+			{
+				throw new InvalidRedirectUrlException();
+			}
+			if (result == null)
+				result = regClientApp.getCallbackUrl();
+		}
+		if (result == null)
+		{
+			throw new InvalidRedirectUrlException();
+		} else
+			return result;
+	}
+	
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
 		if (oauthRequest.getClientSecret() != null) {

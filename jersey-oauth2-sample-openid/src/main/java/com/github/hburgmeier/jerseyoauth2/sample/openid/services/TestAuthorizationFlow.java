@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
@@ -18,8 +18,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 public class TestAuthorizationFlow implements IAuthorizationFlow {
 
 	@Override
-	public void startAuthorizationFlow(IUser user,
-			IRegisteredClientApp clientApp, Set<String> scope, ResponseType requestedResponseType, 
+	public void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
 			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 			throws AuthorizationFlowException, ServletException, IOException {
 		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/auth.jsp");
@@ -40,6 +39,13 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 	public void handleMissingUser(HttpServletRequest request,
 			HttpServletResponse response, ServletContext servletContext)
 			throws AuthorizationFlowException, ServletException, IOException {
+		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
+		requestDispatcher.forward(request, response);
+	}
+	
+	@Override
+	public void handleInvalidRedirectUrl(HttpServletRequest request, HttpServletResponse response,
+			ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException {
 		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
 		requestDispatcher.forward(request, response);
 	}

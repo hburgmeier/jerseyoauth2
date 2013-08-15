@@ -1,6 +1,10 @@
 package com.github.hburgmeier.jerseyoauth2.testsuite.base;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.scribe.model.Token;
 
@@ -17,7 +21,7 @@ public class ProtocolTest extends BaseTest {
 	public void testAuthUrl()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
@@ -25,28 +29,28 @@ public class ProtocolTest extends BaseTest {
 		
 		WebResource webResource = restClient.resource(authUrl);
 		ClientResponse clientResponse = webResource.get(ClientResponse.class);
-		Assert.assertEquals(302, clientResponse.getStatus());
-		Assert.assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/testsuite?code="));
+		assertEquals(302, clientResponse.getStatus());
+		assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/testsuite?code="));
 		
 		authUrl = client.getAuthUrl("stateTest");
 		
 		webResource = restClient.resource(authUrl);
 		clientResponse = webResource.get(ClientResponse.class);
-		Assert.assertEquals(302, clientResponse.getStatus());
-		Assert.assertTrue(clientResponse.getLocation().toString().contains("state=stateTest"));		
+		assertEquals(302, clientResponse.getStatus());
+		assertTrue(clientResponse.getLocation().toString().contains("state=stateTest"));		
 	}		
 	
 	@Test
 	public void testInvalidClientSecret()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity.getClientId(), "Invalid", "test1 test2");
 		try {
 			client.getAccessToken(code);
-			Assert.fail();
+			fail();
 		} catch (TokenExtractorException e) {
 		}
 	}	
@@ -55,13 +59,13 @@ public class ProtocolTest extends BaseTest {
 	public void testInvalidCode()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
 		try {
 			client.getAccessToken("A"+code);
-			Assert.fail();
+			fail();
 		} catch (TokenExtractorException e) {
 		}		
 	}	
@@ -70,14 +74,14 @@ public class ProtocolTest extends BaseTest {
 	public void testDoubleUseOfCode()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
 		client.getAccessToken(code);
 		try {
 			client.getAccessToken(code);
-			Assert.fail();
+			fail();
 		} catch (TokenExtractorException e) {
 		}		
 	}	
@@ -86,13 +90,13 @@ public class ProtocolTest extends BaseTest {
 	public void testTokenInvalidation() throws ClientException
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
 		Token token = client.getAccessToken(code);
-		Assert.assertNotNull(token);
-		Assert.assertNotNull(token.getToken());
+		assertNotNull(token);
+		assertNotNull(token.getToken());
 		
 		client.sendTestRequestSample1(token);
 		
@@ -100,13 +104,13 @@ public class ProtocolTest extends BaseTest {
 		
 		try {
 			client.sendTestRequestSample1(token);
-			Assert.fail();
+			fail();
 		} catch (ClientException e) {
 		}
 		
 		try {
 			client.refreshToken((OAuth2Token)token);
-			Assert.fail();
+			fail();
 		} catch (TokenExtractorException e) {
 		}
 	}		
@@ -115,23 +119,23 @@ public class ProtocolTest extends BaseTest {
 	public void testRefreshTokenFlow() throws ClientException
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
 		Token oldToken = client.getAccessToken(code);
-		Assert.assertNotNull(oldToken);
-		Assert.assertNotNull(oldToken.getToken());
+		assertNotNull(oldToken);
+		assertNotNull(oldToken.getToken());
 		
 		client.sendTestRequestSample1(oldToken);
 		
 		Token newToken = client.refreshToken((OAuth2Token)oldToken);
-		Assert.assertNotNull(newToken);
+		assertNotNull(newToken);
 		
 		client.sendTestRequestSample1(newToken);
 		try {
 			client.sendTestRequestSample1(oldToken);
-			Assert.fail();
+			fail();
 		} catch(ClientException ex) {
 			
 		}
@@ -142,13 +146,13 @@ public class ProtocolTest extends BaseTest {
 	public void testRefreshTokenFlowExpires() throws ClientException, InterruptedException
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity);
 		Token oldToken = client.getAccessToken(code);
-		Assert.assertNotNull(oldToken);
-		Assert.assertNotNull(oldToken.getToken());
+		assertNotNull(oldToken);
+		assertNotNull(oldToken.getToken());
 		
 		client.sendTestRequestSample1(oldToken);
 		
@@ -156,7 +160,7 @@ public class ProtocolTest extends BaseTest {
 		
 		try {
 			client.refreshToken((OAuth2Token)oldToken);
-			Assert.fail();
+			fail();
 		} catch (TokenExtractorException e1) {
 		}
 	}	
@@ -165,7 +169,7 @@ public class ProtocolTest extends BaseTest {
 	public void testInvalidScopes()
 	{
 		String code = authClient.authorizeClient(clientEntity, "test1 someScope").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		ResourceClient client = new ResourceClient(clientEntity.getClientId(), clientEntity.getClientSecret(), "test1 test2");
@@ -173,7 +177,8 @@ public class ProtocolTest extends BaseTest {
 		
 		WebResource webResource = restClient.resource(authUrl);
 		ClientResponse clientResponse = webResource.get(ClientResponse.class);
-		Assert.assertEquals(200, clientResponse.getStatus());
+		assertEquals(302, clientResponse.getStatus());
+		assertTrue(clientResponse.getLocation().toString().startsWith("http://localhost:9998/testsuite?code="));
 	}	
 	
 }

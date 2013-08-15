@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +133,9 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 			tx.begin();
 			em.remove(tokenEntity);
 			em.flush();
+			tx.commit();
+		} catch (StaleStateException ex) {
+			LOGGER.debug("token was already deleted", ex);
 			tx.commit();
 		} catch (PersistenceException ex) {
 			LOGGER.error("persistence error", ex);

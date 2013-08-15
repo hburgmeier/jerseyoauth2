@@ -1,8 +1,9 @@
-package com.github.hburgmeier.jerseyoauth2.sample.services;
+package com.github.hburgmeier.jerseyoauth2.testsuite.base.services;
 
 import java.io.IOException;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -10,29 +11,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 
 public class TestAuthorizationFlow implements IAuthorizationFlow {
 
+	private final IClientService clientService;
+	private final IAuthorizationService authorizationService;
+
+	@Inject
+	public TestAuthorizationFlow(IClientService clientService, IAuthorizationService authorizationService)
+	{
+		this.clientService = clientService;
+		this.authorizationService = authorizationService;
+	}
+	
 	@Override
 	public void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
 			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
 			throws AuthorizationFlowException, ServletException, IOException {
-		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/auth.jsp");
-		request.setAttribute("clientApp", clientApp);
-		request.setAttribute("scope", scope);
 		
-		StringBuffer scopesBuf = new StringBuffer();
-		for (String scopeItem : scope)
-		{
-			scopesBuf.append(scopeItem).append(" ");
+		try {
+			try {
+				IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, scope);
+				authorizationService.sendAuthorizationReponse(request, response, originalRequest, clientApp, authorizedClient);
+			} catch (OAuth2ProtocolException e) {
+				authorizationService.sendErrorResponse(e, response, clientApp.getCallbackUrl());
+			}
+		} catch (ClientServiceException | ResponseBuilderException e) {
+			throw new ServletException(e);
 		}
-		request.setAttribute("scopes", scopesBuf.toString());
-		
-		requestDispatcher.forward(request, response);
 	}
 
 	@Override

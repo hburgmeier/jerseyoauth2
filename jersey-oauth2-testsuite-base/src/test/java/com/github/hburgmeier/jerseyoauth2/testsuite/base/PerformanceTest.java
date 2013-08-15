@@ -1,6 +1,9 @@
 package com.github.hburgmeier.jerseyoauth2.testsuite.base;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -36,22 +39,12 @@ public class PerformanceTest {
 		clientEntity = authClient.createClient("confidential");		
 		
 		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
-		Assert.assertNotNull(code);
+		assertNotNull(code);
 		restClient.setFollowRedirects(false);
 		
 		client = new ResourceClient(clientEntity);
 		token = client.getAccessToken(code);
-	}
-
-	@Ignore
-	@BenchmarkOptions(benchmarkRounds=200)
-	@Test
-	public void testSimpleResourceAccess() throws ClientException
-	{
-		SampleEntity entity = client.retrieveEntitySample1(token);
-		Assert.assertNotNull(entity);
-		Assert.assertEquals("manager", entity.getUsername());
-		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
+		System.err.println(token);
 	}
 	
 	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_AVAILABLE_CORES)
@@ -59,21 +52,21 @@ public class PerformanceTest {
 	public void testParallelResourceAccess() throws ClientException
 	{
 		SampleEntity entity = client.retrieveEntitySample1(token);
-		Assert.assertNotNull(entity);
-		Assert.assertEquals("manager", entity.getUsername());
-		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
+		assertNotNull(entity);
+		assertEquals("manager", entity.getUsername());
+		assertEquals(clientEntity.getClientId(), entity.getClientApp());
 	}	
 	
 	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_SEQUENTIAL)
 	@Test
-	public void testParallelResourceAccessWithRefresh() throws ClientException
+	public void testResourceAccessWithRefresh() throws ClientException
 	{
 		if (testCount % 50 == 0 && testCount>0)
 			token = client.refreshToken((OAuth2Token)token);
 		SampleEntity entity = client.retrieveEntitySample1(token);
-		Assert.assertNotNull(entity);
-		Assert.assertEquals("manager", entity.getUsername());
-		Assert.assertEquals(clientEntity.getClientId(), entity.getClientApp());
+		assertNotNull(entity);
+		assertEquals("manager", entity.getUsername());
+		assertEquals(clientEntity.getClientId(), entity.getClientApp());
 	}		
 	
 }

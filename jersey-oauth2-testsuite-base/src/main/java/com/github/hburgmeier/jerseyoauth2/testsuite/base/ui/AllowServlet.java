@@ -18,7 +18,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceExcept
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.google.inject.Inject;

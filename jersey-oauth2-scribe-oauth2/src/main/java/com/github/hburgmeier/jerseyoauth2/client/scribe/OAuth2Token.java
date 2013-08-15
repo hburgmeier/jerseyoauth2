@@ -25,4 +25,10 @@ public class OAuth2Token extends Token {
 		return expiration;
 	}
 
+	@Override
+	public String toString() {
+		return "OAuth2Token [refreshToken=" + refreshToken + ", expiration=" + expiration + ", getToken()="
+				+ getToken() + "]";
+	}
+
 }
