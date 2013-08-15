@@ -64,5 +64,10 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 	public boolean getEnableRefreshTokenGeneration() {
 		return true;
 	}
+	
+	@Override
+	public boolean getAllowScopeEnhancementWithRefreshToken() {
+		return true;
+	}
 
 }

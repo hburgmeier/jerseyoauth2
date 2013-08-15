@@ -66,4 +66,9 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 		return true;
 	}
 
+	@Override
+	public boolean getAllowScopeEnhancementWithRefreshToken() {
+		return true;
+	}
+	
 }

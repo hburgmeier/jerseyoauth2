@@ -3,9 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.testsuite.base;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scribe.model.Token;
@@ -44,7 +42,6 @@ public class PerformanceTest {
 		
 		client = new ResourceClient(clientEntity);
 		token = client.getAccessToken(code);
-		System.err.println(token);
 	}
 	
 	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_AVAILABLE_CORES)

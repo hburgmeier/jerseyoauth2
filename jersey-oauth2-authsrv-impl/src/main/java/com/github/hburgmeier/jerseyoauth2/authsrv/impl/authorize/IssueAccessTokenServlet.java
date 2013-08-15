@@ -19,6 +19,7 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Singleton;
 
@@ -58,7 +59,7 @@ public class IssueAccessTokenServlet extends HttpServlet {
 							configuration.getEnableAuthorizationHeaderForClientAuth());
 					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
-					tokenService.handleRequest(request, response, oauthRequest);
+					tokenService.handleRequest(request, response, getServletContext(), oauthRequest);
 				} catch (OAuth2ParseException e) {
 					LOGGER.error("Token request problem", e);
 					tokenService.sendErrorResponse(response, e);
@@ -66,7 +67,7 @@ public class IssueAccessTokenServlet extends HttpServlet {
 					LOGGER.error("Token request problem", e);
 					tokenService.sendErrorResponse(response, e);
 				}
-			} catch (ResponseBuilderException e) {
+			} catch (AuthorizationFlowException | ResponseBuilderException e) {
 				LOGGER.error("OAuth2 system exception", e);
 				throw new ServletException(e);
 			}

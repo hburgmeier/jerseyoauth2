@@ -16,4 +16,6 @@ public interface IConfiguration {
 	boolean getEnableAuthorizationHeaderForClientAuth();
 	
 	boolean getEnableRefreshTokenGeneration();
+	
+	boolean getAllowScopeEnhancementWithRefreshToken();
 }

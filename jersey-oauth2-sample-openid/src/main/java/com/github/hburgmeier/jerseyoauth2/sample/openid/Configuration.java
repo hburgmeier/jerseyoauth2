@@ -37,5 +37,10 @@ public class Configuration implements IConfiguration {
 	public boolean getEnableRefreshTokenGeneration() {
 		return true;
 	}
+	
+	@Override
+	public boolean getAllowScopeEnhancementWithRefreshToken() {
+		return true;
+	}
 
 }

@@ -25,5 +25,10 @@ public class ScopeValidator {
 			}
 		}
 	}
+
+	public boolean isScopeEqual(Set<String> scopes1, Set<String> scopes2) {
+		return scopes1.containsAll(scopes2) &&
+				scopes2.containsAll(scopes1);
+	}
 	
 }

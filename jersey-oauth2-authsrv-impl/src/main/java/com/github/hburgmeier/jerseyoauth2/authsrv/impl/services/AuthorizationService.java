@@ -133,14 +133,15 @@ public class AuthorizationService implements IAuthorizationService {
 				authFlow.handleMissingUser(request, response, servletContext);
 			} catch (OAuth2ParseException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				String redirectUrl = getRedirectUri(regClientApp, oauthRequest);
+				String redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
 				sendErrorResponse(e, response, redirectUrl);
 			} catch (OAuth2ProtocolException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				String redirectUrl = getRedirectUri(regClientApp, oauthRequest);
+				String redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
 				sendErrorResponse(e, response, redirectUrl);
 			}
 		} catch (InvalidRedirectUrlException e) {
+			LOGGER.error("Problem with the redirect Url", e);
 			authFlow.handleInvalidRedirectUrl(request, response, servletContext);
 		}
 	}
@@ -204,7 +205,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 
-	protected String getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest) throws InvalidRedirectUrlException
+	protected String getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidRedirectUrlException
 	{
 		String result = null;
 		if (oauthRequest!=null &&
@@ -214,7 +215,10 @@ public class AuthorizationService implements IAuthorizationService {
 		{
 			if (result!=null && regClientApp.getCallbackUrl()!=null)
 			{
-				throw new InvalidRedirectUrlException();
+				if (!error)
+					throw new InvalidRedirectUrlException();
+				else
+					result = regClientApp.getCallbackUrl();
 			}
 			if (result == null)
 				result = regClientApp.getCallbackUrl();
