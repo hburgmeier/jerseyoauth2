@@ -20,9 +20,9 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice.DefaultCacheManagerProvider;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
+import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.TestAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.ui.AllowServlet;
-import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
 import com.google.inject.servlet.ServletModule;
 

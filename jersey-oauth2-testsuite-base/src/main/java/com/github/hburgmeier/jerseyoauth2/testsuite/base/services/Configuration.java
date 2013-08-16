@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services;
+package com.github.hburgmeier.jerseyoauth2.testsuite.base.services;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.joda.time.Duration;
 
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
@@ -26,8 +28,8 @@ public class Configuration extends AbstractConfiguration implements IRSConfigura
 	}
 	
 	@Override
-	public long getTokenExpiration() {
-		return 6;
+	public Duration getTokenLifetime() {
+		return Duration.standardSeconds(4);
 	}
 
 	@Override

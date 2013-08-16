@@ -8,7 +8,7 @@ public interface IAccessTokenInfo extends com.github.hburgmeier.jerseyoauth2.api
 
 	IAuthorizedClientApp getClientApp();
 	
-	String getExpiresIn();
+	Long getExpiresIn();
 
 	String getRefreshToken();
 

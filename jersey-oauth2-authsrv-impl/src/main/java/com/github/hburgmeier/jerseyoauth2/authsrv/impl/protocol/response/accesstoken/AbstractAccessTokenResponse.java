@@ -21,8 +21,8 @@ public abstract class AbstractAccessTokenResponse extends AbstractOAuth2Response
 		super(statusCode, responseFormat);
 		
 		tokenInfo.put(Constants.ACCESS_TOKEN, accessToken.getAccessToken());
-		if (StringUtils.isNotEmpty(accessToken.getExpiresIn())) {
-				tokenInfo.put(Constants.EXPIRES_IN, Long.valueOf(accessToken.getExpiresIn()));
+		if (accessToken.getExpiresIn()!=null) {
+				tokenInfo.put(Constants.EXPIRES_IN, accessToken.getExpiresIn());
 		}
 		if (StringUtils.isNotEmpty(accessToken.getRefreshToken())) {		
 			tokenInfo.put(Constants.REFRESH_TOKEN, accessToken.getRefreshToken());

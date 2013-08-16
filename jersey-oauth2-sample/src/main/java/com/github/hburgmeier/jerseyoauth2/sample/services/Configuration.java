@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.Duration;
+
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.AbstractConfiguration;
@@ -27,8 +29,8 @@ public class Configuration extends AbstractConfiguration implements IRSConfigura
 	}
 	
 	@Override
-	public long getTokenExpiration() {
-		return 3600l;
+	public Duration getTokenLifetime() {
+		return Duration.standardHours(1);
 	}
 
 	@Override

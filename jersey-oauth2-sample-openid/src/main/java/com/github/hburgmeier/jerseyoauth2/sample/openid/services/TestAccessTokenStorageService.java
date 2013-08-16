@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.joda.time.Duration;
+
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
@@ -22,12 +24,12 @@ public class TestAccessTokenStorageService implements IAccessTokenStorageService
 	private static final Map<String, IAccessTokenInfo> tokenStore = Collections.synchronizedMap(new HashMap<String, IAccessTokenInfo>());
 	private static final Map<String, IAccessTokenInfo> refreshTokenStore = Collections.synchronizedMap(new HashMap<String, IAccessTokenInfo>());
 
-	private String tokenExpiration;
+	private Duration tokenExpiration;
 	
 	@Inject
 	public TestAccessTokenStorageService(final IConfiguration configuration)
 	{
-		tokenExpiration = String.valueOf(configuration.getTokenExpiration());
+		tokenExpiration = configuration.getTokenLifetime();
 	}
 	
 	@Override

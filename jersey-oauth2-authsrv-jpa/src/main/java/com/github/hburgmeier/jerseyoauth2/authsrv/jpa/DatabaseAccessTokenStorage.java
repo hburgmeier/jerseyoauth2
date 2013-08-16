@@ -11,6 +11,8 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.StaleStateException;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseAccessTokenStorage.class);
 	
 	private EntityManagerFactory emf;
-	private IConfiguration config;
+	private final Duration tokenLifetime;
 	
 	@Inject(optional=true)
 	private IUserStorageService userStorageService = null;
@@ -40,7 +42,9 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public DatabaseAccessTokenStorage(final EntityManagerFactory emf, final IConfiguration config)
 	{
 		this.emf = emf;
-		this.config = config;
+		this.tokenLifetime = config.getTokenLifetime();
+		if (this.tokenLifetime == null)
+			throw new IllegalArgumentException("token lifetime is null");
 	}
 	
 	@Override
@@ -74,8 +78,11 @@ public class DatabaseAccessTokenStorage implements IAccessTokenStorageService {
 	public IAccessTokenInfo issueToken(String accessToken, String refreshToken, IAuthorizedClientApp clientApp) {
 		assert(clientApp instanceof AuthorizedClientApplication);
 		
-		long validUntil = System.currentTimeMillis()+(config.getTokenExpiration()*1000l);
-		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, config.getTokenExpiration(), TokenType.BEARER, validUntil);
+		DateTime now = DateTime.now();
+		
+		long validUntil = now.plus(tokenLifetime).getMillis();
+		TokenEntity te = new TokenEntity(accessToken, refreshToken, (AuthorizedClientApplication)clientApp, tokenLifetime.getMillis(), 
+				TokenType.BEARER, validUntil);
 		saveTokenEntity(te);
 		LOGGER.debug("token {} saved", accessToken);
 		return te;

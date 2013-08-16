@@ -35,9 +35,9 @@ import com.github.hburgmeier.jerseyoauth2.rs.impl.rs2.filter.OAuth2FilterFeature
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.resource.ClientAuthResource;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.resource.ClientsResource;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.resource.TokenInvalidateResource;
+import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.resource.Sample2Resource;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.resource.SampleResource;
-import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
 
 public class RestApplication extends Application {

@@ -6,17 +6,23 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
 
 public class WebAppConfiguration implements IConfiguration {
 
-	private static final long DFEAULT_TOKEN_EXPIRATION = 3600;
+	private static final Duration DFEAULT_TOKEN_LIFETIME = Duration.standardDays(1);
 
 	private final ScopeParser scopeParser = new ScopeParser();
 	
-	private final long tokenExpiration;
+	private final Duration tokenDuration;
 	private final Set<String> defaultScopes;
 	private final boolean strictSecurity;
 	private final boolean supportAuthorizationHeader;
@@ -26,7 +32,7 @@ public class WebAppConfiguration implements IConfiguration {
 
 	@Inject
 	public WebAppConfiguration(final ServletContext servletContext) {
-		this.tokenExpiration = parseLong(servletContext.getInitParameter("oauth2.tokenexpiration"), DFEAULT_TOKEN_EXPIRATION);
+		this.tokenDuration = parseDuration(servletContext.getInitParameter("oauth2.tokenexpiration"), DFEAULT_TOKEN_LIFETIME);
 
 		this.defaultScopes = scopeParser.parseScope(servletContext.getInitParameter("oauth2.defaultscopes"));
 
@@ -42,8 +48,8 @@ public class WebAppConfiguration implements IConfiguration {
 	}
 
 	@Override
-	public long getTokenExpiration() {
-		return tokenExpiration;
+	public Duration getTokenLifetime() {
+		return tokenDuration;
 	}
 
 	@Override
@@ -80,13 +86,26 @@ public class WebAppConfiguration implements IConfiguration {
 	public boolean getGenerateSecretForPublicClients() {
 		return generateSecretForPublicClients;
 	}
-	
-	private long parseLong(String initParameter, long defaultValue) {
-		return initParameter == null ? defaultValue : Long.valueOf(initParameter);
-	}
 
 	private boolean parseBoolean(String initParameter, boolean defaultValue) {
 		return initParameter == null ? defaultValue : Boolean.parseBoolean(initParameter);
+	}
+	
+	private Duration parseDuration(String initParameter, Duration defaultDuration)
+	{
+		if (initParameter!=null)
+		{
+			PeriodFormatter formatter = new PeriodFormatterBuilder()
+	    		.appendDays().appendSuffix("d ")
+	    		.appendHours().appendSuffix("h ")
+	    		.appendMinutes().appendSuffix("min")
+	    		.toFormatter();
+			Period p = formatter.parsePeriod(initParameter);
+			return p.toDurationFrom(DateTime.now());
+		} else
+			return defaultDuration;
+		
+		
 	}
 
 }

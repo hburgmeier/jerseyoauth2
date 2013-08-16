@@ -3,9 +3,11 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.Duration;
+
 public interface IConfiguration {
 
-	long getTokenExpiration();
+	Duration getTokenLifetime();
 	
 	Map<String, ScopeDescription> getScopeDescriptions();
 	

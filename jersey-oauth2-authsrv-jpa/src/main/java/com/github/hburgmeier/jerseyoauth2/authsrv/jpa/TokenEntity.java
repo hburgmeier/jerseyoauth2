@@ -70,8 +70,8 @@ class TokenEntity implements IAccessTokenInfo {
 	}
 
 	@Override
-	public String getExpiresIn() {
-		return Long.toString(expiresIn);
+	public Long getExpiresIn() {
+		return expiresIn;
 	}
 
 	@Override
