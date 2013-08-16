@@ -1,6 +1,8 @@
 package com.github.hburgmeier.jerseyoauth2.testsuite.base.services;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -45,9 +47,9 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 				IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, scope);
 				authorizationService.sendAuthorizationReponse(request, response, originalRequest, clientApp, authorizedClient);
 			} catch (OAuth2ProtocolException e) {
-				authorizationService.sendErrorResponse(e, response, clientApp.getCallbackUrl());
+				authorizationService.sendErrorResponse(e, response, new URI(clientApp.getCallbackUrl()));
 			}
-		} catch (ClientServiceException | ResponseBuilderException e) {
+		} catch (URISyntaxException | ClientServiceException | ResponseBuilderException e) {
 			throw new ServletException(e);
 		}
 	}

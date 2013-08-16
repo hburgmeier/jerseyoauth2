@@ -1,12 +1,10 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

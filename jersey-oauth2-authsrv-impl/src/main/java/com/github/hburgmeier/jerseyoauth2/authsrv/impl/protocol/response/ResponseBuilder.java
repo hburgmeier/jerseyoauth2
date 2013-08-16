@@ -8,7 +8,7 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenPostResponse;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenEntityResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenRedirectResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.authcode.AuthCodeResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.AuthRequestErrorResponse;
@@ -42,8 +42,8 @@ public class ResponseBuilder implements IResponseBuilder {
 	@Override
 	public void buildAccessTokenResponse(IAccessTokenInfo accessToken, String state, HttpServletResponse response)
 			throws ResponseBuilderException {
-		AccessTokenPostResponse oauthResponse = new AccessTokenPostResponse(HttpServletResponse.SC_OK,
-				ResponseFormat.JSON, accessToken, state);
+		AccessTokenEntityResponse oauthResponse = new AccessTokenEntityResponse(HttpServletResponse.SC_OK,
+				accessToken, state);
 		oauthResponse.render(response);
 	}
 
@@ -51,7 +51,7 @@ public class ResponseBuilder implements IResponseBuilder {
 	public void buildImplicitGrantAccessTokenResponse(IAccessTokenInfo accessToken, URI redirectUrl, String state,
 			HttpServletResponse response) throws ResponseBuilderException {
 		AccessTokenRedirectResponse oauthResponse = new AccessTokenRedirectResponse(
-				HttpServletResponse.SC_MOVED_TEMPORARILY, ResponseFormat.QUERY, accessToken, redirectUrl, state);
+				HttpServletResponse.SC_MOVED_TEMPORARILY, accessToken, redirectUrl, state);
 		oauthResponse.render(response);
 	}
 

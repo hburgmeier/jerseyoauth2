@@ -133,11 +133,11 @@ public class AuthorizationService implements IAuthorizationService {
 				authFlow.handleMissingUser(request, response, servletContext);
 			} catch (OAuth2ParseException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				String redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
+				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
 				sendErrorResponse(e, response, redirectUrl);
 			} catch (OAuth2ProtocolException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				String redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
+				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
 				sendErrorResponse(e, response, redirectUrl);
 			}
 		} catch (InvalidRedirectUrlException e) {
@@ -186,13 +186,8 @@ public class AuthorizationService implements IAuthorizationService {
 
 	@Override
 	public void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException {
-		try {
-			URI redirectUri = new URI(redirectUrl);
-			responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUri, response);
-		} catch (URISyntaxException e) {
-			throw new ResponseBuilderException(e);
-		}
+			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException {
+		responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUrl, response);
 	}
 	
 	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
@@ -205,7 +200,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 
-	protected String getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidRedirectUrlException
+	protected URI getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidRedirectUrlException
 	{
 		String result = null;
 		if (oauthRequest!=null &&
@@ -227,7 +222,13 @@ public class AuthorizationService implements IAuthorizationService {
 		{
 			throw new InvalidRedirectUrlException();
 		} else
-			return result;
+		{
+			try {
+				return new URI(result);
+			} catch (URISyntaxException e) {
+				throw new InvalidRedirectUrlException(e);
+			}
+		}
 	}
 	
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException

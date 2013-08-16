@@ -1,6 +1,7 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.api.client;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -29,5 +30,5 @@ public interface IAuthorizationService {
 			throws IOException, OAuth2ProtocolException, ResponseBuilderException;	
 	
 	void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, String redirectUrl) throws ResponseBuilderException;	
+			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException;	
 }

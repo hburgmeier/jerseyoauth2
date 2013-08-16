@@ -6,10 +6,10 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseFormat;
 
-public class AccessTokenPostResponse extends AbstractAccessTokenResponse {
+public class AccessTokenEntityResponse extends AbstractAccessTokenResponse {
 
-	public AccessTokenPostResponse(int statusCode, ResponseFormat responseFormat, IAccessTokenInfo accessToken, String state) {
-		super(statusCode, responseFormat, accessToken, state);
+	public AccessTokenEntityResponse(int statusCode, IAccessTokenInfo accessToken, String state) {
+		super(statusCode, ResponseFormat.JSON, accessToken, state);
 	}
 
 	@Override

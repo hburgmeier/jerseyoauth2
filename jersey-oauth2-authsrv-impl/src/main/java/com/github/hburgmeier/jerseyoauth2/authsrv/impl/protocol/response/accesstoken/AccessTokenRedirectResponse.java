@@ -12,8 +12,8 @@ public class AccessTokenRedirectResponse extends AbstractAccessTokenResponse {
 
 	private URI redirectUrl;
 
-	public AccessTokenRedirectResponse(int statusCode, ResponseFormat responseFormat, IAccessTokenInfo accessToken, URI redirectUrl, String state) {
-		super(statusCode, responseFormat, accessToken, state);
+	public AccessTokenRedirectResponse(int statusCode, IAccessTokenInfo accessToken, URI redirectUrl, String state) {
+		super(statusCode, ResponseFormat.QUERY, accessToken, state);
 		this.redirectUrl = redirectUrl;
 	}
 
