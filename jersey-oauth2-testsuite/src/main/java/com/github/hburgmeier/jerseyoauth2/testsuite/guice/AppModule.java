@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import net.sf.ehcache.CacheManager;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientIdGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
@@ -17,6 +18,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.AuthorizationSe
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.IssueAccessTokenServlet;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.UUIDClientIdGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.CachingAccessTokenStorage;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.DatabaseClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice.DefaultCacheManagerProvider;
@@ -43,6 +45,7 @@ public class AppModule  extends JerseyServletModule {
     	
     	bind(IUserService.class).to(DefaultPrincipalUserService.class);
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);
+    	bind(IClientIdGenerator.class).to(UUIDClientIdGenerator.class);
     	
     	bind(EntityManagerFactory.class).toProvider(new PersistenceProvider());
     	bind(CacheManager.class).toProvider(new DefaultCacheManagerProvider());

@@ -24,9 +24,9 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.authorization.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
@@ -203,20 +203,24 @@ public class AuthorizationService implements IAuthorizationService {
 	protected URI getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidRedirectUrlException
 	{
 		String result = null;
-		if (oauthRequest!=null &&
-			oauthRequest.getRedirectURI()!=null)
+		if (oauthRequest!=null && oauthRequest.getRedirectURI()!=null)
+		{
 			result = oauthRequest.getRedirectURI();
+		}
 		if (regClientApp!=null)
 		{
 			if (result!=null && regClientApp.getCallbackUrl()!=null)
 			{
-				if (!error)
+				if (!error) {
 					throw new InvalidRedirectUrlException();
-				else
+				}
+				else {
 					result = regClientApp.getCallbackUrl();
+				}
 			}
-			if (result == null)
+			if (result == null) {
 				result = regClientApp.getCallbackUrl();
+			}
 		}
 		if (result == null)
 		{

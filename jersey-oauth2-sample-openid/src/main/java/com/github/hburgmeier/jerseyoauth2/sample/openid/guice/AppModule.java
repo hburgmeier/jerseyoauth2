@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientIdGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
@@ -13,6 +14,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.AuthorizationSe
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.IssueAccessTokenServlet;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.UUIDClientIdGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.openid.OpenIdServletFilter;
 import com.github.hburgmeier.jerseyoauth2.sample.openid.Configuration;
 import com.github.hburgmeier.jerseyoauth2.sample.openid.services.TestAccessTokenStorageService;
@@ -27,6 +29,7 @@ public class AppModule extends ServletModule {
 	protected void configureServlets() {
     	bind(IUserService.class).to(DefaultPrincipalUserService.class);
     	bind(ITokenGenerator.class).to(MD5TokenGenerator.class);
+    	bind(IClientIdGenerator.class).to(UUIDClientIdGenerator.class);
     	
     	bind(IConfiguration.class).to(Configuration.class);
     	

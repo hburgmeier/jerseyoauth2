@@ -105,8 +105,9 @@ public abstract class AbstractOAuth2Filter {
 	}	
 	
 	protected boolean isRequestSecure(URI requestUri, String secureSSL) {
-		if (secureSSL!=null && "true".equals(secureSSL))
+		if (secureSSL!=null && "true".equals(secureSSL)) {
 			return true;
+		}
 		String scheme = requestUri.getScheme();
 		return scheme!=null?scheme.equalsIgnoreCase(HTTPS):false;
 	}	

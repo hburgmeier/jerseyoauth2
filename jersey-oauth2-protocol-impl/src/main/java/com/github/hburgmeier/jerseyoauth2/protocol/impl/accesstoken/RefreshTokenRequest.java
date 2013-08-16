@@ -53,10 +53,12 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 	@Override
 	public void validate() throws OAuth2ParseException
 	{
-		if (grantType == null)
+		if (grantType == null) {
 			throw new OAuth2ParseException("Missing grant_type", null);
-		if (StringUtils.isEmpty(refreshToken))
+		}
+		if (StringUtils.isEmpty(refreshToken)) {
 			throw new OAuth2ParseException("Missing refresh token", null);
+		}
 	}
 
 	

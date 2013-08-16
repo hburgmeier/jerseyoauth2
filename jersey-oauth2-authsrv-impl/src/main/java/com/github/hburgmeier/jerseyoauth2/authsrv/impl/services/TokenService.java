@@ -38,6 +38,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBui
 
 public class TokenService implements ITokenService {
 
+	private static final String SERVER_ERROR_DESCRIPTION = "Server error";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(TokenService.class);
 	
 	private final IAccessTokenStorageService accessTokenService;
@@ -103,10 +105,10 @@ public class TokenService implements ITokenService {
 			sendTokenResponse(request, response, accessTokenInfo, responseType, state);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
 		} catch (TokenGenerationException e) {
 			LOGGER.error("error with token generation", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
 		}
 	}	
 
@@ -187,10 +189,10 @@ public class TokenService implements ITokenService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "token is invalid", null, e);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
 		} catch (TokenGenerationException e) {
 			LOGGER.error("error with token generation", e);
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "Server error", null, e);
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
 		} catch (InvalidScopeException e) {
 			LOGGER.error("Scope is invalid", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, "Scope is invalid", null, e);
@@ -203,29 +205,28 @@ public class TokenService implements ITokenService {
 		String clientSecret = clientApp.getClientSecret();
 		if (clientSecret!=null)
 		{
-			if (!clientSecret.equals(request.getClientSecret()))
+			if (!clientSecret.equals(request.getClientSecret())) {
 				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, null);
+			}
 		}
 	}
 	
 	protected boolean checkScopeEnhancement(IRefreshTokenRequest refreshRequest, IAccessTokenInfo oldTokenInfo, HttpServletRequest request,
 			HttpServletResponse response, ServletContext servletContext) throws OAuth2ProtocolException, AuthorizationFlowException
 	{
-		if (refreshRequest.getScopes()!=null)
+		if (refreshRequest.getScopes()!=null && 
+			!scopeValidator.isScopeEqual(refreshRequest.getScopes(), oldTokenInfo.getAuthorizedScopes()))
 		{
-			if (!scopeValidator.isScopeEqual(refreshRequest.getScopes(), oldTokenInfo.getAuthorizedScopes()))
+			if (allowScopeEnhancement)
 			{
-				if (allowScopeEnhancement)
-				{
-					IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
-					authFlow.startScopeEnhancementFlow(oldTokenInfo.getUser(), clientApp, refreshRequest.getScopes(), 
-							refreshRequest, request, response, servletContext);
-					return true;
-				} else
-				{
-					LOGGER.error("Client wants to extend scope with refresh token, but this is disabled");
-					throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, null);
-				}
+				IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
+				authFlow.startScopeEnhancementFlow(oldTokenInfo.getUser(), clientApp, refreshRequest.getScopes(), 
+						refreshRequest, request, response, servletContext);
+				return true;
+			} else
+			{
+				LOGGER.error("Client wants to extend scope with refresh token, but this is disabled");
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, null);
 			}
 		}
 		return false;

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizationService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.authorization.IAuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.google.inject.Singleton;
 

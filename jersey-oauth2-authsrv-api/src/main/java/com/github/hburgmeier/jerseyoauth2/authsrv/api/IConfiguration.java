@@ -18,4 +18,6 @@ public interface IConfiguration {
 	boolean getEnableRefreshTokenGeneration();
 	
 	boolean getAllowScopeEnhancementWithRefreshToken();
+	
+	boolean getGenerateSecretForPublicClients();
 }

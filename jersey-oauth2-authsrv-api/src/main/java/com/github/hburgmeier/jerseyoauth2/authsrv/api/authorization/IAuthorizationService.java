@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.authsrv.api.client;
+package com.github.hburgmeier.jerseyoauth2.authsrv.api.authorization;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +12,8 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 
 

@@ -34,11 +34,13 @@ public class ResourceAccessParser {
 					break;
 				}
 			}
-			if (accessToken!=null)
+			if (accessToken!=null) {
 				break;
+			}
 		}
-		if (accessToken == null)
+		if (accessToken == null) {
 			throw new OAuth2ParseException("Missing access token", null);
+		}
 		return new ResourceAccessRequest(accessToken, usedTokenType);
 	}
 	

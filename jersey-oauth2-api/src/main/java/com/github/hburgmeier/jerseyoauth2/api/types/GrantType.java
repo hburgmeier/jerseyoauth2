@@ -24,7 +24,9 @@ public enum GrantType {
 		for (GrantType type : EnumSet.allOf(GrantType.class))
 		{
 			if (type.getTechnicalCode().equals(technicalCode.toLowerCase()))
+			{
 				return type;
+			}
 		}
 		throw new IllegalArgumentException(technicalCode);
 	}

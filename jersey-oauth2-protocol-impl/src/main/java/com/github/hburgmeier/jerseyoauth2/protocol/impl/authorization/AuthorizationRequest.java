@@ -60,10 +60,12 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 	}
 	
 	public void validate() throws OAuth2ParseException {
-		if (responseType == null)
+		if (responseType == null) {
 			throw new OAuth2ParseException("Missing response_type", state);
-		if (StringUtils.isEmpty(clientId))
+		}
+		if (StringUtils.isEmpty(clientId)) {
 			throw new OAuth2ParseException("Missing client id", state);
+		}
 	}
 
 }

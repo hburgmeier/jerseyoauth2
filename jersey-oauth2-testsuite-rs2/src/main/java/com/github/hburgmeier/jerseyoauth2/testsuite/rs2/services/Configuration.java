@@ -9,11 +9,11 @@ import java.util.Set;
 
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.AbstractConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 
-public class Configuration implements IConfiguration, IRSConfiguration {
+public class Configuration extends AbstractConfiguration implements IRSConfiguration {
 
 	private Map<String, ScopeDescription> scopeDescriptions = new HashMap<String, ScopeDescription>();
 	private Set<String> defaultScope = new HashSet<>();
@@ -60,11 +60,6 @@ public class Configuration implements IConfiguration, IRSConfiguration {
 		return EnumSet.of(TokenType.BEARER);
 	}
 	
-	@Override
-	public boolean getEnableRefreshTokenGeneration() {
-		return true;
-	}
-
 	@Override
 	public boolean getAllowScopeEnhancementWithRefreshToken() {
 		return true;

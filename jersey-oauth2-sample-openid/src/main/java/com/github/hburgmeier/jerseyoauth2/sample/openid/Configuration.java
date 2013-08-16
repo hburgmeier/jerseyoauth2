@@ -1,12 +1,11 @@
 package com.github.hburgmeier.jerseyoauth2.sample.openid;
 
 import java.util.Map;
-import java.util.Set;
 
-import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.AbstractConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
 
-public class Configuration implements IConfiguration {
+public class Configuration extends AbstractConfiguration {
 
 	@Override
 	public long getTokenExpiration() {
@@ -19,11 +18,6 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public Set<String> getDefaultScopes() {
-		return null;
-	}
-
-	@Override
 	public boolean getStrictSecurity() {
 		return false;
 	}
@@ -31,11 +25,6 @@ public class Configuration implements IConfiguration {
 	@Override
 	public boolean getEnableAuthorizationHeaderForClientAuth() {
 		return false;
-	}
-	
-	@Override
-	public boolean getEnableRefreshTokenGeneration() {
-		return true;
 	}
 	
 	@Override

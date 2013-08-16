@@ -23,6 +23,7 @@ public class SimpleAccessTokenInfo implements IAccessTokenInfo {
 		this.refreshToken = refreshToken;
 		this.clientApp = clientApp;
 		this.expiresIn = expiresIn;
+		this.tokenType = tokenType;
 		this.validUntil = System.currentTimeMillis()+Long.valueOf(expiresIn);
 	}
 

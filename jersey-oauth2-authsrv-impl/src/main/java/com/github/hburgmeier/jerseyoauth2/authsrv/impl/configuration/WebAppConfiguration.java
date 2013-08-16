@@ -22,6 +22,7 @@ public class WebAppConfiguration implements IConfiguration {
 	private final boolean supportAuthorizationHeader;
 	private final boolean refreshTokenGeneration;
 	private final boolean allowScopeEnhancementWithRefreshToken;
+	private final boolean generateSecretForPublicClients;
 
 	@Inject
 	public WebAppConfiguration(final ServletContext servletContext) {
@@ -36,6 +37,8 @@ public class WebAppConfiguration implements IConfiguration {
 				true);
 		this.allowScopeEnhancementWithRefreshToken = parseBoolean(servletContext.getInitParameter("oauth2.allowScopeEnhancement"),
 				true);
+		this.generateSecretForPublicClients = parseBoolean(servletContext.getInitParameter("oauth2.generateSecretForPublicClients"),
+				false);
 	}
 
 	@Override
@@ -71,6 +74,11 @@ public class WebAppConfiguration implements IConfiguration {
 	@Override
 	public boolean getAllowScopeEnhancementWithRefreshToken() {
 		return allowScopeEnhancementWithRefreshToken;
+	}
+	
+	@Override
+	public boolean getGenerateSecretForPublicClients() {
+		return generateSecretForPublicClients;
 	}
 	
 	private long parseLong(String initParameter, long defaultValue) {

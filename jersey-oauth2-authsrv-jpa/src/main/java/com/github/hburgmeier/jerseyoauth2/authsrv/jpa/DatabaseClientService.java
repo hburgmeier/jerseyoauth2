@@ -1,7 +1,6 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.jpa;
 
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -15,9 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientIdGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
@@ -28,6 +29,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.UserStorageServiceExc
 
 public class DatabaseClientService implements IClientService {
 
+	private static final String PERSISTENCE_ERROR = "persistence error - rollback";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseClientService.class);
 	
 	private final EntityManagerFactory emf;
@@ -36,18 +39,29 @@ public class DatabaseClientService implements IClientService {
 	private IUserStorageService userStorageService = null;
 	
 	private final ITokenGenerator tokenGenerator;
+	private final IClientIdGenerator clientIdGenerator;
+	private final IConfiguration configuration;
 
 	@Inject
-	public DatabaseClientService(EntityManagerFactory emf, ITokenGenerator tokenGenerator)
+	public DatabaseClientService(EntityManagerFactory emf, ITokenGenerator tokenGenerator, final IClientIdGenerator clientIdGenerator,
+			final IConfiguration configuration)
 	{
 		this.emf = emf;
 		this.tokenGenerator = tokenGenerator;
+		this.clientIdGenerator = clientIdGenerator;
+		this.configuration = configuration;
+		
 	}
 	
 	@Override
 	public IRegisteredClientApp registerClient(String appName, String callbackUrl, ClientType clientType) throws ClientServiceException {
-		String clientId = UUID.randomUUID().toString();
-		String clientSecret = UUID.randomUUID().toString();
+		String clientId = clientIdGenerator.generateClientId();
+		String clientSecret = null;
+		if (clientType != ClientType.PUBLIC ||
+			  configuration.getGenerateSecretForPublicClients())
+		{
+			clientSecret = clientIdGenerator.generateClientSecret();
+		}
 
 		RegisteredClient client = new RegisteredClient(clientId, clientSecret);
 		client.setApplicationName(appName);
@@ -134,7 +148,7 @@ public class DatabaseClientService implements IClientService {
 				entityManager.remove(result);
 				tx.commit();
 			} catch (PersistenceException e) {
-				LOGGER.error("persistence error - rollback", e);
+				LOGGER.error(PERSISTENCE_ERROR, e);
 				tx.rollback();
 				result = null;
 			}
@@ -159,7 +173,7 @@ public class DatabaseClientService implements IClientService {
 			entityManager.remove(dbPendingClientToken);
 			tx.commit();
 		} catch (PersistenceException e) {
-			LOGGER.error("persistence error - rollback", e);
+			LOGGER.error(PERSISTENCE_ERROR, e);
 			tx.rollback();
 			throw e;			
 		} finally {
@@ -181,7 +195,7 @@ public class DatabaseClientService implements IClientService {
 			}
 			tx.commit();
 		} catch (PersistenceException e) {
-			LOGGER.error("persistence error - rollback", e);
+			LOGGER.error(PERSISTENCE_ERROR, e);
 			tx.rollback();
 			throw e;			
 		} finally {
@@ -198,7 +212,7 @@ public class DatabaseClientService implements IClientService {
 			entityManager.flush();
 			tx.commit();
 		} catch (PersistenceException e) {
-			LOGGER.error("persistence error - rollback", e);
+			LOGGER.error(PERSISTENCE_ERROR, e);
 			tx.rollback();
 			throw e;
 		} finally {
