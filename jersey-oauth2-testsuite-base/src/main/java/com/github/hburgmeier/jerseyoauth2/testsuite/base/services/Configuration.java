@@ -29,7 +29,7 @@ public class Configuration extends AbstractConfiguration implements IRSConfigura
 	
 	@Override
 	public Duration getTokenLifetime() {
-		return Duration.standardSeconds(4);
+		return Duration.standardSeconds(6);
 	}
 
 	@Override

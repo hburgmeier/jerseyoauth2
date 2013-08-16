@@ -22,7 +22,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.jpa.guice.DefaultCacheManagerP
 import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.TestAuthorizationFlow;
-import com.github.hburgmeier.jerseyoauth2.testsuite.base.ui.AllowServlet;
 import com.github.hburgmeier.jerseyoauth2.testsuite.rs2.services.PersistenceProvider;
 import com.google.inject.servlet.ServletModule;
 
@@ -44,7 +43,6 @@ public class AppModule  extends ServletModule {
     	bind(CacheManager.class).toProvider(new DefaultCacheManagerProvider());
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
-    	serve("/oauth2/allow").with(AllowServlet.class);
     	serve("/oauth2/accessToken").with(IssueAccessTokenServlet.class);
     }
 }

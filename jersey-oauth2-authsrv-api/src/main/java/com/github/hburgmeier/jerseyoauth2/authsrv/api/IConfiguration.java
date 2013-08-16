@@ -1,9 +1,12 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.api;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.Duration;
+
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 
 public interface IConfiguration {
 
@@ -22,4 +25,6 @@ public interface IConfiguration {
 	boolean getAllowScopeEnhancementWithRefreshToken();
 	
 	boolean getGenerateSecretForPublicClients();
+	
+	EnumSet<ClientType> getAllowedClientTypesForImplicitGrant();
 }

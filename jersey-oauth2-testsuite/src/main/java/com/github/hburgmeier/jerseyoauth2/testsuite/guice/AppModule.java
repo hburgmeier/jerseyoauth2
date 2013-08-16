@@ -26,7 +26,6 @@ import com.github.hburgmeier.jerseyoauth2.rs.api.IRSConfiguration;
 import com.github.hburgmeier.jerseyoauth2.rs.impl.filter.OAuth20FilterFactory;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.Configuration;
 import com.github.hburgmeier.jerseyoauth2.testsuite.base.services.TestAuthorizationFlow;
-import com.github.hburgmeier.jerseyoauth2.testsuite.base.ui.AllowServlet;
 import com.github.hburgmeier.jerseyoauth2.testsuite.services.PersistenceProvider;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
@@ -51,7 +50,6 @@ public class AppModule  extends JerseyServletModule {
     	bind(CacheManager.class).toProvider(new DefaultCacheManagerProvider());
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
-    	serve("/oauth2/allow").with(AllowServlet.class);
     	serve("/oauth2/accessToken").with(IssueAccessTokenServlet.class);
     	
        Map<String, String> params = new HashMap<String, String>();

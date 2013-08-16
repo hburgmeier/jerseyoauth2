@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -239,18 +240,19 @@ public class AuthorizationService implements IAuthorizationService {
 	{
 		if (oauthRequest.getClientSecret() != null) {
 			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret())) {
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client is invalid", oauthRequest.getState());
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "Client is invalid", oauthRequest.getState());
 			}
 		}
 	}
 	
 	protected void validateTokenRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
-		if (regClientApp.getClientType().equals(ClientType.CONFIDENTIAL)) {
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_RESPONSE_TYPE, "client type is invalid", oauthRequest.getState());
+		EnumSet<ClientType> allowedClientTypes = configuration.getAllowedClientTypesForImplicitGrant();
+		if (!allowedClientTypes.contains(regClientApp.getClientType())) {
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_RESPONSE_TYPE, "Client type is allowed for Implicit Grant.", oauthRequest.getState());
 		}
 		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl())) {
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "redirect uri does not match", oauthRequest.getState());
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "Redirect uri does not match", oauthRequest.getState());
 		}
 	}
 	

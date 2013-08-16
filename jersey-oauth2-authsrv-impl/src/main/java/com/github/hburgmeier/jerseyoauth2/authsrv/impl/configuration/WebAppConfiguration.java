@@ -1,5 +1,6 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.configuration;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ScopeDescription;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
 
 public class WebAppConfiguration implements IConfiguration {
@@ -87,6 +89,11 @@ public class WebAppConfiguration implements IConfiguration {
 		return generateSecretForPublicClients;
 	}
 
+	@Override
+	public EnumSet<ClientType> getAllowedClientTypesForImplicitGrant() {
+		return EnumSet.allOf(ClientType.class);
+	}
+	
 	private boolean parseBoolean(String initParameter, boolean defaultValue) {
 		return initParameter == null ? defaultValue : Boolean.parseBoolean(initParameter);
 	}
@@ -104,8 +111,6 @@ public class WebAppConfiguration implements IConfiguration {
 			return p.toDurationFrom(DateTime.now());
 		} else
 			return defaultDuration;
-		
-		
 	}
 
 }

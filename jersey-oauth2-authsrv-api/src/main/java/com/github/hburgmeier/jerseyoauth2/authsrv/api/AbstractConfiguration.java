@@ -1,7 +1,10 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.api;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
+
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientType;
 
 public abstract class AbstractConfiguration implements IConfiguration {
 	
@@ -28,5 +31,10 @@ public abstract class AbstractConfiguration implements IConfiguration {
 	@Override
 	public boolean getGenerateSecretForPublicClients() {
 		return false;
+	}
+	
+	@Override
+	public EnumSet<ClientType> getAllowedClientTypesForImplicitGrant() {
+		return EnumSet.allOf(ClientType.class);
 	}
 }
