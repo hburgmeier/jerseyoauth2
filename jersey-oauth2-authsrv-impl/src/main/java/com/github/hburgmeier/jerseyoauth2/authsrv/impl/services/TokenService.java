@@ -34,6 +34,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenGenerationExcep
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenStorageException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 
 public class TokenService implements ITokenService {
@@ -47,6 +48,7 @@ public class TokenService implements ITokenService {
 	private final ITokenGenerator tokenGenerator;
 	private final IResponseBuilder responseBuilder;
 	private final IAuthorizationFlow authFlow;
+	private final ClientIdentityValidator clientIdValidator = new ClientIdentityValidator();
 	
 	protected final boolean issueRefreshToken;
 	protected final boolean allowScopeEnhancement;
@@ -85,7 +87,7 @@ public class TokenService implements ITokenService {
 
 		} else if (oauthRequest.getGrantType() == GrantType.AUTHORIZATION_REQUEST) {
 
-			handleAuthorizationRequest(request, response, oauthRequest);
+			handleAuthorizationRequest(request, response, (IAuthCodeAccessTokenRequest)oauthRequest);
 		}
 	}
 
@@ -141,8 +143,8 @@ public class TokenService implements ITokenService {
 	}
 	
 	protected void handleAuthorizationRequest(HttpServletRequest request, HttpServletResponse response,
-			IAccessTokenRequest oauthRequest) throws OAuth2ProtocolException, ResponseBuilderException {
-		IAuthCodeAccessTokenRequest tokenRequest = (IAuthCodeAccessTokenRequest)oauthRequest;
+			IAuthCodeAccessTokenRequest tokenRequest) throws OAuth2ProtocolException, ResponseBuilderException {
+
 		IPendingClientToken pendingClientToken = clientService.findPendingClientToken(tokenRequest.getClientId(),
 				tokenRequest.getClientSecret(), tokenRequest.getCode());
 		if (pendingClientToken == null) {
@@ -154,6 +156,8 @@ public class TokenService implements ITokenService {
 			clientService.removePendingClientToken(pendingClientToken);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "client not authorized", null);
 		}
+		IRegisteredClientApp clientApp = clientService.getRegisteredClient(tokenRequest.getClientId());
+		clientIdValidator.validateAccessTokenRequest(tokenRequest, clientApp);		
 		
 		issueNewToken(request, response, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
 		
@@ -202,13 +206,7 @@ public class TokenService implements ITokenService {
 	protected void validateRefreshTokenRequest(IAccessTokenInfo oldTokenInfo, IRefreshTokenRequest request) throws OAuth2ProtocolException
 	{
 		IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
-		String clientSecret = clientApp.getClientSecret();
-		if (clientSecret!=null)
-		{
-			if (!clientSecret.equals(request.getClientSecret())) {
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, null);
-			}
-		}
+		clientIdValidator.validateRefreshTokenRequest(request, clientApp);
 	}
 	
 	protected boolean checkScopeEnhancement(IRefreshTokenRequest refreshRequest, IAccessTokenInfo oldTokenInfo, HttpServletRequest request,

@@ -49,6 +49,8 @@ public abstract class BaseOAuth2Api extends DefaultApi20 {
 		}
 		paramList.add("response_type", getResponseType());
 		paramList.add("client_id", config.getApiKey());
+		if (config.getApiSecret()!=null)
+			paramList.add("client_secret", config.getApiSecret());
 		if (StringUtils.isNotEmpty(config.getCallback()) && 
 			!OAuthConstants.OUT_OF_BAND.equals(config.getCallback())) {
 			paramList.add("redirect_uri", config.getCallback()); // for implicit grant

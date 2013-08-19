@@ -37,6 +37,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowExcept
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 
@@ -52,6 +53,7 @@ public class AuthorizationService implements IAuthorizationService {
 	private final IConfiguration configuration;
 	private final IResponseBuilder responseBuilder;
 	private final ScopeValidator scopeValidator;
+	private final ClientIdentityValidator clientIdValidator = new ClientIdentityValidator();
 	
 	private final Set<String> defaultScopes;
 	
@@ -238,11 +240,7 @@ public class AuthorizationService implements IAuthorizationService {
 	
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
-		if (oauthRequest.getClientSecret() != null) {
-			if (!regClientApp.getClientSecret().equals(oauthRequest.getClientSecret())) {
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "Client is invalid", oauthRequest.getState());
-			}
-		}
+		clientIdValidator.validateAuthorizationRequest(oauthRequest, regClientApp);
 	}
 	
 	protected void validateTokenRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
@@ -254,6 +252,7 @@ public class AuthorizationService implements IAuthorizationService {
 		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl())) {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "Redirect uri does not match", oauthRequest.getState());
 		}
+		clientIdValidator.validateAuthorizationRequest(oauthRequest, regClientApp);
 	}
 	
 }
