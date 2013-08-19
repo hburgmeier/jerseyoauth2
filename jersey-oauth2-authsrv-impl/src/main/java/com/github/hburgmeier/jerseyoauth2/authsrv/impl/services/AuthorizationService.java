@@ -38,6 +38,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 
@@ -91,8 +93,7 @@ public class AuthorizationService implements IAuthorizationService {
 
 				regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
 				if (regClientApp == null) {
-					throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "client " + oauthRequest.getClientId()
-							+ " is invalid", oauthRequest.getState());
+					throw new InvalidRedirectUrlException();
 				}
 
 				Set<String> scopes = oauthRequest.getScopes();

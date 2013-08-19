@@ -35,6 +35,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.TokenStorageExceptio
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 
 public class TokenService implements ITokenService {

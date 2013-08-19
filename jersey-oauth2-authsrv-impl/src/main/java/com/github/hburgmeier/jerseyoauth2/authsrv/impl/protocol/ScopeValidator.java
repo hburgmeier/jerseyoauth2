@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
+package com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol;
 
 import java.util.Map;
 import java.util.Set;
