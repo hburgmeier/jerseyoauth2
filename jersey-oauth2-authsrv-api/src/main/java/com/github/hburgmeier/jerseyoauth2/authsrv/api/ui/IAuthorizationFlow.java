@@ -26,7 +26,7 @@ public interface IAuthorizationFlow {
 	void handleMissingUser(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
 		throws AuthorizationFlowException, ServletException, IOException;
 
-	void handleInvalidRedirectUrl(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
+	void handleInvalidClient(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
 		throws AuthorizationFlowException, ServletException, IOException;
 	
 }

@@ -93,7 +93,7 @@ public class AuthorizationService implements IAuthorizationService {
 
 				regClientApp = clientService.getRegisteredClient(oauthRequest.getClientId());
 				if (regClientApp == null) {
-					throw new InvalidRedirectUrlException();
+					throw new InvalidClientException();
 				}
 
 				Set<String> scopes = oauthRequest.getScopes();
@@ -144,9 +144,9 @@ public class AuthorizationService implements IAuthorizationService {
 				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
 				sendErrorResponse(e, response, redirectUrl);
 			}
-		} catch (InvalidRedirectUrlException e) {
+		} catch (InvalidClientException e) {
 			LOGGER.error("Problem with the redirect Url", e);
-			authFlow.handleInvalidRedirectUrl(request, response, servletContext);
+			authFlow.handleInvalidClient(request, response, servletContext);
 		}
 	}
 
@@ -204,7 +204,7 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 	}
 
-	protected URI getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidRedirectUrlException
+	protected URI getRedirectUri(IRegisteredClientApp regClientApp, IAuthorizationRequest oauthRequest, boolean error) throws InvalidClientException
 	{
 		String result = null;
 		if (oauthRequest!=null && oauthRequest.getRedirectURI()!=null)
@@ -216,7 +216,7 @@ public class AuthorizationService implements IAuthorizationService {
 			if (result!=null && regClientApp.getCallbackUrl()!=null)
 			{
 				if (!error) {
-					throw new InvalidRedirectUrlException();
+					throw new InvalidClientException();
 				}
 				else {
 					result = regClientApp.getCallbackUrl();
@@ -228,13 +228,13 @@ public class AuthorizationService implements IAuthorizationService {
 		}
 		if (result == null)
 		{
-			throw new InvalidRedirectUrlException();
+			throw new InvalidClientException();
 		} else
 		{
 			try {
 				return new URI(result);
 			} catch (URISyntaxException e) {
-				throw new InvalidRedirectUrlException(e);
+				throw new InvalidClientException(e);
 			}
 		}
 	}

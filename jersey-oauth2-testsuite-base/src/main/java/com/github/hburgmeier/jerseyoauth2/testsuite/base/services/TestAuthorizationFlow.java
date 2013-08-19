@@ -63,7 +63,7 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 	}
 
 	@Override
-	public void handleInvalidRedirectUrl(HttpServletRequest request, HttpServletResponse response,
+	public void handleInvalidClient(HttpServletRequest request, HttpServletResponse response,
 			ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException {
 		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
 		requestDispatcher.forward(request, response);
