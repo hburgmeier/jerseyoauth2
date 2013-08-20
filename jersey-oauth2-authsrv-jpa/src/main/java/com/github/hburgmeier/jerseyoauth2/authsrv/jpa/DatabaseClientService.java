@@ -122,6 +122,9 @@ public class DatabaseClientService implements IClientService {
 		try {
 			AuthorizedClientApplication result = findAuthorizedClient(user, clientId, entityManager);
 			
+			if (result == null)
+				return null;
+			
 			if (!result.getAuthorizedScopes().containsAll(scopes))
 			{
 				LOGGER.debug("scopes do not match authorized scopes {} auth {}", scopes, result.getAuthorizedScopes());
