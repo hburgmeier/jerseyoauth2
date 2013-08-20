@@ -87,19 +87,40 @@ public class DatabaseClientService implements IClientService {
 			throws ClientServiceException {
 		assert(clientApp instanceof RegisteredClient);
 		
-		AuthorizedClientApplication clApp = new AuthorizedClientApplication((RegisteredClient)clientApp, user, allowedScopes);
-		persist(clApp);
-		return clApp;
+		EntityManager entityManager = emf.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
+		try {
+		
+			AuthorizedClientApplication clApp = findAuthorizedClient(user, clientApp.getClientId(), entityManager);
+		
+			if (clApp == null)
+			{
+				clApp = new AuthorizedClientApplication((RegisteredClient)clientApp, user, allowedScopes);
+			} else {
+				entityManager.merge(clApp);
+				clApp.setScopes(allowedScopes);
+			}
+			try {
+				tx.begin();
+				entityManager.persist(clApp);
+				entityManager.flush();
+				tx.commit();
+			} catch (PersistenceException e) {
+				LOGGER.error(PERSISTENCE_ERROR, e);
+				tx.rollback();
+				throw e;
+			}
+			return clApp;
+		} finally {
+			entityManager.close();			
+		}
 	}
 
 	@Override
 	public IAuthorizedClientApp isAuthorized(IUser user, String clientId, Set<String> scopes) {
 		EntityManager entityManager = emf.createEntityManager();
 		try {
-			TypedQuery<AuthorizedClientApplication> query = entityManager.createNamedQuery("findAuthorizedClient", AuthorizedClientApplication.class);
-			query.setParameter("username", user.getName());
-			query.setParameter("clientId", clientId);
-			AuthorizedClientApplication result = query.getSingleResult();
+			AuthorizedClientApplication result = findAuthorizedClient(user, clientId, entityManager);
 			
 			if (!result.getAuthorizedScopes().containsAll(scopes))
 			{
@@ -109,12 +130,23 @@ public class DatabaseClientService implements IClientService {
 			
 			setUser(result);			
 			return result;
-		} catch (NoResultException e) {
-			return null;
 		} catch (UserStorageServiceException e) {
 			return null;
 		} finally {
-			entityManager.close();
+			entityManager.close();			
+		}
+	}
+
+	protected AuthorizedClientApplication findAuthorizedClient(IUser user, String clientId, EntityManager entityManager) {
+		
+		try {
+			TypedQuery<AuthorizedClientApplication> query = entityManager.createNamedQuery("findAuthorizedClient", AuthorizedClientApplication.class);
+			query.setParameter("username", user.getName());
+			query.setParameter("clientId", clientId);
+			AuthorizedClientApplication result = query.getSingleResult();
+			return result;
+		} catch (NoResultException e) {
+			return null;
 		}
 	}
 
