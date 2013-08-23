@@ -17,9 +17,10 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 	private final String redirectUri;
 	private final Set<String> scopes;
 	private final String state;
+	private final boolean usedAuthorizationHeader;
 	
 	public AuthorizationRequest(ResponseType responseType, String clientId, String clientSecret, String redirectUri,
-			Set<String> scopes, String state) {
+			Set<String> scopes, String state, boolean usedAuthorizationHeader) {
 		super();
 		this.responseType = responseType;
 		this.clientId = clientId;
@@ -27,6 +28,7 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 		this.redirectUri = redirectUri;
 		this.scopes = scopes;
 		this.state = state;
+		this.usedAuthorizationHeader = usedAuthorizationHeader;
 	}
 
 	@Override
@@ -58,6 +60,11 @@ public class AuthorizationRequest implements IAuthorizationRequest {
 	public String getState() {
 		return state;
 	}
+	
+	@Override
+	public boolean hasUsedAuhorizationHeader() {
+		return usedAuthorizationHeader;
+	}	
 	
 	public void validate() throws OAuth2ParseException {
 		if (responseType == null) {

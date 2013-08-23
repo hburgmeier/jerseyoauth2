@@ -17,5 +17,7 @@ public interface IAuthorizationRequest {
 	String getRedirectURI();
 	
 	String getState();
+	
+	boolean hasUsedAuhorizationHeader();
 
 }

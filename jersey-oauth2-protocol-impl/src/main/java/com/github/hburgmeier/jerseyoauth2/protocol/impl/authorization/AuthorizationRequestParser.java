@@ -37,7 +37,7 @@ public class AuthorizationRequestParser {
 		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
 		String clientSecret = clientSecretExtractor.extractValue(request);
 		
-		return new AuthorizationRequest(responseType, clientId, clientSecret, redirectUri, scopes, state);
+		return new AuthorizationRequest(responseType, clientId, clientSecret, redirectUri, scopes, state, clientSecretExtractor.hasUsedAuthorization());
 	}
 
 }

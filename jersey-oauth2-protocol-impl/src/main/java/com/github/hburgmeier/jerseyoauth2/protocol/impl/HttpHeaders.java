@@ -5,6 +5,7 @@ public final class HttpHeaders {
 	public static final String PRAGMA = "Pragma";
 	public static final String CACHE_CONTROL = "Cache-Control";
 	public static final String LOCATION = "Location";
+	public static final String AUTHENTICATE = "WWW-Authenticate";
 
 	private HttpHeaders()
 	{

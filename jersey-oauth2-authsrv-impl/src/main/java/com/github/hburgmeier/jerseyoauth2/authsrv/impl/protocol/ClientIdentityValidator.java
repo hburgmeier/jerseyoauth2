@@ -17,7 +17,7 @@ public class ClientIdentityValidator {
 		{
 			if (!validate(clientApp.getClientId(), clientApp.getClientSecret(), request.getClientId(), request.getClientSecret()))
 			{
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, request.getState());
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, request.getState());
 			}
 		}
 	}
@@ -29,7 +29,7 @@ public class ClientIdentityValidator {
 		{
 			if (!validate(clientApp.getClientId(), clientApp.getClientSecret(), refreshTokenRequest.getClientId(), refreshTokenRequest.getClientSecret()))
 			{
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, null);
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, null);
 			}
 		}		
 	}
@@ -41,7 +41,7 @@ public class ClientIdentityValidator {
 		{
 			if (!validate(clientApp.getClientId(), clientApp.getClientSecret(), tokenRequest.getClientId(), tokenRequest.getClientSecret()))
 			{
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, null);
+				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, null);
 			}
 		}		
 	}	

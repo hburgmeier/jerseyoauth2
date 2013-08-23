@@ -41,6 +41,7 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityVa
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
+import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 
 public class AuthorizationService implements IAuthorizationService {
@@ -141,8 +142,14 @@ public class AuthorizationService implements IAuthorizationService {
 				sendErrorResponse(e, response, redirectUrl);
 			} catch (OAuth2ProtocolException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
-				sendErrorResponse(e, response, redirectUrl);
+				if (e.getErrorCode() == OAuth2ErrorCode.INVALID_CLIENT &&
+					oauthRequest.hasUsedAuhorizationHeader())
+				{
+					sendUnauthorizedResponse(response);
+				} else {
+					URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
+					sendErrorResponse(e, response, redirectUrl);
+				}
 			}
 		} catch (InvalidClientException e) {
 			LOGGER.error("Problem with the redirect Url", e);
@@ -192,6 +199,12 @@ public class AuthorizationService implements IAuthorizationService {
 	public void sendErrorResponse(OAuth2ProtocolException ex,
 			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException {
 		responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUrl, response);
+	}
+	
+	protected void sendUnauthorizedResponse(HttpServletResponse response)
+	{
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.addHeader(HttpHeaders.AUTHENTICATE, "Basic");
 	}
 	
 	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
@@ -251,7 +264,7 @@ public class AuthorizationService implements IAuthorizationService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_RESPONSE_TYPE, "Client type is allowed for Implicit Grant.", oauthRequest.getState());
 		}
 		if (!oauthRequest.getRedirectURI().equals(regClientApp.getCallbackUrl())) {
-			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNAUTHORIZED_CLIENT, "Redirect uri does not match", oauthRequest.getState());
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, "Redirect uri does not match", oauthRequest.getState());
 		}
 		clientIdValidator.validateAuthorizationRequest(oauthRequest, regClientApp);
 	}

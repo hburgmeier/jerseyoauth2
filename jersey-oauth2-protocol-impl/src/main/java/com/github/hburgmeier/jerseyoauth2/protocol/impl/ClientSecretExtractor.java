@@ -24,6 +24,7 @@ public class ClientSecretExtractor implements IExtractor {
 	protected CombinedExtractor secretExtractor;
 	protected HeaderExtractor authorizationExtractor = new HeaderExtractor(HttpHeaders.AUTHORIZATION);
 	protected final boolean useAuthorizationHeader;
+	protected boolean usedAuthorization; 
 	
 	public ClientSecretExtractor(boolean useAuthorizationHeader) {
 		super();
@@ -40,12 +41,14 @@ public class ClientSecretExtractor implements IExtractor {
 	@Override
 	public String extractValue(IHttpRequest request) {
 		String value = null;
+		usedAuthorization = false;
 		if (useAuthorizationHeader)
 		{
 			String authorization = authorizationExtractor.extractValue(request);
 			if (authorization!=null && authorization.startsWith(BASIC_AUTH_PREFIX))
 			{
 				value = parseAuthorizationHeader(authorization).right;
+				usedAuthorization = true;
 			} else { 
 				value = secretExtractor.extractValue(request);
 			}
@@ -53,6 +56,10 @@ public class ClientSecretExtractor implements IExtractor {
 		   value = secretExtractor.extractValue(request);
 		}
 		return value;
+	}
+
+	public boolean hasUsedAuthorization() {
+		return usedAuthorization;
 	}
 
 	protected ImmutablePair<String, String> parseAuthorizationHeader(String auth)
