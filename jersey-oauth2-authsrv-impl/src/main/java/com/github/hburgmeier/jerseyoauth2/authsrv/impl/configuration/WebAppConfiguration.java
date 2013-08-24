@@ -93,6 +93,11 @@ public class WebAppConfiguration implements IConfiguration {
 	public EnumSet<ClientType> getAllowedClientTypesForImplicitGrant() {
 		return EnumSet.allOf(ClientType.class);
 	}
+
+	@Override
+	public EnumSet<ClientType> getAllowedClientTypesForAuthorizationCode() {
+		return EnumSet.of(ClientType.CONFIDENTIAL);
+	}	
 	
 	private boolean parseBoolean(String initParameter, boolean defaultValue) {
 		return initParameter == null ? defaultValue : Boolean.parseBoolean(initParameter);

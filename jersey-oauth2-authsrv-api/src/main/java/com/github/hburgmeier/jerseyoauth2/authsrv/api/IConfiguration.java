@@ -27,4 +27,6 @@ public interface IConfiguration {
 	boolean getGenerateSecretForPublicClients();
 	
 	EnumSet<ClientType> getAllowedClientTypesForImplicitGrant();
+	
+	EnumSet<ClientType> getAllowedClientTypesForAuthorizationCode();
 }

@@ -37,4 +37,9 @@ public abstract class AbstractConfiguration implements IConfiguration {
 	public EnumSet<ClientType> getAllowedClientTypesForImplicitGrant() {
 		return EnumSet.allOf(ClientType.class);
 	}
+	
+	@Override
+	public EnumSet<ClientType> getAllowedClientTypesForAuthorizationCode() {
+		return EnumSet.of(ClientType.CONFIDENTIAL);
+	}
 }

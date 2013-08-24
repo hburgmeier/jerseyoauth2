@@ -254,6 +254,12 @@ public class AuthorizationService implements IAuthorizationService {
 	
 	protected void validateCodeRequest(IAuthorizationRequest oauthRequest, IRegisteredClientApp regClientApp) throws OAuth2ProtocolException
 	{
+		EnumSet<ClientType> allowedClientTypes = configuration.getAllowedClientTypesForAuthorizationCode();
+		if (!allowedClientTypes.contains(regClientApp.getClientType()))
+		{
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_RESPONSE_TYPE, "Client type is allowed for Authorization Code.", 
+					oauthRequest.getState());
+		}
 		clientIdValidator.validateAuthorizationRequest(oauthRequest, regClientApp);
 	}
 	
