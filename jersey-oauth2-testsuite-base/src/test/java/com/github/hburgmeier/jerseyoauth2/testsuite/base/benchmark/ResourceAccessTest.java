@@ -3,6 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.testsuite.base.benchmark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -20,6 +21,7 @@ public class ResourceAccessTest extends PerformanceTest {
 	
 	private static long testCount = 0l;	
 	
+	@Ignore
 	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_SEQUENTIAL)
 	@Test
 	public void testResourceAccessWithRefresh() throws ClientException

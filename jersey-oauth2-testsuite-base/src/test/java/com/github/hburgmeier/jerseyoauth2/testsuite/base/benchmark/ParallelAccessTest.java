@@ -3,6 +3,7 @@ package com.github.hburgmeier.jerseyoauth2.testsuite.base.benchmark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -17,6 +18,7 @@ public class ParallelAccessTest extends PerformanceTest {
 	@Rule
 	public BenchmarkRule benchmarkRun = new BenchmarkRule();
 	
+	@Ignore
 	@BenchmarkOptions(benchmarkRounds=200, concurrency=BenchmarkOptions.CONCURRENCY_AVAILABLE_CORES)
 	@Test
 	public void testParallelResourceAccess() throws ClientException
