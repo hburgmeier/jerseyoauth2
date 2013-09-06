@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 		<artifactId>jersey-oauth2</artifactId>
-		<version>0.7-SNAPSHOT</version>
+		<version>0.7</version>
 	</parent>
 	<artifactId>jersey-oauth2-rs-impl-base</artifactId>
 	<packaging>jar</packaging>
