@@ -100,7 +100,7 @@ public class TokenService implements ITokenService {
 		try {
 		
 			String accessToken = tokenGenerator.createAccessToken();
-			String refreshToken = issueRefreshToken?tokenGenerator.createRefreshToken():null;
+			String refreshToken = (issueRefreshToken && (responseType!=ResponseType.TOKEN))?tokenGenerator.createRefreshToken():null;
 		
 			IAccessTokenInfo accessTokenInfo = accessTokenService.issueToken(accessToken, refreshToken,
 					clientApp);

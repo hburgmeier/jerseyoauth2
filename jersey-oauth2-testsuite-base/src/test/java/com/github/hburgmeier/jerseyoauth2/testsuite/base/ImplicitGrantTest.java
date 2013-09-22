@@ -37,6 +37,24 @@ public class ImplicitGrantTest extends BaseTest {
 		String fragment = clientResponse.getLocation().getFragment();
 		assertNotNull(fragment);
 	}
+
+	@Test
+	public void testNoRefreshToken()
+	{
+		String code = authClient.authorizeClient(clientEntity, "test1 test2").getCode();
+		assertNotNull(code);
+		restClient.setFollowRedirects(false);
+		
+		ResourceClient client = new ResourceClient(clientEntity.getClientId(), GrantType.AUTHORIZATION_REQUEST, ResponseType.TOKEN);
+		String authUrl = client.getAuthUrl(null);
+		
+		WebResource webResource = restClient.resource(authUrl);
+		ClientResponse clientResponse = webResource.get(ClientResponse.class);
+		assertEquals(302, clientResponse.getStatus());
+		String fragment = clientResponse.getLocation().getFragment();
+		assertNotNull(fragment);
+		assertTrue(!fragment.contains("refresh_token"));
+	}	
 	
 	@Test
 	public void testResourceAccess() throws ClientException
