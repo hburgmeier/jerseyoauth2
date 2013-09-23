@@ -63,7 +63,7 @@ class OAuth20AuthenticationRequestFilter extends AbstractOAuth2Filter implements
 			
 			return containerRequest;
 		} catch (OAuth2ParseException e) {
-			LOGGER.error(ERROR_FILTER_REQUEST, e);
+			LOGGER.debug(ERROR_FILTER_REQUEST, e);
 			throw new WebApplicationException(e, buildAuthProblem());			
 		} catch (InvalidTokenException e) {
 			LOGGER.error(ERROR_FILTER_REQUEST, e);

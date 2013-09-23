@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IResourceAccessRequest;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2Exception;
+import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ParameterStyle;
 import com.github.hburgmeier.jerseyoauth2.api.types.TokenType;
@@ -58,9 +58,9 @@ public class OAuth2RequestFilter extends AbstractOAuth2Filter implements Contain
 				
 				SecurityContext securityContext = filterOAuth2Request(oauthRequest, requiredScopes, secure);
 				ctx.setSecurityContext(securityContext);
-			} catch (OAuth2Exception e) {
-				LOGGER.error("Error in filter request", e);
-				ctx.abortWith(buildAuthProblem());			
+			} catch (OAuth2ParseException e) {
+				LOGGER.debug("Parsing of OAuth2 request failed", e);
+				ctx.abortWith(buildAuthProblem());						
 			} catch (InvalidTokenException e) {
 				LOGGER.error("Error in filter request", e);
 				ctx.abortWith(buildAuthProblem());			

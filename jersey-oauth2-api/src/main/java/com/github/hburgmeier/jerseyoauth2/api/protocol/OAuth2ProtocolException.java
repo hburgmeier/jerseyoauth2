@@ -13,7 +13,7 @@ public class OAuth2ProtocolException extends OAuth2Exception {
 
 	public OAuth2ProtocolException(OAuth2ErrorCode errorCode, String description, String errorUri, String state, Throwable cause)
 	{
-		super(cause);
+		super(description, cause);
 		this.errorCode = errorCode;
 		this.description = description;
 		this.errorUri = errorUri;
