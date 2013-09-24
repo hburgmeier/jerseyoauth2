@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IHttpRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.ClientSecretExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.ScopeParser;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.extractor.CombinedExtractor;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.oauth2.Constants;
@@ -34,10 +33,7 @@ public class AuthorizationRequestParser {
 		String scope = scopeExtractor.extractValue(request);
 		Set<String> scopes = scopeParser.parseScope(scope);
 		
-		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
-		String clientSecret = clientSecretExtractor.extractValue(request);
-		
-		return new AuthorizationRequest(responseType, clientId, clientSecret, redirectUri, scopes, state, clientSecretExtractor.hasUsedAuthorization());
+		return new AuthorizationRequest(responseType, clientId, redirectUri, scopes, state);
 	}
 
 }

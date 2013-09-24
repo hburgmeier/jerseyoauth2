@@ -12,14 +12,7 @@ public class ClientIdentityValidator {
 
 	public void validateAuthorizationRequest(IAuthorizationRequest request, IRegisteredClientApp clientApp) throws OAuth2ProtocolException
 	{
-		if (clientApp.getClientType() == ClientType.CONFIDENTIAL ||
-			clientApp.getClientSecret()!=null)
-		{
-			if (!validate(clientApp.getClientId(), clientApp.getClientSecret(), request.getClientId(), request.getClientSecret()))
-			{
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_CLIENT, request.getState());
-			}
-		}
+
 	}
 	
 	public void validateRefreshTokenRequest(IRefreshTokenRequest refreshTokenRequest, IRegisteredClientApp clientApp) throws OAuth2ProtocolException

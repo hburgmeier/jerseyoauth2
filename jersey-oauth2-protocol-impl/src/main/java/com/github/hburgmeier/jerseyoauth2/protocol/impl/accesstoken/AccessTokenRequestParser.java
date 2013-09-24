@@ -51,7 +51,7 @@ public class AccessTokenRequestParser {
 		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
 		String clientSecret = clientSecretExtractor.extractValue(request);
 		
-		return new AuthCodeAccessTokenRequest(grantType, clientId, clientSecret, code, redirectUri);
+		return new AuthCodeAccessTokenRequest(grantType, clientId, clientSecret, code, redirectUri, clientSecretExtractor.hasUsedAuthorization());
 	}
 
 	protected RefreshTokenRequest parseRefreshRequest(IHttpRequest request, GrantType grantType, boolean enableAuthorizationHeader) {
@@ -63,7 +63,7 @@ public class AccessTokenRequestParser {
 		ClientSecretExtractor clientSecretExtractor = new ClientSecretExtractor(enableAuthorizationHeader);
 		String clientSecret = clientSecretExtractor.extractValue(request);
 		
-		return new RefreshTokenRequest(grantType, clientId, clientSecret, refreshToken, scopes);
+		return new RefreshTokenRequest(grantType, clientId, clientSecret, refreshToken, scopes, clientSecretExtractor.hasUsedAuthorization());
 	}
 	
 }

@@ -142,14 +142,8 @@ public class AuthorizationService implements IAuthorizationService {
 				sendErrorResponse(e, response, redirectUrl);
 			} catch (OAuth2ProtocolException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
-				if (e.getErrorCode() == OAuth2ErrorCode.INVALID_CLIENT &&
-					oauthRequest.hasUsedAuhorizationHeader())
-				{
-					sendUnauthorizedResponse(response);
-				} else {
-					URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
-					sendErrorResponse(e, response, redirectUrl);
-				}
+				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
+				sendErrorResponse(e, response, redirectUrl);
 			}
 		} catch (InvalidClientException e) {
 			LOGGER.error("Problem with the redirect Url", e);
@@ -199,12 +193,6 @@ public class AuthorizationService implements IAuthorizationService {
 	public void sendErrorResponse(OAuth2ProtocolException ex,
 			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException {
 		responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUrl, response);
-	}
-	
-	protected void sendUnauthorizedResponse(HttpServletResponse response)
-	{
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.addHeader(HttpHeaders.AUTHENTICATE, "Basic");
 	}
 	
 	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 

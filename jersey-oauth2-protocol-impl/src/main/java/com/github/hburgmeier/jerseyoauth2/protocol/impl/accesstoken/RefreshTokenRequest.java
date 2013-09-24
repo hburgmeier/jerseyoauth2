@@ -15,14 +15,16 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 	private final Set<String> scopes;
 	private final String clientId;
 	private final String clientSecret;
+	private final boolean hasUsedAuthorizationHeader;
 	
-	public RefreshTokenRequest(GrantType grantType, String clientId, String clientSecret, String refreshToken, Set<String> scopes) {
+	public RefreshTokenRequest(GrantType grantType, String clientId, String clientSecret, String refreshToken, Set<String> scopes, boolean hasUsedAuthorizationHeader) {
 		super();
 		this.grantType = grantType;
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.refreshToken = refreshToken;
 		this.scopes = scopes;
+		this.hasUsedAuthorizationHeader = hasUsedAuthorizationHeader;
 	}
 
 	@Override
@@ -60,6 +62,10 @@ public class RefreshTokenRequest extends AbstractTokenRequest implements IRefres
 			throw new OAuth2ParseException("Missing refresh token", null);
 		}
 	}
-
+	
+	@Override
+	public boolean hasUsedAuhorizationHeader() {
+		return hasUsedAuthorizationHeader;
+	}
 	
 }

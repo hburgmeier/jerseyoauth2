@@ -8,8 +8,6 @@ public interface IAuthorizationRequest {
 
 	String getClientId();
 	
-	String getClientSecret();
-
 	ResponseType getResponseType();
 
 	Set<String> getScopes();
@@ -17,7 +15,5 @@ public interface IAuthorizationRequest {
 	String getRedirectURI();
 	
 	String getState();
-	
-	boolean hasUsedAuhorizationHeader();
 
 }

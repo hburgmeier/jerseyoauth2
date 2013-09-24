@@ -13,14 +13,16 @@ public class AuthCodeAccessTokenRequest extends AbstractTokenRequest implements 
 	private final String clientId;
 	private final String clientSecret;
 	private final String redirectUri;
+	private final boolean hasUsedAuthorizationHeader;
 	
-	public AuthCodeAccessTokenRequest(GrantType grantType, String clientId, String clientSecret, String code, String redirectUri) {
+	public AuthCodeAccessTokenRequest(GrantType grantType, String clientId, String clientSecret, String code, String redirectUri, boolean hasUsedAuthorizationHeader) {
 		super();
 		this.grantType = grantType;
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.code = code;
 		this.redirectUri = redirectUri;
+		this.hasUsedAuthorizationHeader = hasUsedAuthorizationHeader;
 	}
 
 	@Override
@@ -64,6 +66,11 @@ public class AuthCodeAccessTokenRequest extends AbstractTokenRequest implements 
 			throw new OAuth2ParseException("Missing client id", null);
 		}
 		
+	}
+
+	@Override
+	public boolean hasUsedAuhorizationHeader() {
+		return hasUsedAuthorizationHeader;
 	}
 
 }

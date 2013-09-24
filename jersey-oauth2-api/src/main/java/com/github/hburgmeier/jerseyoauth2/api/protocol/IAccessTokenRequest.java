@@ -9,4 +9,6 @@ public interface IAccessTokenRequest {
 	String getClientId();
 	
 	String getClientSecret();
+
+	boolean hasUsedAuhorizationHeader();
 }
