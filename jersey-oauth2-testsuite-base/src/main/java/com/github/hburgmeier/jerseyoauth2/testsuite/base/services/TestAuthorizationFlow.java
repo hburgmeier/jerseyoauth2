@@ -6,11 +6,8 @@ import java.net.URISyntaxException;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRefreshTokenRequest;
@@ -22,6 +19,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.ClientServiceExcept
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 
@@ -29,25 +28,27 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 
 	private final IClientService clientService;
 	private final IAuthorizationService authorizationService;
+	private final IResponseBuilder responseBuilder;
 
 	@Inject
-	public TestAuthorizationFlow(IClientService clientService, IAuthorizationService authorizationService)
+	public TestAuthorizationFlow(IClientService clientService, IAuthorizationService authorizationService, IResponseBuilder responseBuilder)
 	{
 		this.clientService = clientService;
 		this.authorizationService = authorizationService;
+		this.responseBuilder = responseBuilder;
 	}
 	
 	@Override
-	public void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
-			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+	public IOAuth2Response startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
+			HttpServletRequest request)
 			throws AuthorizationFlowException, ServletException, IOException {
 		
 		try {
 			try {
 				IAuthorizedClientApp authorizedClient = clientService.authorizeClient(user, clientApp, scope);
-				authorizationService.sendAuthorizationReponse(request, response, originalRequest, clientApp, authorizedClient);
+				return authorizationService.sendAuthorizationResponse(request, originalRequest, clientApp, authorizedClient);
 			} catch (OAuth2ProtocolException e) {
-				authorizationService.sendErrorResponse(e, response, new URI(clientApp.getCallbackUrl()));
+				return authorizationService.sendErrorResponse(e, new URI(clientApp.getCallbackUrl()));
 			}
 		} catch (URISyntaxException | ClientServiceException | ResponseBuilderException e) {
 			throw new ServletException(e);
@@ -55,30 +56,20 @@ public class TestAuthorizationFlow implements IAuthorizationFlow {
 	}
 
 	@Override
-	public void handleMissingUser(HttpServletRequest request,
-			HttpServletResponse response, ServletContext servletContext)
+	public IOAuth2Response handleMissingUser(HttpServletRequest request)
 			throws AuthorizationFlowException, ServletException, IOException {
-		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
-		requestDispatcher.forward(request, response);
+		return responseBuilder.buildForwardResponse("/error.jsp");
 	}
 
 	@Override
-	public void handleInvalidClient(HttpServletRequest request, HttpServletResponse response,
-			ServletContext servletContext) throws AuthorizationFlowException, ServletException, IOException {
-		RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
-		requestDispatcher.forward(request, response);
+	public IOAuth2Response handleInvalidClient(HttpServletRequest request) throws AuthorizationFlowException, ServletException, IOException {
+		return responseBuilder.buildForwardResponse("/error.jsp");
 	}
 	
 	@Override
-	public void startScopeEnhancementFlow(IUser user, IRegisteredClientApp clientApp, Set<String> requestedScope,
-			IRefreshTokenRequest refreshTokenRequest, HttpServletRequest request, HttpServletResponse response,
-			ServletContext servletContext) throws AuthorizationFlowException {
-		try {
-			RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/error.jsp");
-			requestDispatcher.forward(request, response);
-		} catch (ServletException | IOException e) {
-			throw new AuthorizationFlowException(e);
-		}
+	public IOAuth2Response startScopeEnhancementFlow(IUser user, IRegisteredClientApp clientApp, Set<String> requestedScope,
+			IRefreshTokenRequest refreshTokenRequest, HttpServletRequest request) throws AuthorizationFlowException {
+		return responseBuilder.buildForwardResponse("/error.jsp");
 	}	
 
 }

@@ -32,6 +32,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientAp
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
@@ -40,8 +42,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserExce
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 
 public class AuthorizationService implements IAuthorizationService {
@@ -78,7 +78,7 @@ public class AuthorizationService implements IAuthorizationService {
 	}	
 	
 	@Override
-	public void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException {
+	public IOAuth2Response evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException {
 		try {
 			IRegisteredClientApp regClientApp = null;
 			IAuthorizationRequest oauthRequest = null;
@@ -128,29 +128,29 @@ public class AuthorizationService implements IAuthorizationService {
 						scopes);
 				if (authorizedClientApp != null) {
 					LOGGER.debug("client is already authorized");
-					sendAuthorizationReponse(request, response, reqResponseType, regClientApp, authorizedClientApp, oauthRequest.getState());
+					return sendAuthorizationResponse(request, oauthRequest, regClientApp, authorizedClientApp);
 				} else {
 					LOGGER.debug("client is not authorized or missing scopes {}", scopes);
-					authFlow.startAuthorizationFlow(user, regClientApp, scopes, oauthRequest, request, response, servletContext);
+					return authFlow.startAuthorizationFlow(user, regClientApp, scopes, oauthRequest, request);
 				}
 			} catch (InvalidUserException e) {
 				LOGGER.error("Missing or invalid user");
-				authFlow.handleMissingUser(request, response, servletContext);
+				return authFlow.handleMissingUser(request);
 			} catch (OAuth2ParseException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
 				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
-				sendErrorResponse(e, response, redirectUrl);
+				return sendErrorResponse(e, redirectUrl);
 			} catch (OAuth2ProtocolException e) {
 				LOGGER.error("Problem with OAuth2 protocol", e);
 				URI redirectUrl = getRedirectUri(regClientApp, oauthRequest, true);
-				sendErrorResponse(e, response, redirectUrl);
+				return sendErrorResponse(e, redirectUrl);
 			}
 		} catch (InvalidClientException e) {
 			LOGGER.error("Problem with the redirect Url", e);
-			authFlow.handleInvalidClient(request, response, servletContext);
+			return authFlow.handleInvalidClient(request);
 		}
 	}
-
+/*
 	@Override
 	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
 			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, 
@@ -169,9 +169,9 @@ public class AuthorizationService implements IAuthorizationService {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", state, e);
 		}
 	}
-	
+*/	
 	@Override
-	public void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
+	public IOAuth2Response sendAuthorizationResponse(HttpServletRequest request,
 			IAuthorizationRequest originalRequest, IRegisteredClientApp regClientApp,
 			IAuthorizedClientApp authorizedClientApp) throws IOException, OAuth2ProtocolException,
 			ResponseBuilderException {
@@ -179,10 +179,10 @@ public class AuthorizationService implements IAuthorizationService {
 			if (originalRequest.getResponseType() == ResponseType.CODE) {
 				IPendingClientToken pendingClientToken = clientService
 						.createPendingClientToken(authorizedClientApp);
-				sendAuthorizationReponse(request, response, pendingClientToken, regClientApp, originalRequest.getState());
+				return sendAuthorizationResponse(request, pendingClientToken, regClientApp, originalRequest.getState());
 			} else {
 				LOGGER.debug("issue new token for token response type");
-				tokenService.issueNewToken(request, response, authorizedClientApp, originalRequest.getResponseType(), originalRequest.getState());
+				return tokenService.issueNewToken(request, authorizedClientApp, originalRequest.getResponseType(), originalRequest.getState());
 			}
 		} catch (ClientServiceException e) {
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, "client is invalid", originalRequest.getState(), e);
@@ -190,16 +190,16 @@ public class AuthorizationService implements IAuthorizationService {
 	}	
 
 	@Override
-	public void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException {
-		responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUrl, response);
+	public IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex,
+			URI redirectUrl) throws ResponseBuilderException {
+		return responseBuilder.buildAuthorizationRequestErrorResponse(ex, redirectUrl);
 	}
 	
-	protected void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response, 
+	protected IOAuth2Response sendAuthorizationResponse(HttpServletRequest request, 
 			IPendingClientToken clientAuth, IRegisteredClientApp clientApp, String state) throws ResponseBuilderException {
 		try {
 			URI redirectUrl = new URI(clientApp.getCallbackUrl());
-			responseBuilder.buildAuthorizationCodeResponse(clientAuth.getCode(), redirectUrl , state, response);
+			return responseBuilder.buildAuthorizationCodeResponse(clientAuth.getCode(), redirectUrl , state);
 		} catch (URISyntaxException e) {
 			throw new ResponseBuilderException(e);
 		}

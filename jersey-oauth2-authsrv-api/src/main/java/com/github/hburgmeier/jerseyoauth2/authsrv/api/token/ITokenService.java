@@ -10,20 +10,21 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 
 public interface ITokenService {
 	
-	void handleRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, IAccessTokenRequest oauthRequest)
+	IOAuth2Response handleRequest(HttpServletRequest request, ServletContext servletContext, IAccessTokenRequest oauthRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException;
 	
-	void issueNewToken(HttpServletRequest request, HttpServletResponse response, IAuthorizedClientApp clientApp, ResponseType responseType, String state)
+	IOAuth2Response issueNewToken(HttpServletRequest request, IAuthorizedClientApp clientApp, ResponseType responseType, String state)
 			throws OAuth2ProtocolException, ResponseBuilderException;
 	
-	void sendTokenResponse(HttpServletRequest request, HttpServletResponse response, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state) 
-			 throws ResponseBuilderException;
+	IOAuth2Response sendTokenResponse(HttpServletRequest request, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
+			throws ResponseBuilderException;
 	
-	void sendErrorResponse(HttpServletResponse response, OAuth2ProtocolException ex) throws ResponseBuilderException;
+	IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex) throws ResponseBuilderException;
 
 	void removeTokensForUser(IUser user);
 }

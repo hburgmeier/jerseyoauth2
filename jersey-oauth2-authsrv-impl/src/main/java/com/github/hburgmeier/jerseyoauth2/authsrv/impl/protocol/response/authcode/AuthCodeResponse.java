@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.AbstractOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseFormat;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.oauth2.Constants;
@@ -29,9 +30,9 @@ public class AuthCodeResponse extends AbstractOAuth2Response {
 	}
 
 	@Override
-	public void render(HttpServletResponse response) throws ResponseBuilderException {
-		super.render(response);
+	public void render(IHttpContext context) throws ResponseBuilderException {
+		super.render(context);
 		
-		renderRedirect(codeEntity, redirectUrl, response);
+		renderRedirect(codeEntity, redirectUrl, context);
 	}
 }

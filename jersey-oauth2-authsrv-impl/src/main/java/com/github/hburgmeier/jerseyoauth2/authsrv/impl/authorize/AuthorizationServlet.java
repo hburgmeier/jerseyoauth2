@@ -15,7 +15,10 @@ import org.slf4j.LoggerFactory;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.authorization.IAuthorizationService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.HttpServletContextImplementation;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -48,7 +51,9 @@ public class AuthorizationServlet extends HttpServlet {
 			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
 		} else {
 			try {
-				authService.evaluateAuthorizationRequest(request, response, getServletContext());
+				IOAuth2Response oauth2Response = authService.evaluateAuthorizationRequest(request, response, getServletContext());
+				IHttpContext context = new HttpServletContextImplementation(request, response, getServletContext());
+				oauth2Response.render(context);
 			} catch (AuthorizationFlowException e) {
 				LOGGER.error("Error in authorization flow",e);
 				throw new ServletException(e.getMessage(), e);
@@ -67,7 +72,9 @@ public class AuthorizationServlet extends HttpServlet {
 			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
 		} else {
 			try {
-				authService.evaluateAuthorizationRequest(request, response, getServletContext());
+				IOAuth2Response oauth2Response = authService.evaluateAuthorizationRequest(request, response, getServletContext());
+				IHttpContext context = new HttpServletContextImplementation(request, response, getServletContext());
+				oauth2Response.render(context);
 			} catch (AuthorizationFlowException e) {
 				LOGGER.error("Error in authorization flow",e);
 				throw new ServletException(e.getMessage(), e);

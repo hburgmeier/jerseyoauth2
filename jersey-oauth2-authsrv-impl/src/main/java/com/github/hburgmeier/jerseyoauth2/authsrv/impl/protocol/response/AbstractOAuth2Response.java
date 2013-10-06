@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.utils.UrlBuilder;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.utils.UrlBuilderException;
@@ -29,15 +31,15 @@ public abstract class AbstractOAuth2Response implements IOAuth2Response {
 	}
 	
 	@Override
-	public void render(HttpServletResponse response) throws ResponseBuilderException {
-		response.setStatus(statusCode);
+	public void render(IHttpContext context) throws ResponseBuilderException {
+		context.setStatus(statusCode);
 		if (responseFormat == ResponseFormat.JSON) {
-			response.setContentType("application/json;charset=UTF-8");
+			context.setContentType("application/json;charset=UTF-8");
 		}
 		
 		for (Map.Entry<String, String> header : headerFields.entrySet())
 		{
-			response.setHeader(header.getKey(), header.getValue());
+			context.setHeader(header.getKey(), header.getValue());
 		}
 	}
 	
@@ -46,38 +48,38 @@ public abstract class AbstractOAuth2Response implements IOAuth2Response {
 		headerFields.put(header, value);
 	}
 	
-	protected void renderJson(Map<String, Object> entity, HttpServletResponse response) throws ResponseBuilderException
+	protected void renderJson(Map<String, Object> entity, IHttpContext context) throws ResponseBuilderException
 	{
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.writeValue(response.getOutputStream(), entity);
+			mapper.writeValue(context.getResponseOutputStream(), entity);
 		} catch (IOException e) {
 			throw new ResponseBuilderException(e);
 		}
 	}
 	
-	protected void renderRedirect(Map<String, Object> entity, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
+	protected void renderRedirect(Map<String, Object> entity, URI redirectUrl, IHttpContext context) throws ResponseBuilderException
 	{
 		try {
 			UrlBuilder urlBuilder = new UrlBuilder();
 			URI modifiedUrl = urlBuilder.addQueryParameters(entity, redirectUrl);
 
-			response.setStatus(HttpServletResponse.SC_FOUND);
-			response.setHeader(HttpHeaders.LOCATION, modifiedUrl.toString());
+			context.setStatus(HttpServletResponse.SC_FOUND);
+			context.setHeader(HttpHeaders.LOCATION, modifiedUrl.toString());
 		} catch (UrlBuilderException e) {
 			throw new ResponseBuilderException(e);
 		}
 	}
 	
-	protected void renderRedirectWithFragment(Map<String, Object> entity, URI redirectUrl, HttpServletResponse response) throws ResponseBuilderException
+	protected void renderRedirectWithFragment(Map<String, Object> entity, URI redirectUrl, IHttpContext context) throws ResponseBuilderException
 	{
 		try {
 			UrlBuilder urlBuilder = new UrlBuilder();
 			String newFragment = urlBuilder.addQueryParameters(null, entity);
 			URI modifiedUrl = urlBuilder.setFragment(redirectUrl, newFragment);
 
-			response.setStatus(HttpServletResponse.SC_FOUND);
-			response.setHeader(HttpHeaders.LOCATION, modifiedUrl.toString());
+			context.setStatus(HttpServletResponse.SC_FOUND);
+			context.setHeader(HttpHeaders.LOCATION, modifiedUrl.toString());
 		} catch (UrlBuilderException e) {
 			throw new ResponseBuilderException(e);
 		}

@@ -11,26 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
-import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientApp;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 
 
 public interface IAuthorizationService {
 
-	void evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
+	IOAuth2Response evaluateAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
 			throws AuthorizationFlowException, IOException, ServletException, ResponseBuilderException;
 	
-	@Deprecated
-	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
-			ResponseType reqResponseType, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp, String state)
-			throws IOException, OAuth2ProtocolException, ResponseBuilderException;
-	
-	void sendAuthorizationReponse(HttpServletRequest request, HttpServletResponse response,
+	IOAuth2Response sendAuthorizationResponse(HttpServletRequest request,
 			IAuthorizationRequest originalRequest, IRegisteredClientApp regClientApp, IAuthorizedClientApp authorizedClientApp)
 			throws IOException, OAuth2ProtocolException, ResponseBuilderException;	
 	
-	void sendErrorResponse(OAuth2ProtocolException ex,
-			HttpServletResponse response, URI redirectUrl) throws ResponseBuilderException;	
+	IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex,
+			URI redirectUrl) throws ResponseBuilderException;	
 }

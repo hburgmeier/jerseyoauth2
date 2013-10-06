@@ -26,6 +26,8 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IAuthorizedClientAp
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IClientService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IPendingClientToken;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
@@ -37,7 +39,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 
 public class TokenService implements ITokenService {
 
@@ -73,28 +74,29 @@ public class TokenService implements ITokenService {
 	}
 
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, IAccessTokenRequest oauthRequest)
+	public IOAuth2Response handleRequest(HttpServletRequest request, ServletContext servletContext, IAccessTokenRequest oauthRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException {
 		LOGGER.debug("Token request received, grant type {}", oauthRequest.getGrantType());
 		
-		if (oauthRequest.getGrantType() == GrantType.REFRESH_TOKEN) {
-
+		switch (oauthRequest.getGrantType())
+		{
+		case REFRESH_TOKEN:
 			if (issueRefreshToken) {
-				refreshToken(request, response, servletContext, (IRefreshTokenRequest)oauthRequest);
+				return refreshToken(request, servletContext, (IRefreshTokenRequest)oauthRequest);
 			}
 			else {
 				LOGGER.error("Refresh token generation is disabled");
 				throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE, "Refresh token is disabled", null);
 			}
-
-		} else if (oauthRequest.getGrantType() == GrantType.AUTHORIZATION_REQUEST) {
-
-			handleAuthorizationRequest(request, response, (IAuthCodeAccessTokenRequest)oauthRequest);
+		case AUTHORIZATION_REQUEST:
+			return handleAuthorizationRequest(request, (IAuthCodeAccessTokenRequest)oauthRequest);
+		default:
+			throw new OAuth2ProtocolException(OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE, null, null);
 		}
 	}
 
 	@Override
-	public void issueNewToken(HttpServletRequest request, HttpServletResponse response, IAuthorizedClientApp clientApp, ResponseType responseType, String state)
+	public IOAuth2Response issueNewToken(HttpServletRequest request, IAuthorizedClientApp clientApp, ResponseType responseType, String state)
 			throws OAuth2ProtocolException, ResponseBuilderException {
 
 		try {
@@ -106,7 +108,7 @@ public class TokenService implements ITokenService {
 					clientApp);
 			LOGGER.debug("token {} issued", accessToken);
 
-			sendTokenResponse(request, response, accessTokenInfo, responseType, state);
+			return sendTokenResponse(request, accessTokenInfo, responseType, state);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
@@ -117,24 +119,24 @@ public class TokenService implements ITokenService {
 	}	
 
 	@Override
-	public void sendErrorResponse(HttpServletResponse response, OAuth2ProtocolException ex) throws ResponseBuilderException {
-		responseBuilder.buildRequestTokenErrorResponse(ex, response);
+	public IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex) throws ResponseBuilderException {
+		return responseBuilder.buildRequestTokenErrorResponse(ex);
 	}
 
 	@Override
-	public void sendTokenResponse(HttpServletRequest request, HttpServletResponse response, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
+	public IOAuth2Response sendTokenResponse(HttpServletRequest request, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
 			throws ResponseBuilderException {
 		LOGGER.debug("sending response for {}", responseType);
 		if (responseType == ResponseType.TOKEN)
 		{
 			try {
-				responseBuilder.buildImplicitGrantAccessTokenResponse(accessTokenInfo, new URI(accessTokenInfo.getClientApp().getCallbackUrl()), state, response);
+				return responseBuilder.buildImplicitGrantAccessTokenResponse(accessTokenInfo, new URI(accessTokenInfo.getClientApp().getCallbackUrl()), state);
 			} catch (URISyntaxException e) {
 				LOGGER.debug("error with callback URL {}", accessTokenInfo.getClientApp().getCallbackUrl());
 				throw new ResponseBuilderException(e);
 			}
 		} else {
-			responseBuilder.buildAccessTokenResponse(accessTokenInfo, state, response);
+			return responseBuilder.buildAccessTokenResponse(accessTokenInfo, state);
 		}
 	}
 	
@@ -144,7 +146,7 @@ public class TokenService implements ITokenService {
 		clientService.removePendingTokensForUser(user);
 	}
 	
-	protected void handleAuthorizationRequest(HttpServletRequest request, HttpServletResponse response,
+	protected IOAuth2Response handleAuthorizationRequest(HttpServletRequest request,
 			IAuthCodeAccessTokenRequest tokenRequest) throws OAuth2ProtocolException, ResponseBuilderException {
 
 		IPendingClientToken pendingClientToken = clientService.findPendingClientToken(tokenRequest.getClientId(),
@@ -161,12 +163,14 @@ public class TokenService implements ITokenService {
 		IRegisteredClientApp clientApp = clientService.getRegisteredClient(tokenRequest.getClientId());
 		clientIdValidator.validateAccessTokenRequest(tokenRequest, clientApp);		
 		
-		issueNewToken(request, response, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
+		IOAuth2Response oauthResponse = issueNewToken(request, pendingClientToken.getAuthorizedClient(), ResponseType.CODE, null);
 		
 		clientService.removePendingClientToken(pendingClientToken);
+		
+		return oauthResponse;
 	}
 	
-	protected void refreshToken(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, IRefreshTokenRequest refreshTokenRequest)
+	protected IOAuth2Response refreshToken(HttpServletRequest request, ServletContext servletContext, IRefreshTokenRequest refreshTokenRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException {
 		String refreshToken = refreshTokenRequest.getRefreshToken();
 
@@ -179,7 +183,7 @@ public class TokenService implements ITokenService {
 			IAccessTokenInfo oldTokenInfo = accessTokenService.getTokenInfoByRefreshToken(refreshToken);
 			
 			validateRefreshTokenRequest(oldTokenInfo, refreshTokenRequest);
-			if (!checkScopeEnhancement(refreshTokenRequest, oldTokenInfo, request, response, servletContext))
+			if (!isScopeEnhancement(refreshTokenRequest, oldTokenInfo))
 			{
 				String newAccessToken = tokenGenerator.createAccessToken();
 				String newRefreshToken = issueRefreshToken?tokenGenerator.createRefreshToken():null;
@@ -188,8 +192,20 @@ public class TokenService implements ITokenService {
 						oldTokenInfo.getAccessToken(), newAccessToken, newRefreshToken);
 				LOGGER.debug("token {} refreshed to {}", oldTokenInfo.getAccessToken(), newAccessToken);
 	
-				sendTokenResponse(request, response, accessTokenInfo, ResponseType.CODE, null);
+				return sendTokenResponse(request, accessTokenInfo, ResponseType.CODE, null);
+			} else {
+				if (allowScopeEnhancement)
+				{
+					IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
+					return authFlow.startScopeEnhancementFlow(oldTokenInfo.getUser(), clientApp, refreshTokenRequest.getScopes(), 
+							refreshTokenRequest, request);
+				} else
+				{
+					LOGGER.error("Client wants to extend scope with refresh token, but this is disabled");
+					throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, null);
+				}
 			}
+			
 		} catch (InvalidTokenException e) {
 			LOGGER.error("invalid token", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_GRANT, "token is invalid", null, e);
@@ -211,25 +227,16 @@ public class TokenService implements ITokenService {
 		clientIdValidator.validateRefreshTokenRequest(request, clientApp);
 	}
 	
-	protected boolean checkScopeEnhancement(IRefreshTokenRequest refreshRequest, IAccessTokenInfo oldTokenInfo, HttpServletRequest request,
-			HttpServletResponse response, ServletContext servletContext) throws OAuth2ProtocolException, AuthorizationFlowException
+	protected boolean isScopeEnhancement(IRefreshTokenRequest refreshRequest, IAccessTokenInfo oldTokenInfo) throws OAuth2ProtocolException, AuthorizationFlowException
 	{
 		if (refreshRequest.getScopes()!=null && 
 			!scopeValidator.isScopeEqual(refreshRequest.getScopes(), oldTokenInfo.getAuthorizedScopes()))
 		{
-			if (allowScopeEnhancement)
-			{
-				IRegisteredClientApp clientApp = clientService.getRegisteredClient(oldTokenInfo.getClientId());
-				authFlow.startScopeEnhancementFlow(oldTokenInfo.getUser(), clientApp, refreshRequest.getScopes(), 
-						refreshRequest, request, response, servletContext);
-				return true;
-			} else
-			{
-				LOGGER.error("Client wants to extend scope with refresh token, but this is disabled");
-				throw new OAuth2ProtocolException(OAuth2ErrorCode.INVALID_SCOPE, null);
-			}
+			return true;
+		} else
+		{
+			return false;
 		}
-		return false;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseFormat;
 
@@ -18,10 +19,10 @@ public class AccessTokenRedirectResponse extends AbstractAccessTokenResponse {
 	}
 
 	@Override
-	public void render(HttpServletResponse response) throws ResponseBuilderException {
-		super.render(response);
+	public void render(IHttpContext context) throws ResponseBuilderException {
+		super.render(context);
 		
-		renderRedirectWithFragment(tokenInfo, redirectUrl, response);
+		renderRedirectWithFragment(tokenInfo, redirectUrl, context);
 	}
 	
 }

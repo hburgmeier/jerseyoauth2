@@ -6,8 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenEntityResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken.AccessTokenRedirectResponse;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.authcode.AuthCodeResponse;
@@ -17,42 +18,40 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.error.R
 public class ResponseBuilder implements IResponseBuilder {
 
 	@Override
-	public void buildRequestTokenErrorResponse(OAuth2ProtocolException ex, HttpServletResponse response)
+	public IOAuth2Response buildRequestTokenErrorResponse(OAuth2ProtocolException ex)
 			throws ResponseBuilderException {
-		RequestTokenErrorResponse errorResponse = new RequestTokenErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ex);
-		errorResponse.render(response);
+		return new RequestTokenErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ex);
 	}
 
 	@Override
-	public void buildAuthorizationRequestErrorResponse(OAuth2ProtocolException ex, URI redirectUrl,
-			HttpServletResponse response) throws ResponseBuilderException {
-		AuthRequestErrorResponse errorResponse = new AuthRequestErrorResponse(HttpServletResponse.SC_MOVED_TEMPORARILY,
+	public IOAuth2Response buildAuthorizationRequestErrorResponse(OAuth2ProtocolException ex, URI redirectUrl) throws ResponseBuilderException {
+		return new AuthRequestErrorResponse(HttpServletResponse.SC_MOVED_TEMPORARILY,
 				redirectUrl, ex);
-		errorResponse.render(response);
 	}
 
 	@Override
-	public void buildAuthorizationCodeResponse(String code, URI redirectUrl, String state, HttpServletResponse response)
+	public IOAuth2Response buildAuthorizationCodeResponse(String code, URI redirectUrl, String state)
 			throws ResponseBuilderException {
-		AuthCodeResponse oauthResponse = new AuthCodeResponse(HttpServletResponse.SC_MOVED_TEMPORARILY, code,
+		return new AuthCodeResponse(HttpServletResponse.SC_MOVED_TEMPORARILY, code,
 				redirectUrl, state);
-		oauthResponse.render(response);
 	}
 
 	@Override
-	public void buildAccessTokenResponse(IAccessTokenInfo accessToken, String state, HttpServletResponse response)
+	public IOAuth2Response buildAccessTokenResponse(IAccessTokenInfo accessToken, String state)
 			throws ResponseBuilderException {
-		AccessTokenEntityResponse oauthResponse = new AccessTokenEntityResponse(HttpServletResponse.SC_OK,
+		return new AccessTokenEntityResponse(HttpServletResponse.SC_OK,
 				accessToken, state);
-		oauthResponse.render(response);
 	}
 
 	@Override
-	public void buildImplicitGrantAccessTokenResponse(IAccessTokenInfo accessToken, URI redirectUrl, String state,
-			HttpServletResponse response) throws ResponseBuilderException {
-		AccessTokenRedirectResponse oauthResponse = new AccessTokenRedirectResponse(
+	public IOAuth2Response buildImplicitGrantAccessTokenResponse(IAccessTokenInfo accessToken, URI redirectUrl, String state) throws ResponseBuilderException {
+		return new AccessTokenRedirectResponse(
 				HttpServletResponse.SC_MOVED_TEMPORARILY, accessToken, redirectUrl, state);
-		oauthResponse.render(response);
+	}
+	
+	@Override
+	public IOAuth2Response buildForwardResponse(String relativeUrl) {
+		return new ForwardOAuth2Response(relativeUrl);
 	}
 
 }

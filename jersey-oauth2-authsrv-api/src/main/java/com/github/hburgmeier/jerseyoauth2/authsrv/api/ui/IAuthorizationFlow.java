@@ -12,21 +12,22 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRefreshTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.client.IRegisteredClientApp;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 
 public interface IAuthorizationFlow {
 
-	void startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
-			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+	IOAuth2Response startAuthorizationFlow(IUser user, IRegisteredClientApp clientApp, Set<String> scope, IAuthorizationRequest originalRequest, 
+			HttpServletRequest request)
 		throws AuthorizationFlowException, ServletException, IOException;
 	
-	void startScopeEnhancementFlow(IUser user, IRegisteredClientApp clientApp, Set<String> requestedScope, IRefreshTokenRequest refreshTokenRequest, 
-			HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+	IOAuth2Response startScopeEnhancementFlow(IUser user, IRegisteredClientApp clientApp, Set<String> requestedScope, IRefreshTokenRequest refreshTokenRequest, 
+			HttpServletRequest request)
 		throws AuthorizationFlowException;
 
-	void handleMissingUser(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
+	IOAuth2Response handleMissingUser(HttpServletRequest request) 
 		throws AuthorizationFlowException, ServletException, IOException;
 
-	void handleInvalidClient(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) 
+	IOAuth2Response handleInvalidClient(HttpServletRequest request) 
 		throws AuthorizationFlowException, ServletException, IOException;
 	
 }

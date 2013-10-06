@@ -19,8 +19,11 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.HttpServletContextImplementation;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Singleton;
@@ -54,7 +57,7 @@ public class IssueAccessTokenServlet extends HttpServlet {
 			LOGGER.error("Strict security switch on but insecure request received");
 			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
 		} else {
-			
+			IHttpContext context = new HttpServletContextImplementation(request, response, getServletContext());
 			try {
 				IAccessTokenRequest oauthRequest = null;
 				try {
@@ -62,10 +65,12 @@ public class IssueAccessTokenServlet extends HttpServlet {
 							configuration.getEnableAuthorizationHeaderForClientAuth());
 					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
-					tokenService.handleRequest(request, response, getServletContext(), oauthRequest);
+					IOAuth2Response oauth2Response = tokenService.handleRequest(request, getServletContext(), oauthRequest);
+					oauth2Response.render(context);
 				} catch (OAuth2ParseException e) {
 					LOGGER.error("Token request problem", e);
-					tokenService.sendErrorResponse(response, e);
+					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(e);
+					oauth2Response.render(context);
 				} catch (OAuth2ProtocolException e) {
 					LOGGER.error("Token request problem", e);
 					if (e.getErrorCode() == OAuth2ErrorCode.INVALID_CLIENT &&
@@ -73,7 +78,8 @@ public class IssueAccessTokenServlet extends HttpServlet {
 						{
 							sendUnauthorizedResponse(response);
 						} else {
-							tokenService.sendErrorResponse(response, e);
+							IOAuth2Response oauth2Response = tokenService.sendErrorResponse(e);
+							oauth2Response.render(context);
 						}
 					
 				}

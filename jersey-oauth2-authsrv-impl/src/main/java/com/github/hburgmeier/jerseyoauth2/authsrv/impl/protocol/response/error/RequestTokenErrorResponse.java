@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseFormat;
 
 public class RequestTokenErrorResponse extends AbstractErrorResponse {
@@ -13,10 +14,10 @@ public class RequestTokenErrorResponse extends AbstractErrorResponse {
 	}
 
 	@Override
-	public void render(HttpServletResponse response) throws ResponseBuilderException {
-		super.render(response);
+	public void render(IHttpContext context) throws ResponseBuilderException {
+		super.render(context);
 		
-		renderJson(errorEntity, response);
+		renderJson(errorEntity, context);
 	}	
 	
 }

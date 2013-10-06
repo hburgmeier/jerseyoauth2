@@ -2,8 +2,8 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.impl.guice;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.authorization.IAuthorizationService;
+import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.api.IResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.ResponseBuilder;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.AuthorizationService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.IntegratedAccessTokenVerifier;
