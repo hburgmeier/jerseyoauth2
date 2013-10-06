@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRequestFactory;
-import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ErrorCode;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ParseException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
@@ -24,7 +23,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IOAuth2Response;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.HttpServletContextImplementation;
-import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpHeaders;
 import com.github.hburgmeier.jerseyoauth2.protocol.impl.HttpRequestAdapter;
 import com.google.inject.Singleton;
 
@@ -69,31 +67,18 @@ public class IssueAccessTokenServlet extends HttpServlet {
 					oauth2Response.render(context);
 				} catch (OAuth2ParseException e) {
 					LOGGER.error("Token request problem", e);
-					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(e);
+					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest,e);
 					oauth2Response.render(context);
 				} catch (OAuth2ProtocolException e) {
 					LOGGER.error("Token request problem", e);
-					if (e.getErrorCode() == OAuth2ErrorCode.INVALID_CLIENT &&
-							oauthRequest.hasUsedAuhorizationHeader())
-						{
-							sendUnauthorizedResponse(response);
-						} else {
-							IOAuth2Response oauth2Response = tokenService.sendErrorResponse(e);
-							oauth2Response.render(context);
-						}
-					
+					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest, e);
+					oauth2Response.render(context);	
 				}
 			} catch (AuthorizationFlowException | ResponseBuilderException e) {
 				LOGGER.error("OAuth2 system exception", e);
 				throw new ServletException(e);
 			}
 		}
-	}
-	
-	protected void sendUnauthorizedResponse(HttpServletResponse response)
-	{
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.addHeader(HttpHeaders.AUTHENTICATE, "Basic");
 	}
 
 }

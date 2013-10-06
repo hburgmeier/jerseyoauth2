@@ -2,7 +2,6 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.token;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
@@ -24,7 +23,7 @@ public interface ITokenService {
 	IOAuth2Response sendTokenResponse(HttpServletRequest request, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
 			throws ResponseBuilderException;
 	
-	IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex) throws ResponseBuilderException;
+	IOAuth2Response sendErrorResponse(IAccessTokenRequest oauthRequest, OAuth2ProtocolException ex) throws ResponseBuilderException;
 
 	void removeTokensForUser(IUser user);
 }

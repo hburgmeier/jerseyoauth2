@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;

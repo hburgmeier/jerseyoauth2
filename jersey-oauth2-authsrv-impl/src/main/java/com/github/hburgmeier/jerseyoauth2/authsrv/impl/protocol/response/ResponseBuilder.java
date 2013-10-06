@@ -53,5 +53,9 @@ public class ResponseBuilder implements IResponseBuilder {
 	public IOAuth2Response buildForwardResponse(String relativeUrl) {
 		return new ForwardOAuth2Response(relativeUrl);
 	}
-
+	
+	@Override
+	public IOAuth2Response buildUnauthorizedResponse(OAuth2ProtocolException ex) {
+		return new UnauthorizedResponse();
+	}
 }

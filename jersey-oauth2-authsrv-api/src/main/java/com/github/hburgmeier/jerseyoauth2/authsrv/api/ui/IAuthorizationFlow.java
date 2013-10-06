@@ -3,10 +3,8 @@ package com.github.hburgmeier.jerseyoauth2.authsrv.api.ui;
 import java.io.IOException;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAuthorizationRequest;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IRefreshTokenRequest;

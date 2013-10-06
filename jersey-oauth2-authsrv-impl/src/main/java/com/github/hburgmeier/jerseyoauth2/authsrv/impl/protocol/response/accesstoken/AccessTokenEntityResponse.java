@@ -1,7 +1,5 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.response.accesstoken;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.protocol.IHttpContext;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenInfo;

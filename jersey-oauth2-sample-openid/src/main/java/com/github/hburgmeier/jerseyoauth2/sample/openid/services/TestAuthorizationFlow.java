@@ -3,7 +3,6 @@ package com.github.hburgmeier.jerseyoauth2.sample.openid.services;
 import java.io.IOException;
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 

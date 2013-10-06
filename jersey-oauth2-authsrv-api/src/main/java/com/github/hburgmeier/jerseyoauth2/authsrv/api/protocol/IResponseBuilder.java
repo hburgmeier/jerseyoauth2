@@ -19,4 +19,6 @@ public interface IResponseBuilder {
 	IOAuth2Response buildImplicitGrantAccessTokenResponse(IAccessTokenInfo accessToken, URI redirectUrl, String state) throws ResponseBuilderException;
 	
 	IOAuth2Response buildForwardResponse(String relativeUrl);
+
+	IOAuth2Response buildUnauthorizedResponse(OAuth2ProtocolException ex);
 }

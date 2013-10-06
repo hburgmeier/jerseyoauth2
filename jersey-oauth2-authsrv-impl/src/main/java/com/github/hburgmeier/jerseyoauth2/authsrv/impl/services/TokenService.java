@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ErrorCode;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.OAuth2ProtocolException;
 import com.github.hburgmeier.jerseyoauth2.api.protocol.ResponseBuilderException;
 import com.github.hburgmeier.jerseyoauth2.api.token.InvalidTokenException;
-import com.github.hburgmeier.jerseyoauth2.api.types.GrantType;
 import com.github.hburgmeier.jerseyoauth2.api.types.ResponseType;
 import com.github.hburgmeier.jerseyoauth2.api.user.IUser;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.IConfiguration;
@@ -119,8 +117,14 @@ public class TokenService implements ITokenService {
 	}	
 
 	@Override
-	public IOAuth2Response sendErrorResponse(OAuth2ProtocolException ex) throws ResponseBuilderException {
-		return responseBuilder.buildRequestTokenErrorResponse(ex);
+	public IOAuth2Response sendErrorResponse(IAccessTokenRequest oauthRequest, OAuth2ProtocolException ex) throws ResponseBuilderException {
+		if (ex.getErrorCode() == OAuth2ErrorCode.INVALID_CLIENT &&
+			oauthRequest.hasUsedAuhorizationHeader())
+		{
+			return responseBuilder.buildUnauthorizedResponse(ex);
+		} else {
+			return responseBuilder.buildRequestTokenErrorResponse(ex);
+		}
 	}
 
 	@Override
