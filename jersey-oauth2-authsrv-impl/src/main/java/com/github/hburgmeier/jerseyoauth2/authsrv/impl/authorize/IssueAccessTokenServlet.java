@@ -63,7 +63,7 @@ public class IssueAccessTokenServlet extends HttpServlet {
 							configuration.getEnableAuthorizationHeaderForClientAuth());
 					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
-					IOAuth2Response oauth2Response = tokenService.handleRequest(request, getServletContext(), oauthRequest);
+					IOAuth2Response oauth2Response = tokenService.handleRequest(request, oauthRequest);
 					oauth2Response.render(context);
 				} catch (OAuth2ParseException e) {
 					LOGGER.error("Token request problem", e);
