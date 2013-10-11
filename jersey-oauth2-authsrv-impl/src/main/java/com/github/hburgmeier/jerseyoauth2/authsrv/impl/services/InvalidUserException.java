@@ -1,4 +1,4 @@
-package com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize;
+package com.github.hburgmeier.jerseyoauth2.authsrv.impl.services;
 
 public class InvalidUserException extends Exception {
 

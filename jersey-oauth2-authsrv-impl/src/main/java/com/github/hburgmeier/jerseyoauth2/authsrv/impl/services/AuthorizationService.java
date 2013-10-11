@@ -38,7 +38,6 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.InvalidUserException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ClientIdentityValidator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.InvalidScopeException;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.protocol.ScopeValidator;
