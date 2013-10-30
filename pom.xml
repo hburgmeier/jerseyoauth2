@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.hburgmeier.jerseyoauth2</groupId>
 	<artifactId>jersey-oauth2</artifactId>
-	<version>0.8-SNAPSHOT</version>
+	<version>0.8</version>
 	<packaging>pom</packaging>
 	<name>Jersey OAuth2 Provider Main</name>
 
