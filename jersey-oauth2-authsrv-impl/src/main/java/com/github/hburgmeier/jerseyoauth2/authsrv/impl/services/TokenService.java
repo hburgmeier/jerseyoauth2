@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -72,7 +71,7 @@ public class TokenService implements ITokenService {
 	}
 
 	@Override
-	public IOAuth2Response handleRequest(HttpServletRequest request, ServletContext servletContext, IAccessTokenRequest oauthRequest)
+	public IOAuth2Response handleRequest(HttpServletRequest request, IAccessTokenRequest oauthRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException {
 		LOGGER.debug("Token request received, grant type {}", oauthRequest.getGrantType());
 		
@@ -80,7 +79,7 @@ public class TokenService implements ITokenService {
 		{
 		case REFRESH_TOKEN:
 			if (issueRefreshToken) {
-				return refreshToken(request, servletContext, (IRefreshTokenRequest)oauthRequest);
+				return refreshToken(request, (IRefreshTokenRequest)oauthRequest);
 			}
 			else {
 				LOGGER.error("Refresh token generation is disabled");
@@ -106,7 +105,7 @@ public class TokenService implements ITokenService {
 					clientApp);
 			LOGGER.debug("token {} issued", accessToken);
 
-			return sendTokenResponse(request, accessTokenInfo, responseType, state);
+			return sendTokenResponse(accessTokenInfo, responseType, state);
 		} catch (TokenStorageException e) {
 			LOGGER.error("error with token storage", e);
 			throw new OAuth2ProtocolException(OAuth2ErrorCode.SERVER_ERROR, SERVER_ERROR_DESCRIPTION, null, e);
@@ -128,7 +127,7 @@ public class TokenService implements ITokenService {
 	}
 
 	@Override
-	public IOAuth2Response sendTokenResponse(HttpServletRequest request, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
+	public IOAuth2Response sendTokenResponse(IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
 			throws ResponseBuilderException {
 		LOGGER.debug("sending response for {}", responseType);
 		if (responseType == ResponseType.TOKEN)
@@ -174,7 +173,7 @@ public class TokenService implements ITokenService {
 		return oauthResponse;
 	}
 	
-	protected IOAuth2Response refreshToken(HttpServletRequest request, ServletContext servletContext, IRefreshTokenRequest refreshTokenRequest)
+	protected IOAuth2Response refreshToken(HttpServletRequest request, IRefreshTokenRequest refreshTokenRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException {
 		String refreshToken = refreshTokenRequest.getRefreshToken();
 
@@ -196,7 +195,7 @@ public class TokenService implements ITokenService {
 						oldTokenInfo.getAccessToken(), newAccessToken, newRefreshToken);
 				LOGGER.debug("token {} refreshed to {}", oldTokenInfo.getAccessToken(), newAccessToken);
 	
-				return sendTokenResponse(request, accessTokenInfo, ResponseType.CODE, null);
+				return sendTokenResponse(accessTokenInfo, ResponseType.CODE, null);
 			} else {
 				if (allowScopeEnhancement)
 				{

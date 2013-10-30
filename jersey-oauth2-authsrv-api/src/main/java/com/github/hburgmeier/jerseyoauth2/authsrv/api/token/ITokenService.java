@@ -1,6 +1,5 @@
 package com.github.hburgmeier.jerseyoauth2.authsrv.api.token;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.github.hburgmeier.jerseyoauth2.api.protocol.IAccessTokenRequest;
@@ -14,13 +13,13 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.AuthorizationFlowExcept
 
 public interface ITokenService {
 	
-	IOAuth2Response handleRequest(HttpServletRequest request, ServletContext servletContext, IAccessTokenRequest oauthRequest)
+	IOAuth2Response handleRequest(HttpServletRequest request, IAccessTokenRequest oauthRequest)
 			throws OAuth2ProtocolException, ResponseBuilderException, AuthorizationFlowException;
 	
 	IOAuth2Response issueNewToken(HttpServletRequest request, IAuthorizedClientApp clientApp, ResponseType responseType, String state)
 			throws OAuth2ProtocolException, ResponseBuilderException;
 	
-	IOAuth2Response sendTokenResponse(HttpServletRequest request, IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
+	IOAuth2Response sendTokenResponse(IAccessTokenInfo accessTokenInfo, ResponseType responseType, String state)
 			throws ResponseBuilderException;
 	
 	IOAuth2Response sendErrorResponse(IAccessTokenRequest oauthRequest, OAuth2ProtocolException ex) throws ResponseBuilderException;

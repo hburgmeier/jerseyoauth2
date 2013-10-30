@@ -1,7 +1,6 @@
-package com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize;
+package com.github.hburgmeier.jerseyoauth2.authsrv.impl.endpoints.servlet;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -50,34 +49,29 @@ public class IssueAccessTokenServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-		if (configuration.getStrictSecurity() && !request.isSecure())
-		{
-			LOGGER.error("Strict security switch on but insecure request received");
-			response.sendError(HttpURLConnection.HTTP_BAD_REQUEST);
-		} else {
-			IHttpContext context = new HttpServletContextImplementation(request, response, getServletContext());
-			try {
-				IAccessTokenRequest oauthRequest = null;
-				try {
-					oauthRequest = requestFactory.parseAccessTokenRequest(new HttpRequestAdapter(request), 
-							configuration.getEnableAuthorizationHeaderForClientAuth());
-					LOGGER.debug("Parsing OAuthTokenRequest successful");
 
-					IOAuth2Response oauth2Response = tokenService.handleRequest(request, getServletContext(), oauthRequest);
-					oauth2Response.render(context);
-				} catch (OAuth2ParseException e) {
-					LOGGER.error("Token request problem", e);
-					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest,e);
-					oauth2Response.render(context);
-				} catch (OAuth2ProtocolException e) {
-					LOGGER.error("Token request problem", e);
-					IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest, e);
-					oauth2Response.render(context);	
-				}
-			} catch (AuthorizationFlowException | ResponseBuilderException e) {
-				LOGGER.error("OAuth2 system exception", e);
-				throw new ServletException(e);
+		IHttpContext context = new HttpServletContextImplementation(request, response, getServletContext());
+		try {
+			IAccessTokenRequest oauthRequest = null;
+			try {
+				oauthRequest = requestFactory.parseAccessTokenRequest(new HttpRequestAdapter(request), 
+						configuration.getEnableAuthorizationHeaderForClientAuth());
+				LOGGER.debug("Parsing OAuthTokenRequest successful");
+
+				IOAuth2Response oauth2Response = tokenService.handleRequest(request, oauthRequest);
+				oauth2Response.render(context);
+			} catch (OAuth2ParseException e) {
+				LOGGER.error("Token request problem", e);
+				IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest,e);
+				oauth2Response.render(context);
+			} catch (OAuth2ProtocolException e) {
+				LOGGER.error("Token request problem", e);
+				IOAuth2Response oauth2Response = tokenService.sendErrorResponse(oauthRequest, e);
+				oauth2Response.render(context);	
 			}
+		} catch (AuthorizationFlowException | ResponseBuilderException e) {
+			LOGGER.error("OAuth2 system exception", e);
+			throw new ServletException(e);
 		}
 	}
 

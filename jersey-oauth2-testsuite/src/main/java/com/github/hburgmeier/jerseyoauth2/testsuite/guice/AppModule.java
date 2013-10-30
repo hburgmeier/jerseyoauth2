@@ -14,8 +14,9 @@ import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.IAccessTokenStorageS
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.token.ITokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.ui.IAuthorizationFlow;
 import com.github.hburgmeier.jerseyoauth2.authsrv.api.user.IUserService;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.AuthorizationServlet;
-import com.github.hburgmeier.jerseyoauth2.authsrv.impl.authorize.IssueAccessTokenServlet;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.endpoints.servlet.AuthorizationServlet;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.endpoints.servlet.IssueAccessTokenServlet;
+import com.github.hburgmeier.jerseyoauth2.authsrv.impl.endpoints.servlet.StrictSecurityFilter;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.DefaultPrincipalUserService;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.MD5TokenGenerator;
 import com.github.hburgmeier.jerseyoauth2.authsrv.impl.services.UUIDClientIdGenerator;
@@ -51,6 +52,8 @@ public class AppModule  extends JerseyServletModule {
     	
     	serve("/oauth2/auth").with(AuthorizationServlet.class);
     	serve("/oauth2/accessToken").with(IssueAccessTokenServlet.class);
+    	
+    	filter("/oauth2/*").through(StrictSecurityFilter.class);
     	
        Map<String, String> params = new HashMap<String, String>();
        params.put(PackagesResourceConfig.PROPERTY_PACKAGES, "com.github.hburgmeier.jerseyoauth2.testsuite.resource;" +
